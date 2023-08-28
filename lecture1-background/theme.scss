@@ -16,7 +16,7 @@ $linkColor: $vassarColor;
 $linkColorHover: darken( $linkColor, 20% );
 
 // Title slide
-$data-background-image: "logo.png";
+//$data-background-image: "logo.png";
 
 
 /*-- scss:rules --*/
@@ -31,9 +31,9 @@ $data-background-image: "logo.png";
   color: $vassarColor;
 }
 
-.slide-background:first-child {
-  background-color: $uciColor;
-}
+//.slide-background:first-child {
+//  background-color: $uciColor;
+//}
 
 .slide-background {
   background-color: #fefaf3;

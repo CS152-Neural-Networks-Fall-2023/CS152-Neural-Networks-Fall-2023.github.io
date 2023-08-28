@@ -8,6 +8,7 @@ format:
     incremental: false
     echo: true
     theme: ["theme.scss"]
+    revealjs-plugins:
 ---
 
 # Linear algebra prerequisites
