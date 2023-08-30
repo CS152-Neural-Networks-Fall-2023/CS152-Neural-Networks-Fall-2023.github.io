@@ -384,15 +384,6 @@ np.dot(x, y)
 
 Geometrically, $\|\mathbf{x}\|_2\cos\theta$ is the length of the *projection* of $\mathbf{x}$ onto $\mathbf{y}$. Thus, we can compute the length of this projection using the dot-product as $\frac{\mathbf{x}\cdot\mathbf{y}}{\|\mathbf{y}\|}$ .
 
-Dot products can also be useful when thinking about vectors as data. Using our student example from above, we know that a student's GPA can be computed as the their average grade, *weighted* by the number of credits each course is worth.:
-
-$$
-\text{GPA} = \frac{1}{\sum_{\text{courses}}\text{Credits}
-}\sum_{\text{courses}} \text{Grade}\times\text{Credits}
-$$
-
-Given 2 vectors that represent a student's grades and credits respectively, we can compute their GPA compactly as:
-
 ## Matrices
 
 A **matrix** is a 2-dimensional collection of numbers. We will denote matrices using bold capital letters, e.g. $\mathbf{A}$.
