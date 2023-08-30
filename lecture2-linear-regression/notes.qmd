@@ -9,7 +9,9 @@ format:
 ```{python}
 #| echo: false
 from manim import *
-import numpy as np
+import autograd.numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 
 class LectureScene(Scene):
     def __init__(self, *args, **kwargs):
@@ -243,7 +245,7 @@ We call each of these pairs an **observation**. Let's take a look at a real worl
 
 #### Fuel efficiency
 
-Let's imagine we're designing a car and we would like to know what the fuel efficiency of the car we're designing will be in *miles per gallon* (MPG). We know some properties of our current design, such as the weight and horsepower, that we know that this should affect the efficiency. Ideally we would have access to a function that would give us the MPG rating if we provide these **features**.
+Let's imagine we're designing a car and we would like to know what the fuel efficiency of the car we're designing will be in *miles per gallon* (MPG). We know some properties of our current design, such as the weight and horsepower, that we know should affect the efficiency. Ideally we would have access to a function that would give us the MPG rating if we provide these **features**.
 
 $$
 \text{mpg} = f(\text{weight},\ \text{horsepower}...)
@@ -614,7 +616,7 @@ In deciding what linear function to use, we need a measure of error for the *ent
 
 $$
 MSE = \frac{1}{N}\sum_{i=1}^N (f(\mathbf{x}_i) - y_i)^2 = \frac{1}{N}\sum_{i=1}^N (\mathbf{x}_i^T\mathbf{w} - y_i)^2
-$$ It follows that the best choice of linear function $f^*$ is the one that one that *minimizes* the mean squared error for our dataset. Since each linear function is defined by a parameter vector $\mathbf{w}$, this is equivalent to finding $\mathbf{w}^*$, the parameters vector that minimizes the mean squared error. $$\mathbf{w}^* = \underset{\mathbf{w}}{\text{argmin}} \frac{1}{N}\sum_{i=1}^N (\mathbf{x}_i^T\mathbf{w} - y_i)^2 $$
+$$It follows that the best choice of linear function $f^*$ is the one that *minimizes* the mean squared error for our dataset. Since each linear function is defined by a parameter vector $\mathbf{w}$, this is equivalent to finding $\mathbf{w}^*$, the parameters vector that minimizes the mean squared error. $$\mathbf{w}^* = \underset{\mathbf{w}}{\text{argmin}} \frac{1}{N}\sum_{i=1}^N (\mathbf{x}_i^T\mathbf{w} - y_i)^2 $$
 
 ## Loss functions
 
@@ -705,6 +707,10 @@ import matplotlib.pyplot as plt
 x = (x - x.mean()) / x.std()
 y = (y - y.mean()) / y.std()
 
+model = LinearRegression().fit(x, y)
+
+other_lines = [(model.coef_.item(), model.intercept_.item()), (model.coef_.item() * 1.2, model.intercept_.item() - 0.95), (model.coef_.item() * 0.7, model.intercept_.item() + 0.9), (model.coef_.item() * 1.8, model.intercept_.item() + 1.4)]
+
 W = np.arange(-2, 2, 0.1)
 B = np.arange(-2, 2, 0.1)
 W, B = np.meshgrid(W, B)
@@ -712,119 +718,182 @@ resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.
 loss = np.mean(resid ** 2, axis=0)
 
 
-plt.matshow(loss, cmap='coolwarm')
+CS = plt.contour(W, B, loss, cmap='coolwarm', levels=0.5 * np.arange(25))
 ax = plt.gca()
 ax.set_xticks([])
 ax.set_yticks([])
 
-w, b = (12.5, 20)
-other_lines = [(w * 1.2, b * 0.95), (w * 0.7, b * 0.9), (w * 1.8, b * 1.4)]
-other_lines = [(w, b)] + other_lines
+
 for param, color in zip(other_lines, [BLACK, BLUE, ORANGE, GREEN, PURPLE]):
             w, b = param
-            ax.scatter(w, b, c=color, s=50)
+            ax.scatter(w, b, c=color, s=75)
 plt.xlabel('$w_1$')
 plt.ylabel('$b$')
 plt.title('$\mathbf{Loss}(\mathbf{w})$')
-plt.colorbar()
+ax.clabel(CS, inline=True, fontsize=10)
 pass
 ```
 
 We see that point where the loss is lowest, corresponds to the line that best fits our data!
 
-![](pictures/linreg.png)
-
 ## Gradient descent
 
 Now that we have a way to determine the quality of a choice of parameters $\mathbf{w}$, using our *loss* function, we need a way to actually find the $\mathbf{w}^*$ that minimizes our loss. To do this we will turn to an algorithm called **gradient descent**. In this lecture we will introduce gradient descent, but we will go into much more depth in a future lecture.
 
-Let's look at a more generic view of gradient descent. We have some function $f(\mathbf{\cdot})$ and we would like find the input $\mathbf{x}^*$ that minimizes the output of the function:
+We'll introduce gradient descent as a method to find the minimum of a generic function. We have some function $f(\mathbf{\cdot})$ and we would like find the input $\mathbf{w}^*$ that minimizes the output of the function:
 
 $$
-\text{Find: } \mathbf{x}^* = \underset{\mathbf{x}}{\text{argmin}}\ f(\mathbf{x})
+\text{Find: } \mathbf{w}^* = \underset{\mathbf{w}}{\text{argmin}}\ f(\mathbf{w})
 $$
 
-```{python}
-#| echo: false
-%%manim -sqh -v CRITICAL --progress_bar none BasicFunction
-
-class BasicFunction(PositiveVectorScene):
-    def construct(self):
-        fx = self.ax.plot(lambda x: (0.5 * x - 3) ** 2, color=RED)
-        #eq.move_to(*self.ax.c2p([8, 7, 0]))
-        labels = self.ax.get_axis_labels(x_label="x_1", y_label="y = f(\mathbf{x})")
-        labels.set_color(GREY)
-        labels.set_tex_template(self.template)
-        p = Dot(color=BLACK).move_to(self.ax.c2p(6,0))
-        label = MathTex('x^*', color=BLACK).next_to(p, UR)
-        self.add(fx, labels, p, label)
-        
-```
-
-We don't know how to find $\mathbf{x}^*$ directly, but if we have an initial guess $\mathbf{x}^{(0)}$, we can try to update our guess to improve it.
+We don't know how to find $\mathbf{w}^*$ directly, but if we have an initial guess $\mathbf{w}^{(0)}$, we can try to update our guess to improve it.
 
 $$
-\mathbf{x}^{(1)} \leftarrow \mathbf{x}^{(0)} + \mathbf{g}
+\mathbf{w}^{(1)} \leftarrow \mathbf{w}^{(0)} + \mathbf{g}
 $$
 
 ```{python}
 #| echo: false
-%%manim -sqh -v CRITICAL --progress_bar none BasicFunction
+import matplotlib.pyplot as plt
+from autograd import grad
+x = (x - x.mean()) / x.std()
+y = (y - y.mean()) / y.std()
 
-class BasicFunction(PositiveVectorScene):
-    def construct(self):
-        f = lambda x: (0.5 * x - 3) ** 2
-        fx = self.ax.plot(f, color=RED)
-        #eq.move_to(*self.ax.c2p([8, 7, 0]))
-        labels = self.ax.get_axis_labels(x_label="x_1", y_label="y = f(\mathbf{x})")
-        labels.set_color(GREY)
-        labels.set_tex_template(self.template)
+model = LinearRegression().fit(x, y)
 
-        a = Arrow
-        p = Dot(color=BLACK).move_to(self.ax.c2p(11,f(11)))
-        label = MathTex('x^{(0)}', color=BLACK).next_to(p, DR)
-        self.add(fx, labels, p, label)
+W = np.arange(-2, 2, 0.1)
+B = np.arange(-2, 2, 0.1)
+W, B = np.meshgrid(W, B)
+
+
+resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.reshape((-1, 1, 1)) # N x W x B
+loss = np.mean(resid ** 2, axis=0)
+
+def get_loss(w):
+    w, b = w[0], w[1]
+    resid = x * w + b - y
+    return 0.2 * np.mean(resid ** 2)
+
+gloss = grad(get_loss)
+
+ax = plt.gca()
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+print(gloss(np.array([1.25, -1.5])))
+
+other_lines = [(1.25, -1.5)]
+
+for param, color in zip(other_lines, [BLACK, BLUE, ORANGE, GREEN, PURPLE]):
+            w, b = param
+            ax.scatter(w, b, c=color, s=75, zorder=4)
+            dw, db = -gloss(np.array([w, b]))
+            prop = dict(arrowstyle="-|>,head_width=0.4,head_length=0.8",
+            shrinkA=0,shrinkB=0)
+            ax.annotate("", xy=(dw + w,db + b), xytext=(w,b), arrowprops=prop)
+            #ax.arrow(w, b, dw, db, head_width=0.1, zorder=4)
+
+   
+plt.xlabel('$w_1$')
+plt.ylabel('$b$')
+plt.title('$\mathbf{Loss}(\mathbf{w})$')
+CS = ax.contour(W, B, loss, cmap='coolwarm', levels=0.5 * np.arange(25))
+ax.clabel(CS, inline=True, fontsize=10)
+pass
 ```
 
-Here we are changing $\mathbf{x}^{(0)}$ by moving in the direction of $\mathbf{g}$. If we recall that the *gradient* of a function at point $\mathbf{x}$ corresponds to the *slope* of $f$ at $\mathbf{x}$, or equivalently the direction of maximum change. This gives us a natural choice for the update to our guess.
+Here we are changing $\mathbf{w}^{(0)}$ by moving in the direction of $\mathbf{g}$. If we recall that the *gradient* of a function at point $\mathbf{x}$ corresponds to the *slope* of $f$ at $\mathbf{w}$, or equivalently the direction of maximum change. This gives us a natural choice for the update to our guess.
 
 $$
-\mathbf{x}^{(1)} \leftarrow \mathbf{x}^{(0)} - \nabla f(\mathbf{x}^{(0)})
+\mathbf{w}^{(1)} \leftarrow \mathbf{w}^{(0)} - \nabla f(\mathbf{w}^{(0)})
 $$
 
-Note that because the gradient corresponds to the direction that maximally *increases* $f(\mathbf{x})$, we actually need to subtract the gradient in order to minimize our function. We can repeat this process many times, continuously updating our estimate.
+Note that because the gradient corresponds to the direction that maximally *increases* $f(\mathbf{w})$, we actually need to subtract the gradient in order to minimize our function. We can repeat this process many times, continuously updating our estimate.
 
 $$
 \text{For }i \text{ in 1,...,T}\text{ :} \\
-\quad \mathbf{x}^{(i+1)} \leftarrow \mathbf{x}^{(i)} - \nabla f(\mathbf{x}^{(i)})
+\quad \mathbf{w}^{(i+1)} \leftarrow \mathbf{w}^{(i)} - \nabla f(\mathbf{w}^{(i)})
 $$
+
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+from autograd import grad
+x = (x - x.mean()) / x.std()
+y = (y - y.mean()) / y.std()
+
+model = LinearRegression().fit(x, y)
+
+W = np.arange(-2, 2, 0.1)
+B = np.arange(-2, 2, 0.1)
+W, B = np.meshgrid(W, B)
+
+
+resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.reshape((-1, 1, 1)) # N x W x B
+loss = np.mean(resid ** 2, axis=0)
+
+def get_loss(w, x, y):
+    w, b = w[0], w[1]
+    resid = x.flatten() * w + b - y
+    return 0.15 * np.mean(resid ** 2)
+
+gloss = grad(get_loss)
+
+ax = plt.gca()
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+
+w, b = (1.25, -1.5)
+
+for i in range(6):
+    ax.scatter(w, b, c=color, s=75, zorder=4)
+    dw, db = -gloss(np.array([w, b]), x, y)
+    db = db + max(0, 0.05 * (5- i))
+    prop = dict(arrowstyle="-|>,head_width=0.4,head_length=0.8",
+    shrinkA=0,shrinkB=0)
+    if i < 5:
+        ax.annotate("", xy=(dw + w,db + b), xytext=(w,b), arrowprops=prop)
+    w, b = w + dw, b + db
+    #ax.arrow(w, b, dw, db, head_width=0.1, zorder=4)
+
+   
+plt.xlabel('$w_1$')
+plt.ylabel('$b$')
+plt.title('$\mathbf{Loss}(\mathbf{w})$')
+CS = ax.contour(W, B, loss, cmap='coolwarm', levels=0.5 * np.arange(25))
+ax.clabel(CS, inline=True, fontsize=10)
+pass
+```
 
 ## Gradient descent convergence
 
-Recall that it's minimum value $\mathbf{x}^*$, a function $f$ *must* have a gradient of $\mathbf{0}$.
+Recall that it's minimum value $\mathbf{w}^*$, a function $f$ *must* have a gradient of $\mathbf{0}$.
 
 $$
-\nabla f(\mathbf{x}^*) = \mathbf{0}
+\nabla f(\mathbf{w}^*) = \mathbf{0}
 $$
 
 It follows that:
 
 $$
-\mathbf{x}^{*} = \mathbf{x}^{*} - \nabla f(\mathbf{x}^{*})
+\mathbf{w}^{*} = \mathbf{w}^{*} - \nabla f(\mathbf{w}^{*})
 $$
 
 This means that if our gradient descent reaches the minimum, it will stop updating the guess and we know that we can stop our iteration. So we could write our algorithm to account for this:
 
 $$
-\text{While } \nabla f(\mathbf{x}^{(i)}) \neq \mathbf{0} \text{ :} \\
-\quad \mathbf{x}^{(i+1)} \leftarrow \mathbf{x}^{(i)} - \nabla f(\mathbf{x}^{(i)})
+\text{While } \nabla f(\mathbf{w}^{(i)}) \neq \mathbf{0} \text{ :} \\
+\quad \mathbf{w}^{(i+1)} \leftarrow \mathbf{w}^{(i)} - \nabla f(\mathbf{w}^{(i)})
 $$
 
 In practice though, it could take infinitely many updates to find the *exact* minimum. A more common approach is to define a convergence criteria that stops the iteration when the gradient magnitude is sufficiently small:
 
 $$
-\text{While } ||\nabla f(\mathbf{x}^{(i)})||_2 > \epsilon \text{ :} \\
-\quad \mathbf{x}^{(i+1)} \leftarrow \mathbf{x}^{(i)} - \nabla f(\mathbf{x}^{(i)})
+\text{While } ||\nabla f(\mathbf{w}^{(i)})||_2 > \epsilon \text{ :} \\
+\quad \mathbf{w}^{(i+1)} \leftarrow \mathbf{w}^{(i)} - \nabla f(\mathbf{w}^{(i)})
 $$
 
 ## Step sizes
@@ -833,14 +902,137 @@ Notice that the gradient descent algorithm we've defined so far not only says th
 
 This approach says that when the magnitude of the gradient is large, we should take a large step, and vice-versa. This is desirable for many functions as it means when we're far from the minimum we take large steps, moving toward the minimum more quickly. While when we're close to the minimum we take small steps to refine our guess more precisely.
 
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+from autograd import grad
+x = (x - x.mean()) / x.std()
+y = (y - y.mean()) / y.std()
+
+model = LinearRegression().fit(x, y)
+
+W = np.arange(-2, 2, 0.1)
+B = np.arange(-2, 2, 0.1)
+W, B = np.meshgrid(W, B)
+
+
+resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.reshape((-1, 1, 1)) # N x W x B
+loss = np.mean(resid ** 2, axis=0)
+
+def get_loss(w, x, y):
+    w, b = w[0], w[1]
+    resid = x.flatten() * w + b - y
+    return 0.15 * np.mean(resid ** 2)
+
+gloss = grad(get_loss)
+
+ax = plt.gca()
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+
+w, b = (1.25, -1.5)
+
+for i in range(12):
+    ax.scatter(w, b, c=color, s=75, zorder=4)
+    dw, db = -gloss(np.array([w, b]), x, y)
+    db = db + max(0, 0.05 * (5- i))
+    prop = dict(arrowstyle="-|>,head_width=0.4,head_length=0.8",
+    shrinkA=0,shrinkB=0)
+    if i < 11:
+        ax.annotate("", xy=(dw + w,db + b), xytext=(w,b), arrowprops=prop)
+    w, b = w + dw, b + db
+    #ax.arrow(w, b, dw, db, head_width=0.1, zorder=4)
+
+   
+plt.xlabel('$w_1$')
+plt.ylabel('$b$')
+plt.title('$\mathbf{Loss}(\mathbf{w})$')
+CS = ax.contour(W, B, loss, cmap='coolwarm', levels=0.5 * np.arange(25))
+ax.clabel(CS, inline=True, fontsize=10)
+pass
+```
+
 However, if we take too large a step, we can overshoot the minimum entirely! In the worst case, this can lead to *divergence,* where gradient descent overshoots the minimum more and more at each step.
 
-Remember that the gradient is making a *linear approximation* to the function. A line has no minimum, so the gradient has no information about where along the approximation the true minimum will be.
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+from autograd import grad
+x = (x - x.mean()) / x.std()
+y = (y - y.mean()) / y.std()
+
+model = LinearRegression().fit(x, y)
+
+W = np.arange(-15, 15, 0.4)
+B = np.arange(-15, 15, 0.4)
+W, B = np.meshgrid(W, B)
+
+
+resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.reshape((-1, 1, 1)) # N x W x B
+loss = np.mean(resid ** 2, axis=0)
+
+def get_loss(w, x, y):
+    w, b = w[0], w[1]
+    resid = x.flatten() * w + b - y
+    return 1.08 * np.mean(resid ** 2)
+
+gloss = grad(get_loss)
+
+ax = plt.gca()
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+
+w, b = (1.25, -1.5)
+
+for i in range(12):
+    ax.scatter(w, b, c=color, s=75, zorder=4)
+    dw, db = -gloss(np.array([w, b]), x, y)
+    db = db + max(0, 0.05 * (5- i))
+    prop = dict(arrowstyle="-|>,head_width=0.4,head_length=0.8",
+    shrinkA=0,shrinkB=0)
+    if i < 11:
+        ax.annotate("", xy=(dw + w,db + b), xytext=(w,b), arrowprops=prop)
+    w, b = w + dw, b + db
+    #ax.arrow(w, b, dw, db, head_width=0.1, zorder=4)
+
+   
+plt.xlabel('$w_1$')
+plt.ylabel('$b$')
+plt.title('$\mathbf{Loss}(\mathbf{w})$')
+CS = ax.contour(W, B, loss, cmap='coolwarm', levels=15 * np.arange(25))
+ax.clabel(CS, inline=True, fontsize=10)
+pass
+```
+
+Remember that the gradient is making a *linear approximation* to the function. A strait line has no minimum, so the gradient has no information about where along the approximation the true minimum will be.
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none BasicFunction
+
+class BasicFunction(PositiveVectorScene):
+    def construct(self):
+        f = lambda x: (0.5 * x - 3) **  2
+        fx = self.ax.plot(f, color=RED)
+        df = lambda x: (0.5 * x - 3)
+        dfx = self.ax.plot(lambda x: df(11) * (x - 8.55) , color=BLACK)
+        eq = MathTex(r'f(\mathbf{x})=2(\frac{x_1}{5})^3 -5 (\frac{x_1}{6})^2 + 4', color=BLACK, tex_template=self.template).to_edge(UP + 2 * UP)
+        #eq.move_to(*self.ax.c2p([8, 7, 0]))
+        labels = self.ax.get_axis_labels(x_label="x_1", y_label="y = f(\mathbf{x})")
+        labels.set_color(GREY)
+        labels.set_tex_template(self.template)
+        p = Dot(color=BLACK).move_to(self.ax.c2p(11, f(11)))
+        self.add(dfx, fx,  p, labels)
+```
 
 Also remember that the gradient gives us the direction of maximum change of the function, but this is only true in the *limit* of a very small step.
 
 $$
-\frac{df}{d\mathbf{x}}= \underset{\gamma \rightarrow 0}{\lim}\ \underset{\|\mathbf{\epsilon}\|_2 < \gamma}{\max} \frac{f(\mathbf{x} + \mathbf{\epsilon}) - f(\mathbf{x})}{\|\mathbf{\epsilon}\|_2}
+\frac{df}{d\mathbf{w}}= \underset{\gamma \rightarrow 0}{\lim}\ \underset{\|\mathbf{\epsilon}\|_2 < \gamma}{\max} \frac{f(\mathbf{w} + \mathbf{\epsilon}) - f(\mathbf{w})}{\|\mathbf{\epsilon}\|_2}
 $$
 
 So in higher dimensions, the gradient may not point directly to the minimum.
@@ -848,10 +1040,114 @@ So in higher dimensions, the gradient may not point directly to the minimum.
 All of these issues motivate the need to control the size of our updates. We will typically do this by introducing an additional control to our algorithm: a **step size** or **learning rate**. This is a small constant $\alpha$, that we will multiply the gradient by in each of our updates.
 
 $$
-\mathbf{x}^{(i+1)} \leftarrow \mathbf{x}^{(i)} - \alpha \nabla f(\mathbf{x}^{(i)})
+\mathbf{w}^{(i+1)} \leftarrow \mathbf{w}^{(i)} - \alpha \nabla f(\mathbf{w}^{(i)})
 $$
 
 Using a small learning rate $(\alpha << 1)$ will make gradient descent slower, but *much* more reliable. Later on in the semester we will explore how to choose $\alpha$ (and even update it during optimization).
+
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+from autograd import grad
+x = (x - x.mean()) / x.std()
+y = (y - y.mean()) / y.std()
+
+model = LinearRegression().fit(x, y)
+
+W = np.arange(-2, 2, 0.1)
+B = np.arange(-2, 2, 0.1)
+W, B = np.meshgrid(W, B)
+
+
+resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.reshape((-1, 1, 1)) # N x W x B
+loss = np.mean(resid ** 2, axis=0)
+
+def get_loss(w, x, y):
+    w, b = w[0], w[1]
+    resid = x.flatten() * w + b - y
+    return 0.05 * np.mean(resid ** 2)
+
+gloss = grad(get_loss)
+
+ax = plt.gca()
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+
+w, b = (1.25, -1.5)
+
+for i in range(12):
+    ax.scatter(w, b, c=color, s=75, zorder=4)
+    dw, db = -gloss(np.array([w, b]), x, y)
+    db = db + max(0, 0.01 * (10 - i))
+    prop = dict(arrowstyle="-|>,head_width=0.4,head_length=0.8",
+    shrinkA=0,shrinkB=0)
+    if i < 11:
+        ax.annotate("", xy=(dw + w,db + b), xytext=(w,b), arrowprops=prop)
+    w, b = w + dw, b + db
+    #ax.arrow(w, b, dw, db, head_width=0.1, zorder=4)
+
+   
+plt.xlabel('$w_1$')
+plt.ylabel('$b$')
+plt.title('$\\mathbf{Small }\\ \\alpha$')
+CS = ax.contour(W, B, loss, cmap='coolwarm', levels=0.5 * np.arange(25))
+ax.clabel(CS, inline=True, fontsize=10)
+pass
+```
+
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+from autograd import grad
+x = (x - x.mean()) / x.std()
+y = (y - y.mean()) / y.std()
+
+model = LinearRegression().fit(x, y)
+
+W = np.arange(-2, 2, 0.1)
+B = np.arange(-2, 2, 0.1)
+W, B = np.meshgrid(W, B)
+
+
+resid = np.expand_dims(W, 0) * x.reshape((-1, 1, 1)) + np.expand_dims(B, 0) - y.reshape((-1, 1, 1)) # N x W x B
+loss = np.mean(resid ** 2, axis=0)
+
+def get_loss(w, x, y):
+    w, b = w[0], w[1]
+    resid = x.flatten() * w + b - y
+    return 0.75 * np.mean(resid ** 2)
+
+gloss = grad(get_loss)
+
+ax = plt.gca()
+
+ax.set_xticks([])
+ax.set_yticks([])
+
+
+w, b = (1.25, -1.5)
+
+for i in range(12):
+    ax.scatter(w, b, c=color, s=75, zorder=4)
+    dw, db = -gloss(np.array([w, b]), x, y)
+    db = db + max(0, 0.01 * (10 - i))
+    prop = dict(arrowstyle="-|>,head_width=0.4,head_length=0.8",
+    shrinkA=0,shrinkB=0)
+    if i < 11:
+        ax.annotate("", xy=(dw + w,db + b), xytext=(w,b), arrowprops=prop)
+    w, b = w + dw, b + db
+    #ax.arrow(w, b, dw, db, head_width=0.1, zorder=4)
+
+   
+plt.xlabel('$w_1$')
+plt.ylabel('$b$')
+plt.title('$\\mathbf{Large }\\ \\alpha$')
+CS = ax.contour(W, B, loss, cmap='coolwarm', levels=0.5 * np.arange(25))
+ax.clabel(CS, inline=True, fontsize=10)
+pass
+```
 
 ## Optimizing linear regression
 
@@ -939,7 +1235,7 @@ $$
 p(y) = \frac{1}{\sigma \sqrt{2 \pi}} \text{exp}\bigg(-\frac{1}{2\sigma^2} (y -\mu)^2\bigg)
 $$
 
-The normal distribution shows up almost everywhere in probability and statistics. Most notably, the *central limit theorem* tells us that the sum of many independent and identically distributed random outcomes tends towards a normal distribution.
+The normal distribution shows up almost everywhere in probability and statistics. Most notably, the *central limit theorem* tells us that the mean of many independent and identically distributed random outcomes tends towards a normal distribution.
 
 ## Linear regression as a probabilistic model
 
@@ -1009,10 +1305,10 @@ $$
 \underset{\mathbf{w}}{\text{argmin}}\  MSE(\mathbf{w}, \mathbf{X}, \mathbf{y}) = \underset{\mathbf{w}}{\text{argmin}}\ \textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y})
 $$
 
-```{}
+```         
 ```
 
 ## 
 
-```{}
+```         
 ```
