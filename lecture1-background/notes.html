@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lecture 0: Introduction to Neural Networks</title>
+<title>Lecture 1: Introduction to Neural Networks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 0: Introduction to Neural Networks</h1>
+<h1 class="title">Lecture 1: Introduction to Neural Networks</h1>
 </div>
 
 
@@ -409,12 +409,6 @@ Other useful aggregation functions
 </div>
 </div>
 <p>Geometrically, <span class="math inline">\(\|\mathbf{x}\|_2\cos\theta\)</span> is the length of the <em>projection</em> of <span class="math inline">\(\mathbf{x}\)</span> onto <span class="math inline">\(\mathbf{y}\)</span>. Thus, we can compute the length of this projection using the dot-product as <span class="math inline">\(\frac{\mathbf{x}\cdot\mathbf{y}}{\|\mathbf{y}\|}\)</span> .</p>
-<p>Dot products can also be useful when thinking about vectors as data. Using our student example from above, we know that a student’s GPA can be computed as the their average grade, <em>weighted</em> by the number of credits each course is worth.:</p>
-<p><span class="math display">\[
-\text{GPA} = \frac{1}{\sum_{\text{courses}}\text{Credits}
-}\sum_{\text{courses}} \text{Grade}\times\text{Credits}
-\]</span></p>
-<p>Given 2 vectors that represent a student’s grades and credits respectively, we can compute their GPA compactly as:</p>
 </section>
 <section id="matrices" class="level2">
 <h2 class="anchored" data-anchor-id="matrices">Matrices</h2>
@@ -1160,7 +1154,7 @@ f(\mathbf{x}+\mathbf{\epsilon}) \approx f(\mathbf{x}) + \frac{df}{d\mathbf{x}} \
 <span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>y_values <span class="op">=</span> np.random.randn(<span class="dv">1</span>,<span class="dv">10</span>)  <span class="co"># Gaussian distribution</span></span>
 <span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>plt.plot(x_values, y_values, <span class="st">'ko'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="notes_files/figure-html/cell-58-output-1.png" width="585" height="411"></p>
+<p><img src="notes_files/figure-html/cell-58-output-1.png" width="591" height="411"></p>
 </div>
 </div>
 <p>The string determines the plot appearance -- in this case, black circles. You can use color strings (‘r’, ‘g’, ‘b’, ‘m’, ‘c’, ‘y’, ...) or use the “Color” keyword to specify an RGB color. Marker appearance (‘o’,‘s’,‘v’,‘.’, ...) controls how the points look.</p>
