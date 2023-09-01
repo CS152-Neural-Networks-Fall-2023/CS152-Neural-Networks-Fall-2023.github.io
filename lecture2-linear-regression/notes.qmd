@@ -8,10 +8,11 @@ format:
 
 ```{python}
 #| echo: false
-from manim import *
-import autograd.numpy as np
 import warnings
 warnings.filterwarnings("ignore")
+from manim import *
+import autograd.numpy as np
+
 
 class LectureScene(Scene):
     def __init__(self, *args, **kwargs):
@@ -772,6 +773,7 @@ loss = np.mean(resid ** 2, axis=0)
 def get_loss(w):
     w, b = w[0], w[1]
     resid = x * w + b - y
+    print(resid)
     return 0.2 * np.mean(resid ** 2)
 
 gloss = grad(get_loss)
