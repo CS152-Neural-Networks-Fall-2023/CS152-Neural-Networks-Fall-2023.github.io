@@ -14,8 +14,8 @@
     "text": "Prof. Gabe Hope (he/him)\nEmail: ghope@g.hmc.edu\nOffice: MacGregor 322\nCourse Slack: https://join.slack.com/t/slack-hox8054/shared_invite/zt-220qv4i92-wFrivrGQBQbtzy0fSElV~w\n\n\n\nYou can call me any combination of Prof./Professor/Dr. and Hope/Gabe. My full name is actually John Gabriel Hope.\nI am originally from New York City\nI have a Bachelor of Science (BS) in computer science and finance from Washington University in St. Louis.\nI have a Master of Science (MS) from Brown University (This was actually the start of my Ph.D.)\nI earned my Ph.D. from the University of California, Irvine advised by Erik Sudderth. I graduated just this June!\nMy research focuses on using neural networks to find interpretable structures in data. I mainly focus on image data, though I have also worked on analyzing motion-capture, audio and climate data among other things!"
   },
   {
-    "objectID": "index.html#gruder",
-    "href": "index.html#gruder",
+    "objectID": "index.html#grutor",
+    "href": "index.html#grutor",
     "title": "Course Syllabus",
     "section": "",
     "text": "Max McKnight (he/they)\nEmail: mmcknigh@pitzer.edu"
@@ -222,6 +222,20 @@
     "title": "Course Syllabus",
     "section": "Libraries/Frameworks/Tools",
     "text": "Libraries/Frameworks/Tools\n\nMlxtend (machine learning extensions)\nStreamlit (Turn data scripts into sharable web apps in minutes)\nDeepnote (The notebook you’ll love to use)"
+  },
+  {
+    "objectID": "misc/hw1-hint.html",
+    "href": "misc/hw1-hint.html",
+    "title": "Hint for homework 1: Q7",
+    "section": "",
+    "text": "For this question we are interested in simplifying an expression into matrix/vector notation. In order to do this it may be first helpful to think about how we went the other direction: matrix vector notation to expanded notation.\nIf we have the expression \\(\\mathbf{A} \\mathbf{x}\\), where \\(\\mathbf{A}\\) is a matrix and \\(\\mathbf{x}\\) is a vector, we know that the result of this multiplication will be a vector. Let’s call this vector \\(\\mathbf{c}\\), so that \\(\\mathbf{A}\\mathbf{x}=\\mathbf{c}\\).\nWe know from the definition of matrix-multiplication that each element of \\(\\mathbf{c}\\) can be written as the following summation:\n\\[\nc_i = \\sum_{j=1}^n A_{ij}x_j\n\\]\nTherefore, if we saw such a summation in an expression, we could temporarily replace it with \\(c_i\\), knowing that we defined \\(\\mathbf{c}\\) as \\(\\mathbf{c}=\\mathbf{A}\\mathbf{x}\\). Try doing this as the first step in the homework.\nAlso recall as well that a dot product between two vectors \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), can be written explicitly from its definition as:\n\\[\n\\mathbf{x}^T\\mathbf{y} = \\sum_{i=1}^n x_iy_i\n\\]\nTherefore if we see something like the summation on the right in an expression, we can replace it with the more compact dot product notation.\nWhen writing you final answer make sure to write the final expression in terms of the original variables \\((\\mathbf{A}, \\mathbf{x}, \\mathbf{b})\\). E.g. if you substituted \\(\\mathbf{c}\\) for \\(\\mathbf{A}\\mathbf{x}\\), make sure to substitute it back in the answer."
+  },
+  {
+    "objectID": "calendar/calendar.html",
+    "href": "calendar/calendar.html",
+    "title": "Course Calendar",
+    "section": "",
+    "text": "Lecture\nDate\nTopics\nTextbook\nMaterials\nHomework\n\n\n\n\n1\n8/28\nCourse introduction, linear algebra and calculus review\nBook 1: 7.1.1-7.2.4, 7.8.1, 7.8.2\nNotes\nSlides\nHomework 1 assigned (Github) Due: 9/5 11:59pm\n\n\n2\n8/30\nLinear regression\nBook 1: 4.2.1, 4.2.2, 11.1-11.2.4\nNotes\nSlides\n\n\n\n\n9/4\nNo class (Labor day)\n\n\n\n\n\n3\n9/6\n\n\n\nHomework 2 assigned (Github) Due: 9/12 11:59pm\n\n\n4\n9/11\n\n\n\n\n\n\n5\n9/13\n\n\n\nHomework 3 assigned (Github) Due: 9/19 11:59pm\n\n\n6\n9/18\n\n\n\n\n\n\n7\n9/20\n\n\n\nHomework 4 assigned (Github) Due: 9/26 11:59pm\n\n\n8\n9/25\n\n\n\n\n\n\n9\n9/27\n\n\n\nHomework 5 assigned (Github) Due: 10/3 11:59pm\n\n\n10\n10/2\n\n\n\n\n\n\n11\n10/4\n\n\n\nHomework 6 assigned (Github) Due: 10/10 11:59pm\n\n\n12\n10/9\n\n\n\n\n\n\n13\n10/11\n\n\n\nHomework 7 assigned (Github) Due: 10/19 11:59pm\n\n\n\n10/16\nNo class (Fall break)\n\n\n\n\n\n14\n10/18\n\n\n\nHomework 8 assigned (Github) Due: 10/24 11:59pm\n\n\n15\n10/23\n\n\n\n\n\n\n16\n10/25\n\n\n\nHomework 9 assigned (Github) Due: 9/5 11:59pm\n\n\n17\n10/30\n\n\n\n\n\n\n18\n11/1\n\n\n\nHomework 10 assigned (Github) Due: 11/7 11:59pm\n\n\n19\n11/6\n\n\n\n\n\n\n\n11/8\n\n\n\n\n\n\n20\n11/13\n\n\n\n\n\n\n21\n11/15\n\n\n\nHomework 11 assigned (Github) Due: 11/20 11:59pm\n\n\n22\n11/20\n\n\n\n\n\n\n\n11/22\nNo class (Thanksgiving break)\n\n\nHomework 12 assigned (Github) Due: 12/5 11:59pm\n\n\n23\n11/27\n\n\n\n\n\n\n24\n11/29\n\n\n\n\n\n\n25\n12/5\n\n\n\n\n\n\n26\n12/6"
   },
   {
     "objectID": "plugins/drawer/Readme.html",
@@ -969,295 +983,295 @@
     "objectID": "lecture1-background/slides.html#numpy",
     "href": "lecture1-background/slides.html#numpy",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Numpy",
-    "text": "Numpy\nNumpy Is the linear algebra library that we will be using for much of this class. The standard way to import Numpy is:\n\nimport numpy as np\n\nThe most basic object from Numpy that we will just is the array (np.array), which will represent vectors matrices and even higher-dimensional objects known as tensors."
+    "section": "",
+    "text": "Numpy Is the linear algebra library that we will be using for much of this class. The standard way to import Numpy is:\n\nimport numpy as np\n\nThe most basic object from Numpy that we will just is the array (np.array), which will represent vectors matrices and even higher-dimensional objects known as tensors."
   },
   {
     "objectID": "lecture1-background/slides.html#scalars",
     "href": "lecture1-background/slides.html#scalars",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Scalars",
-    "text": "Scalars\nScalars are just single numbers. In our math we will typically denote scalars with a lower-case letter. For example, we might call a scalar \\(x\\) and give it a value as \\[x=3.5\\] In code:\n\nx = 3.5\n\n# or as a 0-dimensional numpy array\nx = np.array(3.5)"
+    "section": "",
+    "text": "Scalars are just single numbers. In our math we will typically denote scalars with a lower-case letter. For example, we might call a scalar \\(x\\) and give it a value as \\[x=3.5\\] In code:\n\nx = 3.5\n\n# or as a 0-dimensional numpy array\nx = np.array(3.5)"
   },
   {
     "objectID": "lecture1-background/slides.html#vectors",
     "href": "lecture1-background/slides.html#vectors",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vectors",
-    "text": "Vectors\nVectors are ordered lists of numbers, as shown below. We will typically denote vectors with bold lower case letters, such as \\(\\mathbf{x}\\).\n\\[\n\\mathbf{x} = \\begin{bmatrix} 2\\\\ 5\\\\ 1\\end{bmatrix}\n\\]\nIn Numpy, we can create an array object representing a vector by passing np.array a list of numbers.\n\nx = np.array([2, 5, 1])"
+    "section": "",
+    "text": "Vectors are ordered lists of numbers, as shown below. We will typically denote vectors with bold lower case letters, such as \\(\\mathbf{x}\\).\n\\[\n\\mathbf{x} = \\begin{bmatrix} 2\\\\ 5\\\\ 1\\end{bmatrix}\n\\]\nIn Numpy, we can create an array object representing a vector by passing np.array a list of numbers.\n\nx = np.array([2, 5, 1])"
   },
   {
     "objectID": "lecture1-background/slides.html#entries",
     "href": "lecture1-background/slides.html#entries",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Entries",
-    "text": "Entries\nThe individual numbers in the vector are called the entries and we will refer to them individually as subscripted scalars: \\(x_1, x_2,…,x_n\\).\n\\[\n\\mathbf{x} = \\begin{bmatrix} x_1\\\\ x_2\\\\ x_3\\end{bmatrix}\n\\]\nIn numpy we can access individual elements of a vector using [] operators (note that numpy is 0-indexed!).\n\nx[0]\n\n2"
+    "section": "",
+    "text": "The individual numbers in the vector are called the entries and we will refer to them individually as subscripted scalars: \\(x_1, x_2,…,x_n\\).\n\\[\n\\mathbf{x} = \\begin{bmatrix} x_1\\\\ x_2\\\\ x_3\\end{bmatrix}\n\\]\nIn numpy we can access individual elements of a vector using [] operators (note that numpy is 0-indexed!).\n\nx[0]\n\n2"
   },
   {
     "objectID": "lecture1-background/slides.html#vector-interpretation",
     "href": "lecture1-background/slides.html#vector-interpretation",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector interpretation",
-    "text": "Vector interpretation\nA vector represents either a location or a change in location in \\(n\\) -dimensional space.\n\n\n/Users/gabe/Documents/Courses/CS152-Neural-Networks-Fall-2023.github.io/.venv/lib/python3.9/site-packages/urllib3/__init__.py:34: NotOpenSSLWarning: urllib3 v2.0 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020\n  warnings.warn(\n\n\nManim Community v0.17.3"
+    "section": "",
+    "text": "A vector represents either a location or a change in location in \\(n\\) -dimensional space.\n\n\n/Users/gabe/Documents/Courses/CS152-Neural-Networks-Fall-2023.github.io/.venv/lib/python3.9/site-packages/urllib3/__init__.py:34: NotOpenSSLWarning: urllib3 v2.0 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020\n  warnings.warn(\n\n\nManim Community v0.17.3"
   },
   {
     "objectID": "lecture1-background/slides.html#vectors-as-data",
     "href": "lecture1-background/slides.html#vectors-as-data",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vectors as data",
-    "text": "Vectors as data\nA space of vectors could represent students, with each entry corresponding to a student’s grade in a different subject:\n\\[\n\\text{Student } \\mathbf{x} = \\begin{bmatrix} \\text{Math} \\\\ \\text{CS} \\\\ \\text{Literature} \\\\\\text{History} \\end{bmatrix}\n\\]\nAny two students might have different grades across the subjects. We can represent these two students (say \\(\\mathbf{x}_1\\) and \\(\\mathbf{x}_2\\)) as two vectors.\n\\[\n\\mathbf{x}_1 = \\begin{bmatrix} 3.0 \\\\ 4.0 \\\\ 3.7 \\\\ 2.3 \\end{bmatrix}, \\quad \\mathbf{x}_2 = \\begin{bmatrix} 3.7 \\\\ 3.3 \\\\ 3.3 \\\\ 4.0 \\end{bmatrix}\n\\]"
+    "section": "",
+    "text": "A space of vectors could represent students, with each entry corresponding to a student’s grade in a different subject:\n\\[\n\\text{Student } \\mathbf{x} = \\begin{bmatrix} \\text{Math} \\\\ \\text{CS} \\\\ \\text{Literature} \\\\\\text{History} \\end{bmatrix}\n\\]\nAny two students might have different grades across the subjects. We can represent these two students (say \\(\\mathbf{x}_1\\) and \\(\\mathbf{x}_2\\)) as two vectors.\n\\[\n\\mathbf{x}_1 = \\begin{bmatrix} 3.0 \\\\ 4.0 \\\\ 3.7 \\\\ 2.3 \\end{bmatrix}, \\quad \\mathbf{x}_2 = \\begin{bmatrix} 3.7 \\\\ 3.3 \\\\ 3.3 \\\\ 4.0 \\end{bmatrix}\n\\]"
   },
   {
     "objectID": "lecture1-background/slides.html#vector-equality",
     "href": "lecture1-background/slides.html#vector-equality",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector equality",
-    "text": "Vector equality\nWe say that two vectors are equal if and only if all of the corresponding elements are equal, so \\[\\mathbf{x} = \\mathbf{y}\\] implies that \\[x_1=y_1, x_2=y_2…\\]"
+    "section": "",
+    "text": "We say that two vectors are equal if and only if all of the corresponding elements are equal, so \\[\\mathbf{x} = \\mathbf{y}\\] implies that \\[x_1=y_1, x_2=y_2…\\]"
   },
   {
     "objectID": "lecture1-background/slides.html#vector-equality-in-numpy",
     "href": "lecture1-background/slides.html#vector-equality-in-numpy",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector equality in Numpy",
-    "text": "Vector equality in Numpy\n\nx = np.array([2, 5, 1])\ny = np.array([3, 5, 2])\nx == y\n\narray([False,  True, False])\n\n\nWe can check if all entries are equal (and therefore the vectors are equal) using the np.all function.\n\nnp.all(x == y), np.all(x == x)\n\n(False, True)\n\n\nOther comparison operators (&gt;,&lt;, &gt;=, &lt;=, !=) also perform element-wise comparison in numpy."
+    "section": "",
+    "text": "x = np.array([2, 5, 1])\ny = np.array([3, 5, 2])\nx == y\n\narray([False,  True, False])\n\n\nWe can check if all entries are equal (and therefore the vectors are equal) using the np.all function.\n\nnp.all(x == y), np.all(x == x)\n\n(False, True)\n\n\nOther comparison operators (&gt;,&lt;, &gt;=, &lt;=, !=) also perform element-wise comparison in numpy."
   },
   {
     "objectID": "lecture1-background/slides.html#vector-addition",
     "href": "lecture1-background/slides.html#vector-addition",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector addition",
-    "text": "Vector addition\nWhen we add or subtract vectors, we add or subtract the corresponding elements.\n\\[\\mathbf{x} + \\mathbf{y} = \\begin{bmatrix} x_1\\\\ x_2\\\\ x_3\\end{bmatrix} + \\begin{bmatrix} y_1\\\\ y_2\\\\ y_3\\end{bmatrix} = \\begin{bmatrix} x_1 + y_1\\\\ x_2 + y_2\\\\ x_3 + y_3\\end{bmatrix}\\] This works the same in numpy\n\nx + y\n\narray([ 5, 10,  3])"
+    "section": "",
+    "text": "When we add or subtract vectors, we add or subtract the corresponding elements.\n\\[\\mathbf{x} + \\mathbf{y} = \\begin{bmatrix} x_1\\\\ x_2\\\\ x_3\\end{bmatrix} + \\begin{bmatrix} y_1\\\\ y_2\\\\ y_3\\end{bmatrix} = \\begin{bmatrix} x_1 + y_1\\\\ x_2 + y_2\\\\ x_3 + y_3\\end{bmatrix}\\] This works the same in numpy\n\nx + y\n\narray([ 5, 10,  3])"
   },
   {
     "objectID": "lecture1-background/slides.html#vector-addition-1",
     "href": "lecture1-background/slides.html#vector-addition-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector addition",
-    "text": "Vector addition\nAddition corresponds to shifting the point \\(\\mathbf{x}\\) by the vector \\(\\mathbf{y}\\)."
+    "section": "",
+    "text": "Addition corresponds to shifting the point \\(\\mathbf{x}\\) by the vector \\(\\mathbf{y}\\)."
   },
   {
     "objectID": "lecture1-background/slides.html#element-wise-operations",
     "href": "lecture1-background/slides.html#element-wise-operations",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Element-wise operations",
-    "text": "Element-wise operations\nIn both mathematical notation and numpy, most operations on vectors will be assumed to be taken element-wise. That is,\n\\[\n\\mathbf{x}^2 = \\begin{bmatrix} x_1^2 \\\\ x_2^2 \\\\ x_3^2 \\end{bmatrix} , \\quad \\log(\\mathbf{x}) = \\begin{bmatrix} \\log x_1 \\\\ \\log x_2 \\\\ \\log x_3 \\end{bmatrix},\\ \\text{etc.}\n\\]\nIn numpy:\n\nx ** 2, np.log(x)\n\n(array([ 4, 25,  1]), array([0.69314718, 1.60943791, 0.        ]))"
+    "section": "",
+    "text": "In both mathematical notation and numpy, most operations on vectors will be assumed to be taken element-wise. That is,\n\\[\n\\mathbf{x}^2 = \\begin{bmatrix} x_1^2 \\\\ x_2^2 \\\\ x_3^2 \\end{bmatrix} , \\quad \\log(\\mathbf{x}) = \\begin{bmatrix} \\log x_1 \\\\ \\log x_2 \\\\ \\log x_3 \\end{bmatrix},\\ \\text{etc.}\n\\]\nIn numpy:\n\nx ** 2, np.log(x)\n\n(array([ 4, 25,  1]), array([0.69314718, 1.60943791, 0.        ]))"
   },
   {
     "objectID": "lecture1-background/slides.html#note-on-logarithms",
     "href": "lecture1-background/slides.html#note-on-logarithms",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Note on logarithms",
-    "text": "Note on logarithms\nNote that in this class (and in numpy!) logarithms are assumed to be base \\(e\\), otherwise known as natural logarithms."
+    "section": "",
+    "text": "Note that in this class (and in numpy!) logarithms are assumed to be base \\(e\\), otherwise known as natural logarithms."
   },
   {
     "objectID": "lecture1-background/slides.html#scalar-vector-operations",
     "href": "lecture1-background/slides.html#scalar-vector-operations",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Scalar-vector operations",
-    "text": "Scalar-vector operations\nOperations between scalars and vectors are also assumed to be element-wise as in this scalar-vector multiplication\n\\[\na\\mathbf{x} = \\begin{bmatrix} a x_1 \\\\ a x_2 \\\\ a x_3 \\end{bmatrix}, \\quad a + \\mathbf{x} = \\begin{bmatrix} a + x_1 \\\\ a + x_2 \\\\ a + x_3 \\end{bmatrix}\n\\]"
+    "section": "",
+    "text": "Operations between scalars and vectors are also assumed to be element-wise as in this scalar-vector multiplication\n\\[\na\\mathbf{x} = \\begin{bmatrix} a x_1 \\\\ a x_2 \\\\ a x_3 \\end{bmatrix}, \\quad a + \\mathbf{x} = \\begin{bmatrix} a + x_1 \\\\ a + x_2 \\\\ a + x_3 \\end{bmatrix}\n\\]"
   },
   {
     "objectID": "lecture1-background/slides.html#vector-magnitude",
     "href": "lecture1-background/slides.html#vector-magnitude",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector magnitude",
-    "text": "Vector magnitude\nThe magnitude of a vector its length in \\(\\mathbb{R}^n\\), or equivalently the Euclidean distance from the origin to the point the vector represents. It is denoted as\\(\\|\\mathbf{x}\\|_2\\) and defined as:\n\\[\n\\|\\mathbf{x}\\|_2 = \\sqrt{\\sum_{i=1}^n x_i^2}\n\\]\nThe subscript \\(2\\) specifies that we are talking about Euclidean distance. Because of this we will also refer to the magnitude as the two-norm.\nIn numpy we can compute this using the np.linalg.norm function.\n\nxnorm = np.linalg.norm(x)"
+    "section": "",
+    "text": "The magnitude of a vector its length in \\(\\mathbb{R}^n\\), or equivalently the Euclidean distance from the origin to the point the vector represents. It is denoted as\\(\\|\\mathbf{x}\\|_2\\) and defined as:\n\\[\n\\|\\mathbf{x}\\|_2 = \\sqrt{\\sum_{i=1}^n x_i^2}\n\\]\nThe subscript \\(2\\) specifies that we are talking about Euclidean distance. Because of this we will also refer to the magnitude as the two-norm.\nIn numpy we can compute this using the np.linalg.norm function.\n\nxnorm = np.linalg.norm(x)"
   },
   {
     "objectID": "lecture1-background/slides.html#vector-magnitude-1",
     "href": "lecture1-background/slides.html#vector-magnitude-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Vector magnitude",
-    "text": "Vector magnitude\nWe can also compute magnitude explicitly with the np.sum function, which computes the sum of the elements of a vector.\n\nxnorm_explicit = np.sqrt(np.sum(x ** 2))\nxnorm, xnorm_explicit\n\n(5.477225575051661, 5.477225575051661)\n\n\n\n\n\n\n\n\nOther useful aggregation functions\n\n\n\nprint(np.mean(x))    # Take the mean of the elements in x\nprint(np.std(x))     # Take the standard deviation of the elements in x\nprint(np.min(x))     # Find the minimum element in x\nprint(np.max(x))     # Find the maximum element in x\n\n2.6666666666666665\n1.699673171197595\n1\n5"
+    "section": "",
+    "text": "We can also compute magnitude explicitly with the np.sum function, which computes the sum of the elements of a vector.\n\nxnorm_explicit = np.sqrt(np.sum(x ** 2))\nxnorm, xnorm_explicit\n\n(5.477225575051661, 5.477225575051661)\n\n\n\n\n\n\n\n\nOther useful aggregation functions\n\n\n\n\n\n\nprint(np.mean(x))    # Take the mean of the elements in x\nprint(np.std(x))     # Take the standard deviation of the elements in x\nprint(np.min(x))     # Find the minimum element in x\nprint(np.max(x))     # Find the maximum element in x\n\n2.6666666666666665\n1.699673171197595\n1\n5"
   },
   {
     "objectID": "lecture1-background/slides.html#unit-vectors",
     "href": "lecture1-background/slides.html#unit-vectors",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Unit vectors",
-    "text": "Unit vectors\nA unit vector is a vector with length \\(1\\). We can find a unit vector that has the same direction as \\(\\mathbf{x}\\) by dividing \\(\\mathbf{x}\\) by it’s magnitude:\n\\[\n\\frac{\\mathbf{x}}{\\|\\mathbf{x}\\|_2}\n\\]\n\nx / np.linalg.norm(x)\n\narray([0.36514837, 0.91287093, 0.18257419])"
+    "section": "",
+    "text": "A unit vector is a vector with length \\(1\\). We can find a unit vector that has the same direction as \\(\\mathbf{x}\\) by dividing \\(\\mathbf{x}\\) by it’s magnitude:\n\\[\n\\frac{\\mathbf{x}}{\\|\\mathbf{x}\\|_2}\n\\]\n\nx / np.linalg.norm(x)\n\narray([0.36514837, 0.91287093, 0.18257419])"
   },
   {
     "objectID": "lecture1-background/slides.html#dot-products",
     "href": "lecture1-background/slides.html#dot-products",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Dot products",
-    "text": "Dot products\nThe dot-product operation between two vectors is defined as\n\\[\n\\mathbf{x} \\cdot \\mathbf{y} = \\sum_{i=1}^n x_i y_i\n\\]\nThe result is a scalar whose value is equal to \\(\\|\\mathbf{x}\\|_2\\|\\mathbf{y}\\|_2 \\cos\\theta\\), where \\(\\theta\\) is the angle between them.\nWe can compute dot products in numpy using the np.dot function\n\nnp.dot(x, y)\n\n33"
+    "section": "",
+    "text": "The dot-product operation between two vectors is defined as\n\\[\n\\mathbf{x} \\cdot \\mathbf{y} = \\sum_{i=1}^n x_i y_i\n\\]\nThe result is a scalar whose value is equal to \\(\\|\\mathbf{x}\\|_2\\|\\mathbf{y}\\|_2 \\cos\\theta\\), where \\(\\theta\\) is the angle between them.\nWe can compute dot products in numpy using the np.dot function\n\nnp.dot(x, y)\n\n33"
   },
   {
     "objectID": "lecture1-background/slides.html#dot-products-1",
     "href": "lecture1-background/slides.html#dot-products-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Dot products",
-    "text": "Dot products\nIf \\(\\theta=\\frac{\\pi}{2}\\), the vectors are orthogonal and the dot product with be \\(0\\). If \\(\\theta&gt;\\frac{\\pi}{2}\\) or \\(\\theta &lt; -\\frac{\\pi}{2}\\) , the dot product will be negative.\nIf \\(\\theta=0\\) then \\(\\cos(\\theta)=1\\). In this case we say the vectors are colinear. This formulation implies that given two vectors of fixed length, the dot product is maximized with they are colinear ( \\(\\theta=0\\) )."
+    "section": "",
+    "text": "If \\(\\theta=\\frac{\\pi}{2}\\), the vectors are orthogonal and the dot product with be \\(0\\). If \\(\\theta&gt;\\frac{\\pi}{2}\\) or \\(\\theta &lt; -\\frac{\\pi}{2}\\) , the dot product will be negative.\nIf \\(\\theta=0\\) then \\(\\cos(\\theta)=1\\). In this case we say the vectors are colinear. This formulation implies that given two vectors of fixed length, the dot product is maximized with they are colinear ( \\(\\theta=0\\) )."
   },
   {
     "objectID": "lecture1-background/slides.html#dot-products-2",
     "href": "lecture1-background/slides.html#dot-products-2",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Dot products",
-    "text": "Dot products\nGeometrically, \\(\\|\\mathbf{x}\\|_2\\cos\\theta\\) is the length of the projection of \\(\\mathbf{x}\\) onto \\(\\mathbf{y}\\). Thus, we can compute the length of this projection using the dot-product as \\(\\frac{\\mathbf{x}\\cdot\\mathbf{y}}{\\|\\mathbf{y}\\|}\\) ."
+    "section": "",
+    "text": "Geometrically, \\(\\|\\mathbf{x}\\|_2\\cos\\theta\\) is the length of the projection of \\(\\mathbf{x}\\) onto \\(\\mathbf{y}\\). Thus, we can compute the length of this projection using the dot-product as \\(\\frac{\\mathbf{x}\\cdot\\mathbf{y}}{\\|\\mathbf{y}\\|}\\) ."
   },
   {
     "objectID": "lecture1-background/slides.html#matrices",
     "href": "lecture1-background/slides.html#matrices",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrices",
-    "text": "Matrices\nA matrix is a 2-dimensional collection of numbers. We will denote matrices using bold capital letters, e.g. \\(\\mathbf{A}\\).\n\\[\n\\mathbf{A} = \\begin{bmatrix} 3 & 5 & 4 \\\\ 1 & 1 & 2  \\end{bmatrix}\n\\]\nIn numpy we can create a matrix by passing np.array as list-of-lists, where each inner list specifies a row of the matrix.\n\nA = np.array([[3, 5, 4], [1, 1, 2]])\nA\n\narray([[3, 5, 4],\n       [1, 1, 2]])"
+    "section": "",
+    "text": "A matrix is a 2-dimensional collection of numbers. We will denote matrices using bold capital letters, e.g. \\(\\mathbf{A}\\).\n\\[\n\\mathbf{A} = \\begin{bmatrix} 3 & 5 & 4 \\\\ 1 & 1 & 2  \\end{bmatrix}\n\\]\nIn numpy we can create a matrix by passing np.array as list-of-lists, where each inner list specifies a row of the matrix.\n\nA = np.array([[3, 5, 4], [1, 1, 2]])\nA\n\narray([[3, 5, 4],\n       [1, 1, 2]])"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-elements",
     "href": "lecture1-background/slides.html#matrix-elements",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix elements",
-    "text": "Matrix elements\nAs with vectors we will denote individual elements of a matrix using subscripts. In this case, each element has 2 coordinates. Conventions is to always list the row first.\n\\[\n\\mathbf{A} = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\end{bmatrix}\n\\]\nIn numpy we can access elements in a matrix similarly.\n\nA[1, 2]\n\n2\n\n\nAs with vectors, we say that two matrices are equal if and only if all of the corresponding elements are equal."
+    "section": "",
+    "text": "As with vectors we will denote individual elements of a matrix using subscripts. In this case, each element has 2 coordinates. Conventions is to always list the row first.\n\\[\n\\mathbf{A} = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\end{bmatrix}\n\\]\nIn numpy we can access elements in a matrix similarly.\n\nA[1, 2]\n\n2\n\n\nAs with vectors, we say that two matrices are equal if and only if all of the corresponding elements are equal."
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-creation-in-numpy",
     "href": "lecture1-background/slides.html#matrix-creation-in-numpy",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix creation in Numpy",
-    "text": "Matrix creation in Numpy\nBasic creation functions\n\nA0 = np.zeros((3, 4))          # create a 3x4 matrix of all zeros\nA1 = np.ones((4, 4))           # create a 4x4 matrix of all ones\nAinf = np.full((3, 3), np.inf) # create a 3x3 matrix of all infinities\nI = np.eye(3)                  # create a 3x3 itentity matrix\n\nCreating a matrix by “reshaping” a vector with the same number of elements\n\nV = np.arange(1, 13).reshape((3, 4)) # Create a 3x4 matrix with elements 1-12\n\nCreating matrices by combining matrices\n\nB = np.tile(A0, (3, 2))               # create a matrix by \"tiling\" copies of A0 (3 copies by 2 copies)\nB = np.concatenate([A0, A1], axis=0)  # create a (2n x m) matrix by stacking two matrices vertically\nB = np.concatenate([A0, I], axis=1)  # create a (n x 2m) matrix by stacking two matrices horizontally"
+    "section": "",
+    "text": "Basic creation functions\n\nA0 = np.zeros((3, 4))          # create a 3x4 matrix of all zeros\nA1 = np.ones((4, 4))           # create a 4x4 matrix of all ones\nAinf = np.full((3, 3), np.inf) # create a 3x3 matrix of all infinities\nI = np.eye(3)                  # create a 3x3 itentity matrix\n\nCreating a matrix by “reshaping” a vector with the same number of elements\n\nV = np.arange(1, 13).reshape((3, 4)) # Create a 3x4 matrix with elements 1-12\n\nCreating matrices by combining matrices\n\nB = np.tile(A0, (3, 2))               # create a matrix by \"tiling\" copies of A0 (3 copies by 2 copies)\nB = np.concatenate([A0, A1], axis=0)  # create a (2n x m) matrix by stacking two matrices vertically\nB = np.concatenate([A0, I], axis=1)  # create a (n x 2m) matrix by stacking two matrices horizontally"
   },
   {
     "objectID": "lecture1-background/slides.html#slicing-matrices",
     "href": "lecture1-background/slides.html#slicing-matrices",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Slicing matrices",
-    "text": "Slicing matrices\nOften we will refer to an entire row of a matrix (which is itself a vector) using matrix notation with a single index\n\\[\n\\mathbf{A}_i = \\begin{bmatrix} A_{i1} \\\\ A_{i2} \\\\ \\vdots \\end{bmatrix}\n\\]\nIn numpy we can access a single row similarly.\n\nA[1]\n\narray([1, 1, 2])"
+    "section": "",
+    "text": "Often we will refer to an entire row of a matrix (which is itself a vector) using matrix notation with a single index\n\\[\n\\mathbf{A}_i = \\begin{bmatrix} A_{i1} \\\\ A_{i2} \\\\ \\vdots \\end{bmatrix}\n\\]\nIn numpy we can access a single row similarly.\n\nA[1]\n\narray([1, 1, 2])"
   },
   {
     "objectID": "lecture1-background/slides.html#slicing-matrices-1",
     "href": "lecture1-background/slides.html#slicing-matrices-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Slicing matrices",
-    "text": "Slicing matrices\nWe can refer to an entire column by replacing the row index with a \\(*\\), indicating we are referring to all rows in that column.\n\\[\n\\mathbf{A}_{*i} = \\begin{bmatrix} A_{1i} \\\\ A_{2i} \\\\ \\vdots \\end{bmatrix}\n\\]\nIn numpy we can access an entire column (or row) using the slice operator :, which takes all elements along an axis.\n\nA[:, 1] # Take all elements in column 1\n\narray([5, 1])"
+    "section": "",
+    "text": "We can refer to an entire column by replacing the row index with a \\(*\\), indicating we are referring to all rows in that column.\n\\[\n\\mathbf{A}_{*i} = \\begin{bmatrix} A_{1i} \\\\ A_{2i} \\\\ \\vdots \\end{bmatrix}\n\\]\nIn numpy we can access an entire column (or row) using the slice operator :, which takes all elements along an axis.\n\nA[:, 1] # Take all elements in column 1\n\narray([5, 1])"
   },
   {
     "objectID": "lecture1-background/slides.html#slicing-matrices-2",
     "href": "lecture1-background/slides.html#slicing-matrices-2",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Slicing matrices",
-    "text": "Slicing matrices\nWe can also use the slice operator to take a subset of elements along an axis.\n\nA[:, 1:3] #Take the second and third columns of A\n\narray([[5, 4],\n       [1, 2]])"
+    "section": "",
+    "text": "We can also use the slice operator to take a subset of elements along an axis.\n\nA[:, 1:3] #Take the second and third columns of A\n\narray([[5, 4],\n       [1, 2]])"
   },
   {
     "objectID": "lecture1-background/slides.html#advanced-slicing-in-numpy",
     "href": "lecture1-background/slides.html#advanced-slicing-in-numpy",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Advanced slicing in numpy",
-    "text": "Advanced slicing in numpy\nOpen-ended slices\n\nprint(\"A[:2]=\", A[:2]) # Take rows up to 2 (not inucluding 2)\nprint(\"A[1:]=\", A[1:]) # Take rows starting at (and including) 1\n\nA[:2]= [[1 2 3 4]\n [5 6 7 8]]\nA[1:]= [[ 5  6  7  8]\n [ 9 10 11 12]]\n\n\nTaking rows and colmns\n\nprint(\"A[0, :]=\", A[0, :])   # first row, all columns\nprint(\"A[:, 1]=\", A[:, 1])   # all rows, second column\nprint(\"A[-1, :]\", A[-1, :])  # all columns of the last row\nprint(\"A[:, -2]\", A[:, -2])  # second to last column of every row\n\nA[0, :]= [1 2 3 4]\nA[:, 1]= [ 2  6 10]\nA[-1, :] [ 9 10 11 12]\nA[:, -2] [ 3  7 11]"
+    "section": "",
+    "text": "Open-ended slices\n\nprint(\"A[:2]=\", A[:2]) # Take rows up to 2 (not inucluding 2)\nprint(\"A[1:]=\", A[1:]) # Take rows starting at (and including) 1\n\nA[:2]= [[1 2 3 4]\n [5 6 7 8]]\nA[1:]= [[ 5  6  7  8]\n [ 9 10 11 12]]\n\n\nTaking rows and colmns\n\nprint(\"A[0, :]=\", A[0, :])   # first row, all columns\nprint(\"A[:, 1]=\", A[:, 1])   # all rows, second column\nprint(\"A[-1, :]\", A[-1, :])  # all columns of the last row\nprint(\"A[:, -2]\", A[:, -2])  # second to last column of every row\n\nA[0, :]= [1 2 3 4]\nA[:, 1]= [ 2  6 10]\nA[-1, :] [ 9 10 11 12]\nA[:, -2] [ 3  7 11]"
   },
   {
     "objectID": "lecture1-background/slides.html#advanced-slicing-in-numpy-1",
     "href": "lecture1-background/slides.html#advanced-slicing-in-numpy-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Advanced slicing in numpy",
-    "text": "Advanced slicing in numpy\nMore general slicing with steps\n\nprint(\"A[1,0:2]=\", A[1,0:2])\nprint(\"A[0,0:4:2]=\", A[0,0:4:2])\nprint(\"A[:,0:4:2]=\\n\", A[:,0:4:2])\n\nA[1,0:2]= [5 6]\nA[0,0:4:2]= [1 3]\nA[:,0:4:2]=\n [[ 1  3]\n [ 5  7]\n [ 9 11]]\n\n\nTaking one row and selected columns\n\nprint(\"A[2, [1,4]]=\",A[2, [0,3]])\n\nA[2, [1,4]]= [ 9 12]\n\n\nTaking all rows and selected columns\n\nprint(\"A[:, [1,4]]=\\n\",A[:, [0,3]])\n\nA[:, [1,4]]=\n [[ 1  4]\n [ 5  8]\n [ 9 12]]"
+    "section": "",
+    "text": "More general slicing with steps\n\nprint(\"A[1,0:2]=\", A[1,0:2])\nprint(\"A[0,0:4:2]=\", A[0,0:4:2])\nprint(\"A[:,0:4:2]=\\n\", A[:,0:4:2])\n\nA[1,0:2]= [5 6]\nA[0,0:4:2]= [1 3]\nA[:,0:4:2]=\n [[ 1  3]\n [ 5  7]\n [ 9 11]]\n\n\nTaking one row and selected columns\n\nprint(\"A[2, [1,4]]=\",A[2, [0,3]])\n\nA[2, [1,4]]= [ 9 12]\n\n\nTaking all rows and selected columns\n\nprint(\"A[:, [1,4]]=\\n\",A[:, [0,3]])\n\nA[:, [1,4]]=\n [[ 1  4]\n [ 5  8]\n [ 9 12]]"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-shapes",
     "href": "lecture1-background/slides.html#matrix-shapes",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix shapes",
-    "text": "Matrix shapes\nThe matrix \\(\\mathbf{A}\\) above has 2 rows and 3 columns, thus we would specify it’s shape as \\(2\\times3\\). A square matrix has the same number of rows and columns.\n\\[\n\\mathbf{A} = \\begin{bmatrix} 3 & 5 & 4 \\\\ 1 & 1 & 2 \\\\ 4 & 1 & 3 \\end{bmatrix}\n\\]\nWe can access the shape of a matrix in numpy using its shape property.\n\nA = np.array([[3, 5, 4], [1, 1, 2], [4, 1, 3]])\nprint(A.shape)\n\n(3, 3)"
+    "section": "",
+    "text": "The matrix \\(\\mathbf{A}\\) above has 2 rows and 3 columns, thus we would specify it’s shape as \\(2\\times3\\). A square matrix has the same number of rows and columns.\n\\[\n\\mathbf{A} = \\begin{bmatrix} 3 & 5 & 4 \\\\ 1 & 1 & 2 \\\\ 4 & 1 & 3 \\end{bmatrix}\n\\]\nWe can access the shape of a matrix in numpy using its shape property.\n\nA = np.array([[3, 5, 4], [1, 1, 2], [4, 1, 3]])\nprint(A.shape)\n\n(3, 3)"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-transpose",
     "href": "lecture1-background/slides.html#matrix-transpose",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix transpose",
-    "text": "Matrix transpose\nThe transpose of a matrix is an operation that swaps the rows and columns of the matrix. We denote the transpose of a matrix \\(\\mathbf{A}\\) as \\(\\mathbf{A}^T\\).\n\\[\n\\mathbf{A} = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\end{bmatrix}, \\quad \\mathbf{A}^T = \\begin{bmatrix} A_{11} & A_{21} \\\\  A_{12} & A_{22} \\\\  A_{13} & A_{23} \\end{bmatrix}\n\\]\nIn numpy we can transpose a matrix by using the T property.\n\nA = np.array([[1, 1, 1], [2, 2, 2]])\nA.T\n\narray([[1, 2],\n       [1, 2],\n       [1, 2]])"
+    "section": "",
+    "text": "The transpose of a matrix is an operation that swaps the rows and columns of the matrix. We denote the transpose of a matrix \\(\\mathbf{A}\\) as \\(\\mathbf{A}^T\\).\n\\[\n\\mathbf{A} = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\end{bmatrix}, \\quad \\mathbf{A}^T = \\begin{bmatrix} A_{11} & A_{21} \\\\  A_{12} & A_{22} \\\\  A_{13} & A_{23} \\end{bmatrix}\n\\]\nIn numpy we can transpose a matrix by using the T property.\n\nA = np.array([[1, 1, 1], [2, 2, 2]])\nA.T\n\narray([[1, 2],\n       [1, 2],\n       [1, 2]])"
   },
   {
     "objectID": "lecture1-background/slides.html#element-wise-matrix-operations",
     "href": "lecture1-background/slides.html#element-wise-matrix-operations",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Element-wise matrix operations",
-    "text": "Element-wise matrix operations\nAs with vectors, many operations on matrices are performed element-wise:\n\\[\n\\mathbf{A} + \\mathbf{B} = \\begin{bmatrix} A_{11} + B_{11}  & A_{12} + B_{12} & A_{13} + B_{13} \\\\ A_{21} + B_{21} & A_{22} + B_{22} & A_{23} + B_{23} \\end{bmatrix}, \\quad \\log\\mathbf{A} = \\begin{bmatrix} \\log A_{11}  & \\log A_{12} & \\log A_{13} \\\\ \\log A_{21} & \\log A_{22} & \\log A_{23} \\end{bmatrix}\n\\]\nScalar-matrix operation are also element-wise:\n\\[\nc\\mathbf{A} = \\begin{bmatrix} cA_{11}  & cA_{12} & cA_{13} \\\\ cA_{21} & cA_{22} & cA_{23} \\end{bmatrix}\n\\]\nIn numpy:\n\nB = 5 * A \nA + B\n\narray([[ 6,  6,  6],\n       [12, 12, 12]])"
+    "section": "",
+    "text": "As with vectors, many operations on matrices are performed element-wise:\n\\[\n\\mathbf{A} + \\mathbf{B} = \\begin{bmatrix} A_{11} + B_{11}  & A_{12} + B_{12} & A_{13} + B_{13} \\\\ A_{21} + B_{21} & A_{22} + B_{22} & A_{23} + B_{23} \\end{bmatrix}, \\quad \\log\\mathbf{A} = \\begin{bmatrix} \\log A_{11}  & \\log A_{12} & \\log A_{13} \\\\ \\log A_{21} & \\log A_{22} & \\log A_{23} \\end{bmatrix}\n\\]\nScalar-matrix operation are also element-wise:\n\\[\nc\\mathbf{A} = \\begin{bmatrix} cA_{11}  & cA_{12} & cA_{13} \\\\ cA_{21} & cA_{22} & cA_{23} \\end{bmatrix}\n\\]\nIn numpy:\n\nB = 5 * A \nA + B\n\narray([[ 6,  6,  6],\n       [12, 12, 12]])"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-vector-products",
     "href": "lecture1-background/slides.html#matrix-vector-products",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix-vector products",
-    "text": "Matrix-vector products\nA matrix-vector product is an operation between a matrix and a vector that produces a new vector. Given a matrix \\(\\mathbf{A}\\) and a vector \\(\\mathbf{x}\\), we write the matrix-vector product as:\n\\[\n\\mathbf{A}\\mathbf{x} = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\\\ A_{23} & A_{32} & A_{33} \\end{bmatrix} \\begin{bmatrix} x_1\\\\ x_2\\\\ x_3\\end{bmatrix} = \\begin{bmatrix} \\sum_{i=1}^n x_i A_{1i} \\\\  \\sum_{i=1}^n x_i A_{2i} \\\\  \\sum_{i=1}^n x_i A_{3i} \\end{bmatrix} = \\begin{bmatrix} \\mathbf{x}\\cdot  \\mathbf{A}_{1} \\\\ \\mathbf{x}\\cdot  \\mathbf{A}_{2} \\\\ \\mathbf{x} \\cdot \\mathbf{A}_{2} \\end{bmatrix}\n\\]\nIn other words, each entry of the resulting vector is the dot product between \\(\\mathbf{x}\\) and a row of \\(A\\). In numpy we also use np.dot for matrix-vector products:\n\nA = np.array([[3, 5, 4], [1, 1, 2], [4, 1, 3]])\nx = np.array([2, 5, 1])\n\nnp.dot(A, x)\n\narray([35,  9, 16])\n\n\nGeometrically the matrix \\(A\\) defines a transformation that scales and rotates any vector \\(\\mathbf{x}\\) about the origin."
+    "section": "",
+    "text": "A matrix-vector product is an operation between a matrix and a vector that produces a new vector. Given a matrix \\(\\mathbf{A}\\) and a vector \\(\\mathbf{x}\\), we write the matrix-vector product as:\n\\[\n\\mathbf{A}\\mathbf{x} = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\\\ A_{23} & A_{32} & A_{33} \\end{bmatrix} \\begin{bmatrix} x_1\\\\ x_2\\\\ x_3\\end{bmatrix} = \\begin{bmatrix} \\sum_{i=1}^n x_i A_{1i} \\\\  \\sum_{i=1}^n x_i A_{2i} \\\\  \\sum_{i=1}^n x_i A_{3i} \\end{bmatrix} = \\begin{bmatrix} \\mathbf{x}\\cdot  \\mathbf{A}_{1} \\\\ \\mathbf{x}\\cdot  \\mathbf{A}_{2} \\\\ \\mathbf{x} \\cdot \\mathbf{A}_{2} \\end{bmatrix}\n\\]\nIn other words, each entry of the resulting vector is the dot product between \\(\\mathbf{x}\\) and a row of \\(A\\). In numpy we also use np.dot for matrix-vector products:\n\nA = np.array([[3, 5, 4], [1, 1, 2], [4, 1, 3]])\nx = np.array([2, 5, 1])\n\nnp.dot(A, x)\n\narray([35,  9, 16])\n\n\nGeometrically the matrix \\(A\\) defines a transformation that scales and rotates any vector \\(\\mathbf{x}\\) about the origin."
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-vector-products-1",
     "href": "lecture1-background/slides.html#matrix-vector-products-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix-vector products",
-    "text": "Matrix-vector products\nThe number of columns of \\(A\\) must match the size of the vector \\(\\mathbf{x}\\), but if \\(A\\) has a different number of rows, the output will simply have a different size.\n\nnp.dot(A[:2], x)\n\narray([35,  9])"
+    "section": "",
+    "text": "The number of columns of \\(A\\) must match the size of the vector \\(\\mathbf{x}\\), but if \\(A\\) has a different number of rows, the output will simply have a different size.\n\nnp.dot(A[:2], x)\n\narray([35,  9])"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-multiplication",
     "href": "lecture1-background/slides.html#matrix-multiplication",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix multiplication",
-    "text": "Matrix multiplication\nMatrix multiplication is a fundamental operation between two matrices. It is defined as:\n\\[\n\\mathbf{A}\\mathbf{B}  = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\\\ A_{23} & A_{32} & A_{33} \\end{bmatrix} \\begin{bmatrix} B_{11} & B_{12} \\\\ B_{21} & B_{22} \\\\ B_{31} & B_{32} \\end{bmatrix}  =\\begin{bmatrix} \\sum_{i=1}^n A_{1i} B_{i1} & \\sum_{i=1}^n A_{i1}B_{i2} \\\\  \\sum_{i=1}^n A_{2i}B_{i1} & \\sum_{i=1}^n A_{2i}B_{i2}  \\\\  \\sum_{i=1}^n A_{3i}B_{i1} & \\sum_{i=1}^n A_{3i}B_{i2} \\end{bmatrix} = \\begin{bmatrix} \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*1} & \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*2} \\\\ \\mathbf{A}_{2} \\cdot \\mathbf{B}_{*1} & \\mathbf{A}_{2} \\cdot \\mathbf{B}_{*2}  \\\\ \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*1} & \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*2}  \\end{bmatrix}\n\\]\nThis means that if we multiply an \\(n\\times m\\) matrix \\(\\mathbf{A}\\) with an \\(m\\times k\\) matrix \\(\\mathbf{B}\\) we get an \\(n\\times k\\) matrix \\(\\mathbf{C}\\), such that \\(\\mathbf{C}_{ij}\\) is the dot product of the \\(i\\)-th row of \\(\\mathbf{A}\\) with the \\(j\\)-th row of \\(\\mathbf{B}\\).\nIn numpy we once again use the np.dot function to perform matrix-multiplications.\n\nB = np.array([[2, -1], [3, 1], [-2, 5]])\nC = np.dot(A, B)"
+    "section": "",
+    "text": "Matrix multiplication is a fundamental operation between two matrices. It is defined as:\n\\[\n\\mathbf{A}\\mathbf{B}  = \\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\\\ A_{23} & A_{32} & A_{33} \\end{bmatrix} \\begin{bmatrix} B_{11} & B_{12} \\\\ B_{21} & B_{22} \\\\ B_{31} & B_{32} \\end{bmatrix}  =\\begin{bmatrix} \\sum_{i=1}^n A_{1i} B_{i1} & \\sum_{i=1}^n A_{i1}B_{i2} \\\\  \\sum_{i=1}^n A_{2i}B_{i1} & \\sum_{i=1}^n A_{2i}B_{i2}  \\\\  \\sum_{i=1}^n A_{3i}B_{i1} & \\sum_{i=1}^n A_{3i}B_{i2} \\end{bmatrix} = \\begin{bmatrix} \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*1} & \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*2} \\\\ \\mathbf{A}_{2} \\cdot \\mathbf{B}_{*1} & \\mathbf{A}_{2} \\cdot \\mathbf{B}_{*2}  \\\\ \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*1} & \\mathbf{A}_{1} \\cdot \\mathbf{B}_{*2}  \\end{bmatrix}\n\\]\nThis means that if we multiply an \\(n\\times m\\) matrix \\(\\mathbf{A}\\) with an \\(m\\times k\\) matrix \\(\\mathbf{B}\\) we get an \\(n\\times k\\) matrix \\(\\mathbf{C}\\), such that \\(\\mathbf{C}_{ij}\\) is the dot product of the \\(i\\)-th row of \\(\\mathbf{A}\\) with the \\(j\\)-th row of \\(\\mathbf{B}\\).\nIn numpy we once again use the np.dot function to perform matrix-multiplications.\n\nB = np.array([[2, -1], [3, 1], [-2, 5]])\nC = np.dot(A, B)"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-multiplication-1",
     "href": "lecture1-background/slides.html#matrix-multiplication-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix multiplication",
-    "text": "Matrix multiplication\nThe number of rows of \\(\\mathbf{A}\\) must match the number of columns of \\(\\mathbf{B}\\) for the matrix multiplication \\(\\mathbf{A}\\mathbf{B}\\) to be defined. This implies that matrix multiplication is non-communitive:\n\\[\n\\mathbf{A}\\mathbf{B}\\neq \\mathbf{B}\\mathbf{A}\n\\]\nHowever matrix multiplication is associative and distributive:\n\\[\n\\mathbf{A}(\\mathbf{B}\\mathbf{C})=(\\mathbf{A}\\mathbf{B})\\mathbf{C}, \\quad \\mathbf{A}(\\mathbf{B} +\\mathbf{C}) = \\mathbf{A}\\mathbf{B} + \\mathbf{A}\\mathbf{C}\n\\]"
+    "section": "",
+    "text": "The number of rows of \\(\\mathbf{A}\\) must match the number of columns of \\(\\mathbf{B}\\) for the matrix multiplication \\(\\mathbf{A}\\mathbf{B}\\) to be defined. This implies that matrix multiplication is non-communitive:\n\\[\n\\mathbf{A}\\mathbf{B}\\neq \\mathbf{B}\\mathbf{A}\n\\]\nHowever matrix multiplication is associative and distributive:\n\\[\n\\mathbf{A}(\\mathbf{B}\\mathbf{C})=(\\mathbf{A}\\mathbf{B})\\mathbf{C}, \\quad \\mathbf{A}(\\mathbf{B} +\\mathbf{C}) = \\mathbf{A}\\mathbf{B} + \\mathbf{A}\\mathbf{C}\n\\]"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-multiplication-2",
     "href": "lecture1-background/slides.html#matrix-multiplication-2",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix multiplication",
-    "text": "Matrix multiplication\nMatrix multiplication is a composition of linear maps, meaning that if we take the product \\(\\mathbf{A}\\mathbf{B}\\) and apply the resulting matrix to a vector \\(\\mathbf{x}\\), it is equivalent to first transforming \\(\\mathbf{x}\\) with \\(\\mathbf{B}\\) and then with \\(\\mathbf{A}\\). We can state this succinctly as:\n\\[\n(\\mathbf{A}\\mathbf{B})\\mathbf{x} = \\mathbf{A}(\\mathbf{B}\\mathbf{x})\n\\]\nWe can see this in numpy:\n\nx = np.array([1, 3])\nnp.dot(np.dot(A, B), x), np.dot(A, np.dot(B, x))\n\n(array([79, 31, 41]), array([79, 31, 41]))"
+    "section": "",
+    "text": "Matrix multiplication is a composition of linear maps, meaning that if we take the product \\(\\mathbf{A}\\mathbf{B}\\) and apply the resulting matrix to a vector \\(\\mathbf{x}\\), it is equivalent to first transforming \\(\\mathbf{x}\\) with \\(\\mathbf{B}\\) and then with \\(\\mathbf{A}\\). We can state this succinctly as:\n\\[\n(\\mathbf{A}\\mathbf{B})\\mathbf{x} = \\mathbf{A}(\\mathbf{B}\\mathbf{x})\n\\]\nWe can see this in numpy:\n\nx = np.array([1, 3])\nnp.dot(np.dot(A, B), x), np.dot(A, np.dot(B, x))\n\n(array([79, 31, 41]), array([79, 31, 41]))"
   },
   {
     "objectID": "lecture1-background/slides.html#element-wise-multiplication",
     "href": "lecture1-background/slides.html#element-wise-multiplication",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Element-wise multiplication",
-    "text": "Element-wise multiplication\nIt is important to note that in numpy the * operator does not perform matrix multiplication, instead it performs element-wise multiplication for both matrices and vectors.\n\nA = np.array([[1, 1], [2, 2], [3, 3]])\nB = np.array([[1, 2], [1, 2], [1, 2]])\nA * B\n\narray([[1, 2],\n       [2, 4],\n       [3, 6]])\n\n\nIn mathematical notation we will denote element-wise multiplication as:\n\\[\n\\mathbf{A} \\odot \\mathbf{B} = \\begin{bmatrix} A_{11} B_{11}  & A_{12}  B_{12} & A_{13}  B_{13} \\\\ A_{21}  B_{21} & A_{22}  B_{22} & A_{23}  B_{23} \\end{bmatrix}\n\\]"
+    "section": "",
+    "text": "It is important to note that in numpy the * operator does not perform matrix multiplication, instead it performs element-wise multiplication for both matrices and vectors.\n\nA = np.array([[1, 1], [2, 2], [3, 3]])\nB = np.array([[1, 2], [1, 2], [1, 2]])\nA * B\n\narray([[1, 2],\n       [2, 4],\n       [3, 6]])\n\n\nIn mathematical notation we will denote element-wise multiplication as:\n\\[\n\\mathbf{A} \\odot \\mathbf{B} = \\begin{bmatrix} A_{11} B_{11}  & A_{12}  B_{12} & A_{13}  B_{13} \\\\ A_{21}  B_{21} & A_{22}  B_{22} & A_{23}  B_{23} \\end{bmatrix}\n\\]"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-reductions",
     "href": "lecture1-background/slides.html#matrix-reductions",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix reductions",
-    "text": "Matrix reductions\nAs we saw with vectors, we can take the sum of the elements of a matrix using the np.sum function:\n\nnp.sum(A)\n\n12\n\n\nThe result is a scalar of the form:\n\\[\n\\text{sum}(\\mathbf{A}) = \\sum_{i=1}^n\\sum_{j=1}^m A_{ij}\n\\]"
+    "section": "",
+    "text": "As we saw with vectors, we can take the sum of the elements of a matrix using the np.sum function:\n\nnp.sum(A)\n\n12\n\n\nThe result is a scalar of the form:\n\\[\n\\text{sum}(\\mathbf{A}) = \\sum_{i=1}^n\\sum_{j=1}^m A_{ij}\n\\]"
   },
   {
     "objectID": "lecture1-background/slides.html#matrix-reductions-1",
     "href": "lecture1-background/slides.html#matrix-reductions-1",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Matrix reductions",
-    "text": "Matrix reductions\nIn many cases we may wish to take the sum along an axis of a matrix. This operation results in a vector where each entry is the sum of elements from the corresponding row or column of the matrix.\n\\[\n\\text{rowsum}(\\mathbf{A}) = \\begin{bmatrix} \\sum_{i=1}^n A_{i1} \\\\ \\sum_{i=1}^n A_{i2} \\\\ \\sum_{i=1}^n A_{i3} \\\\ \\vdots\\end{bmatrix}, \\quad \\text{colsum}(\\mathbf{A}) = \\begin{bmatrix} \\sum_{j=1}^m A_{1j} \\\\ \\sum_{j=1}^m A_{2j} \\\\ \\sum_{j=1}^m A_{3j} \\\\ \\vdots\\end{bmatrix}\n\\]\nIn numpy we can specify a sum along an axis by providing an axis argument to np.sum. Setting axis=0 specifies a row-sum, while axis=1 specifies a column sum.\n\nA = np.array([[1, 1], [2, 2], [3, 3]])\nprint(A)\nnp.sum(A, axis=0), np.sum(A, axis=1)\n\n[[1 1]\n [2 2]\n [3 3]]\n\n\n(array([6, 6]), array([2, 4, 6]))"
+    "section": "",
+    "text": "In many cases we may wish to take the sum along an axis of a matrix. This operation results in a vector where each entry is the sum of elements from the corresponding row or column of the matrix.\n\\[\n\\text{rowsum}(\\mathbf{A}) = \\begin{bmatrix} \\sum_{i=1}^n A_{i1} \\\\ \\sum_{i=1}^n A_{i2} \\\\ \\sum_{i=1}^n A_{i3} \\\\ \\vdots\\end{bmatrix}, \\quad \\text{colsum}(\\mathbf{A}) = \\begin{bmatrix} \\sum_{j=1}^m A_{1j} \\\\ \\sum_{j=1}^m A_{2j} \\\\ \\sum_{j=1}^m A_{3j} \\\\ \\vdots\\end{bmatrix}\n\\]\nIn numpy we can specify a sum along an axis by providing an axis argument to np.sum. Setting axis=0 specifies a row-sum, while axis=1 specifies a column sum.\n\nA = np.array([[1, 1], [2, 2], [3, 3]])\nprint(A)\nnp.sum(A, axis=0), np.sum(A, axis=1)\n\n[[1 1]\n [2 2]\n [3 3]]\n\n\n(array([6, 6]), array([2, 4, 6]))"
   },
   {
     "objectID": "lecture1-background/slides.html#other-matrix-reduction-examples",
     "href": "lecture1-background/slides.html#other-matrix-reduction-examples",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Other matrix reduction examples",
-    "text": "Other matrix reduction examples\n\nprint(np.mean(A))            # Take the mean of all elements in x\nprint(np.std(A, axis=0))     # Take the standard deviation of each column of x\nprint(np.min(A, axis=1))     # Find the minimum element in each row of x\nprint(np.max(A))             # Find the maximum element in x\n\n2.0\n[0.81649658 0.81649658]\n[1 2 3]\n3"
+    "section": "",
+    "text": "print(np.mean(A))            # Take the mean of all elements in x\nprint(np.std(A, axis=0))     # Take the standard deviation of each column of x\nprint(np.min(A, axis=1))     # Find the minimum element in each row of x\nprint(np.max(A))             # Find the maximum element in x\n\n2.0\n[0.81649658 0.81649658]\n[1 2 3]\n3"
   },
   {
     "objectID": "lecture1-background/slides.html#identity-matrices",
     "href": "lecture1-background/slides.html#identity-matrices",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Identity Matrices",
-    "text": "Identity Matrices\nThe identity matrix, denoted at \\(\\mathbf{I}\\) is a special type of square matrix. It is defined as the matrix with \\(1\\) for every diagonal element (\\(\\mathbf{I}_{i=j}=1\\)) and \\(0\\) for every other element (\\(\\mathbf{I}_{i\\neq j}=0\\)). A \\(3\\times 3\\) identity matrix looks like:\n\\[\\mathbf{I} = \\begin{bmatrix}1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1\\end{bmatrix}\\]\nThe identify matrix has the unique property that any appropriately sized matrix (or vector) multiplied with \\(\\mathbf{I}\\) will equal itself:\n\\[\n\\mathbf{I}\\mathbf{A} = \\mathbf{A}\n\\]\nIf we think of matrices as linear mappings the identity matrix simply maps any vector to itself.\n\\[\n\\mathbf{I} \\mathbf{x} = \\mathbf{x}\n\\]\nIn numpy we can create an identity matrix using the np.eye function:\n\nI = np.eye(3) # Create a 3x3 identity matrix"
+    "section": "",
+    "text": "The identity matrix, denoted at \\(\\mathbf{I}\\) is a special type of square matrix. It is defined as the matrix with \\(1\\) for every diagonal element (\\(\\mathbf{I}_{i=j}=1\\)) and \\(0\\) for every other element (\\(\\mathbf{I}_{i\\neq j}=0\\)). A \\(3\\times 3\\) identity matrix looks like:\n\\[\\mathbf{I} = \\begin{bmatrix}1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1\\end{bmatrix}\\]\nThe identify matrix has the unique property that any appropriately sized matrix (or vector) multiplied with \\(\\mathbf{I}\\) will equal itself:\n\\[\n\\mathbf{I}\\mathbf{A} = \\mathbf{A}\n\\]\nIf we think of matrices as linear mappings the identity matrix simply maps any vector to itself.\n\\[\n\\mathbf{I} \\mathbf{x} = \\mathbf{x}\n\\]\nIn numpy we can create an identity matrix using the np.eye function:\n\nI = np.eye(3) # Create a 3x3 identity matrix"
   },
   {
     "objectID": "lecture1-background/slides.html#solving-systems-of-linear-equations",
     "href": "lecture1-background/slides.html#solving-systems-of-linear-equations",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Solving systems of linear equations",
-    "text": "Solving systems of linear equations\nConsider the matrix-vector product between a matrix \\(\\mathbf{A}\\) and a vector \\(\\mathbf{x}\\), we can denote the result of this multiplication as \\(\\mathbf{b}\\):\n\\[\n\\mathbf{A}\\mathbf{x} =\\mathbf{b}\n\\]\nIn many common cases we will know the matrix \\(\\mathbf{A}\\) and the vector \\(\\mathbf{b}\\), but not the vector \\(\\mathbf{x}\\). In such cases we need to solve this equation for \\(\\mathbf{x}\\):\n\\[\n\\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\\\ A_{23} & A_{32} & A_{33} \\end{bmatrix} \\begin{bmatrix} \\textbf{?}\\\\ \\textbf{?}\\\\ \\textbf{?}\\end{bmatrix} = \\begin{bmatrix} b_1 \\\\  b_2 \\\\  b_3 \\end{bmatrix}\n\\]\nIn Numpy:\n\nA = np.array([[3, 1], [-1, 4]])\nb = np.array([-2, 1])\nx = np.linalg.solve(A, b)\n\nNote that in some cases there may not be any \\(\\mathbf{x}\\) that satisfies the equation (or there may be infinitely many). The conditions for this are beyond the scope of this course."
+    "section": "",
+    "text": "Consider the matrix-vector product between a matrix \\(\\mathbf{A}\\) and a vector \\(\\mathbf{x}\\), we can denote the result of this multiplication as \\(\\mathbf{b}\\):\n\\[\n\\mathbf{A}\\mathbf{x} =\\mathbf{b}\n\\]\nIn many common cases we will know the matrix \\(\\mathbf{A}\\) and the vector \\(\\mathbf{b}\\), but not the vector \\(\\mathbf{x}\\). In such cases we need to solve this equation for \\(\\mathbf{x}\\):\n\\[\n\\begin{bmatrix} A_{11} & A_{12} & A_{13} \\\\ A_{21} & A_{22} & A_{23} \\\\ A_{23} & A_{32} & A_{33} \\end{bmatrix} \\begin{bmatrix} \\textbf{?}\\\\ \\textbf{?}\\\\ \\textbf{?}\\end{bmatrix} = \\begin{bmatrix} b_1 \\\\  b_2 \\\\  b_3 \\end{bmatrix}\n\\]\nIn Numpy:\n\nA = np.array([[3, 1], [-1, 4]])\nb = np.array([-2, 1])\nx = np.linalg.solve(A, b)\n\nNote that in some cases there may not be any \\(\\mathbf{x}\\) that satisfies the equation (or there may be infinitely many). The conditions for this are beyond the scope of this course."
   },
   {
     "objectID": "lecture1-background/slides.html#inverse-matrices",
     "href": "lecture1-background/slides.html#inverse-matrices",
     "title": "Lecture 1: Background and Prerequisites",
-    "section": "Inverse matrices",
-    "text": "Inverse matrices\nThe inverse of a square matrix is denoted by \\(\\mathbf{A}^{-1}\\) and is defined as the matrix such that:\n\\[\n\\mathbf{A}\\mathbf{A}^{-1} = \\mathbf{I}\n\\]\nThis corresponds to the inverse of the linear map defined by \\(\\mathbf{A}\\). Any vector transformed by \\(\\mathbf{A}\\) can be transformed back by applying the inverse matrix:\n\\[\n\\mathbf{A}^{-1}\\left(\\mathbf{A}\\mathbf{x}\\right) =\\mathbf{x}\n\\]\nWe can also write the solution to a system of linear equations in terms of the inverse, by multiplying both sides by \\(\\mathbf{A}^{-1}\\):\n\\[\n\\mathbf{A}\\mathbf{x}=\\mathbf{b}\\quad \\longrightarrow \\quad \\mathbf{A}^{-1}(\\mathbf{A}\\mathbf{x})=\\mathbf{A}^{-1}\\mathbf{b} \\quad \\longrightarrow \\quad \\mathbf{x}=\\mathbf{A}^{-1}\\mathbf{b}\n\\]\nIn numpy we can find the inverse of a matrix using the np.linalg.inv function:\n\nA_inv = np.linalg.inv(A)\n\nNote that not every matrix has an inverse! Again, we won’t worry about these cases for now."
+    "section": "",
+    "text": "The inverse of a square matrix is denoted by \\(\\mathbf{A}^{-1}\\) and is defined as the matrix such that:\n\\[\n\\mathbf{A}\\mathbf{A}^{-1} = \\mathbf{I}\n\\]\nThis corresponds to the inverse of the linear map defined by \\(\\mathbf{A}\\). Any vector transformed by \\(\\mathbf{A}\\) can be transformed back by applying the inverse matrix:\n\\[\n\\mathbf{A}^{-1}\\left(\\mathbf{A}\\mathbf{x}\\right) =\\mathbf{x}\n\\]\nWe can also write the solution to a system of linear equations in terms of the inverse, by multiplying both sides by \\(\\mathbf{A}^{-1}\\):\n\\[\n\\mathbf{A}\\mathbf{x}=\\mathbf{b}\\quad \\longrightarrow \\quad \\mathbf{A}^{-1}(\\mathbf{A}\\mathbf{x})=\\mathbf{A}^{-1}\\mathbf{b} \\quad \\longrightarrow \\quad \\mathbf{x}=\\mathbf{A}^{-1}\\mathbf{b}\n\\]\nIn numpy we can find the inverse of a matrix using the np.linalg.inv function:\n\nA_inv = np.linalg.inv(A)\n\nNote that not every matrix has an inverse! Again, we won’t worry about these cases for now."
   },
   {
     "objectID": "lecture1-background/slides.html#functions",
@@ -1398,26 +1412,5 @@
     "title": "Lecture 1: Background and Prerequisites",
     "section": "Subplots and plot sizes",
     "text": "Subplots and plot sizes\nIt is often useful to put more than one plot together in a group; you can do this using the subplot function. There are various options; for example, “sharex” and “sharey” allow multiple plots to share a single axis range (or, you can set it manually, of course).\n\nfig,ax = plt.subplots(1,3, figsize=(8.0, 2.0))      # make a 1 x 3 grid of plots:\nax[0].plot(x_values, y1, 'b-');   # plot y1 in the first subplot\nax[1].plot(x_values, y2, 'g--');  #   y2 in the 2nd\nax[2].plot(x_values, y3, 'r:');   #   and y3 in the last"
-  },
-  {
-    "objectID": "calendar/calendar.html",
-    "href": "calendar/calendar.html",
-    "title": "Course Calendar",
-    "section": "",
-    "text": "Lecture\nDate\nTopics\nTextbook\nMaterials\nHomework\n\n\n\n\n1\n8/28\nCourse introduction, linear algebra and calculus review\nBook 1: 7.1.1-7.2.4, 7.8.1, 7.8.2\nNotes\nSlides\nHomework 1 assigned (Github) Due: 9/5 11:59pm\n\n\n2\n8/30\nLinear regression\nBook 1: 4.2.1, 4.2.2, 11.1-11.2.4\nNotes\nSlides\n\n\n\n\n9/4\nNo class (Labor day)\n\n\n\n\n\n3\n9/6\n\n\n\nHomework 2 assigned (Github) Due: 9/12 11:59pm\n\n\n4\n9/11\n\n\n\n\n\n\n5\n9/13\n\n\n\nHomework 3 assigned (Github) Due: 9/19 11:59pm\n\n\n6\n9/18\n\n\n\n\n\n\n7\n9/20\n\n\n\nHomework 4 assigned (Github) Due: 9/26 11:59pm\n\n\n8\n9/25\n\n\n\n\n\n\n9\n9/27\n\n\n\nHomework 5 assigned (Github) Due: 10/3 11:59pm\n\n\n10\n10/2\n\n\n\n\n\n\n11\n10/4\n\n\n\nHomework 6 assigned (Github) Due: 10/10 11:59pm\n\n\n12\n10/9\n\n\n\n\n\n\n13\n10/11\n\n\n\nHomework 7 assigned (Github) Due: 10/19 11:59pm\n\n\n\n10/16\nNo class (Fall break)\n\n\n\n\n\n14\n10/18\n\n\n\nHomework 8 assigned (Github) Due: 10/24 11:59pm\n\n\n15\n10/23\n\n\n\n\n\n\n16\n10/25\n\n\n\nHomework 9 assigned (Github) Due: 9/5 11:59pm\n\n\n17\n10/30\n\n\n\n\n\n\n18\n11/1\n\n\n\nHomework 10 assigned (Github) Due: 11/7 11:59pm\n\n\n19\n11/6\n\n\n\n\n\n\n\n11/8\n\n\n\n\n\n\n20\n11/13\n\n\n\n\n\n\n21\n11/15\n\n\n\nHomework 11 assigned (Github) Due: 11/20 11:59pm\n\n\n22\n11/20\n\n\n\n\n\n\n\n11/22\nNo class (Thanksgiving break)\n\n\nHomework 12 assigned (Github) Due: 12/5 11:59pm\n\n\n23\n11/27\n\n\n\n\n\n\n24\n11/29\n\n\n\n\n\n\n25\n12/5\n\n\n\n\n\n\n26\n12/6"
-  },
-  {
-    "objectID": "index.html#grutor",
-    "href": "index.html#grutor",
-    "title": "Course Syllabus",
-    "section": "",
-    "text": "Max McKnight (he/they)\nEmail: mmcknigh@pitzer.edu"
-  },
-  {
-    "objectID": "misc/hw1-hint.html",
-    "href": "misc/hw1-hint.html",
-    "title": "Hint for homework 1: Q7",
-    "section": "",
-    "text": "For this question we are interested in simplifying an expression into matrix/vector notation. In order to do this it may be first helpful to think about how we went the other direction: matrix vector notation to expanded notation.\nIf we have the expression \\(\\mathbf{A} \\mathbf{x}\\), where \\(\\mathbf{A}\\) is a matrix and \\(\\mathbf{x}\\) is a vector, we know that the result of this multiplication will be a vector. Let’s call this vector \\(\\mathbf{c}\\), so that \\(\\mathbf{A}\\mathbf{x}=\\mathbf{c}\\).\nWe know from the definition of matrix-multiplication that each element of \\(\\mathbf{c}\\) can be written as the following summation:\n\\[\nc_i = \\sum_{j=1}^n A_{ij}x_j\n\\]\nTherefore, if we saw such a summation in an expression, we could temporarily replace it with \\(c_i\\), knowing that we defined \\(\\mathbf{c}\\) as \\(\\mathbf{c}=\\mathbf{A}\\mathbf{x}\\). Try doing this as the first step in the homework.\nAlso recall as well that a dot product between two vectors \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), can be written explicitly from its definition as:\n\\[\n\\mathbf{x}^T\\mathbf{y} = \\sum_{i=1}^n x_iy_i\n\\]\nTherefore if we see something like the summation on the right in an expression, we can replace it with the more compact dot product notation.\nWhen writing you final answer make sure to write the final expression in terms of the original variables \\((\\mathbf{A}, \\mathbf{x}, \\mathbf{b})\\). E.g. if you substituted \\(\\mathbf{c}\\) for \\(\\mathbf{A}\\mathbf{x}\\), make sure to substitute it back in the answer."
   }
 ]
