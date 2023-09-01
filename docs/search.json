@@ -409,8 +409,8 @@
     "objectID": "lecture2-linear-regression/slides.html#logistics-1",
     "href": "lecture2-linear-regression/slides.html#logistics-1",
     "title": "Lecture 2: Linear regression",
-    "section": "",
-    "text": "Homework 1 due next Tuesday 9/5 at 11:59pm\nFill out Github username survey!\nOffice hours tomorrow 4-5:30pm in MacGregor 322\nCourse calendar added to website with lecture notes.\nLecture notes are open source!"
+    "section": "Logistics",
+    "text": "Logistics\n\nHomework 1 due next Tuesday 9/5 at 11:59pm\nFill out Github username survey!\nOffice hours tomorrow 4-5:30pm in MacGregor 322\nCourse calendar added to website with lecture notes.\nLecture notes are open source!"
   },
   {
     "objectID": "lecture2-linear-regression/slides.html#functions-revisited",
@@ -494,7 +494,7 @@
     "href": "lecture2-linear-regression/slides.html#prediction-functions",
     "title": "Lecture 2: Linear regression",
     "section": "Prediction functions",
-    "text": "Prediction functions\n\nHow do we predict the output for an input that we haven’t seen before?"
+    "text": "Prediction functions\nHow do we predict the output for an input that we haven’t seen before?"
   },
   {
     "objectID": "lecture2-linear-regression/slides.html#prediction-functions-1",
@@ -508,7 +508,7 @@
     "href": "lecture2-linear-regression/slides.html#linear-interpolation",
     "title": "Lecture 2: Linear regression",
     "section": "Linear interpolation",
-    "text": "Linear interpolation\n\n\n\n\n\n\n\n\n\nIn some cases this can be a reasonable approach! In fact it’s how the plt.plot function works."
+    "text": "Linear interpolation\n\nIn some cases this can be a reasonable approach! In fact it’s how the plt.plot function works."
   },
   {
     "objectID": "lecture2-linear-regression/slides.html#linear-interpolation-1",
@@ -697,7 +697,7 @@
     "href": "lecture2-linear-regression/slides.html#linear-regression-as-a-probabilistic-model",
     "title": "Lecture 2: Linear regression",
     "section": "Linear regression as a probabilistic model",
-    "text": "Linear regression as a probabilistic model\nThe probabilistic model for linear regression will make the assumption that the output is normally distributed conditioned on the input:\n\\[\ny_i \\sim N\\big(\\mathbf{x}_i^T \\mathbf{w},\\ \\sigma^2\\big)\n\\]\nWe can write the conditional probability or likelihood of an output as:\n\\[\np(y_i\\mid\\mathbf{x}_i, \\mathbf{w}) =  \\frac{1}{\\sigma \\sqrt{2 \\pi}} \\mathbf{exp}\\bigg(-\\frac{1}{2\\sigma^2} (y_i - \\mathbf{x}_i^T\\mathbf{w})^2\\bigg)\n\\]\n\n\n\nImage credit: Lily Chen Towards Data Science"
+    "text": "Linear regression as a probabilistic model\nThe probabilistic model for linear regression will make the assumption that the output is normally distributed conditioned on the input:\n\\[\ny_i \\sim N\\big(\\mathbf{x}_i^T \\mathbf{w},\\ \\sigma^2\\big)\n\\]\nWe can write the conditional probability or likelihood of an output as:\n\\[\np(y_i\\mid\\mathbf{x}_i, \\mathbf{w}) =  \\frac{1}{\\sigma \\sqrt{2 \\pi}} \\mathbf{exp}\\bigg(-\\frac{1}{2\\sigma^2} (y_i - \\mathbf{x}_i^T\\mathbf{w})^2\\bigg)\n\\]\n\nImage credit: Lily Chen Towards Data Science"
   },
   {
     "objectID": "lecture2-linear-regression/slides.html#maximum-likelihood-estimation-1",
