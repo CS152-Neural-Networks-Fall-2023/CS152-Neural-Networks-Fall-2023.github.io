@@ -135,18 +135,18 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>For this question we are interested in simplifying an expression into matrix/vector notation. In order to do this it may be first helpful to think about how we went the other direction: matrix vector notation to expanded notation.</p>
+<p>For this question we are interested in simplifying an expression into matrix/vector notation. In order to do this it may be first helpful to think about how we went the other direction: matrix/vector notation to expanded notation.</p>
+<p>Recall that a <em>dot product</em> between two vectors <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, can be written explicitly from its definition as:</p>
+<p><span class="math display">\[
+\mathbf{x}^T\mathbf{y} = \sum_{i=1}^n x_iy_i
+\]</span></p>
+<p>Therefore if we see something like the summation on the right in an expression, we can replace it with the more compact dot product notation.</p>
 <p>If we have the expression <span class="math inline">\(\mathbf{A} \mathbf{x}\)</span>, where <span class="math inline">\(\mathbf{A}\)</span> is a matrix and <span class="math inline">\(\mathbf{x}\)</span> is a vector, we know that the result of this multiplication will be a vector. Let’s call this vector <span class="math inline">\(\mathbf{c}\)</span>, so that <span class="math inline">\(\mathbf{A}\mathbf{x}=\mathbf{c}\)</span>.</p>
 <p>We know from the definition of matrix-multiplication that each element of <span class="math inline">\(\mathbf{c}\)</span> can be written as the following summation:</p>
 <p><span class="math display">\[
 c_i = \sum_{j=1}^n A_{ij}x_j
 \]</span></p>
-<p>Therefore, if we saw such a summation in an expression, we could temporarily replace it with <span class="math inline">\(c_i\)</span>, knowing that we defined <span class="math inline">\(\mathbf{c}\)</span> as <span class="math inline">\(\mathbf{c}=\mathbf{A}\mathbf{x}\)</span>. Try doing this as the first step in the homework.</p>
-<p>Also recall as well that a <em>dot product</em> between two vectors <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, can be written explicitly from its definition as:</p>
-<p><span class="math display">\[
-\mathbf{x}^T\mathbf{y} = \sum_{i=1}^n x_iy_i
-\]</span></p>
-<p>Therefore if we see something like the summation on the right in an expression, we can replace it with the more compact dot product notation.</p>
+<p>Therefore, if we saw such a summation in an expression, we could temporarily replace it with <span class="math inline">\(c_i\)</span>, knowing that we defined <span class="math inline">\(\mathbf{c}\)</span> as <span class="math inline">\(\mathbf{c}=\mathbf{A}\mathbf{x}\)</span>. Try doing this as the first step in the homework, then try repeating this idea until you have something that you can write compactly in matrix/vector notation.</p>
 <p>When writing you final answer make sure to write the final expression in terms of the original variables <span class="math inline">\((\mathbf{A}, \mathbf{x}, \mathbf{b})\)</span>. E.g. if you substituted <span class="math inline">\(\mathbf{c}\)</span> for <span class="math inline">\(\mathbf{A}\mathbf{x}\)</span>, make sure to substitute it back in the answer.</p>
 
 
