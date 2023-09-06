@@ -228,19 +228,23 @@ y=f(\mathbf{x}), \quad \text{Input: } \mathbf{x} \in\mathbb{R}^n \longrightarrow
 </section>
 <section id="linear-functions" class="level2">
 <h2 class="anchored" data-anchor-id="linear-functions">Linear Functions</h2>
-<p>A <em>linear function</em> is any function <span class="math inline">\(f\)</span> where the following conditions always hold: <span class="math display">\[ f(\mathbf{x} + \mathbf{y}) =f(\mathbf{x}) + f(\mathbf{y})\]</span> and <span class="math display">\[ f(a\mathbf{x}) = a f(\mathbf{x})\]</span> For a linear function, the output can be defined as a weighted sum of the inputs. In other words a linear function of a vector can always be written as:</p>
+<p>A <em>linear function</em> is any function <span class="math inline">\(f\)</span> where the following conditions always hold: <span class="math display">\[ f(\mathbf{x} + \mathbf{y}) =f(\mathbf{x}) + f(\mathbf{y})\]</span> and <span class="math display">\[ f(a\mathbf{x}) = a f(\mathbf{x})\]</span>For a linear function, the output can be defined as a weighted sum of the inputs. In other words a linear function of a vector can always be written as:</p>
 <p><span class="math display">\[
-f(\mathbf{x}) = \sum_{i=1}^n x_iw_i + b
+f(\mathbf{x}) = \sum_{i=1}^n x_iw_i
 \]</span></p>
-<p>Here, <span class="math inline">\(w_i\)</span> and <span class="math inline">\(b\)</span> are constants that define the particular linear function. We will refer to these as the <strong>parameters</strong> of the function. We can also write this using a dot-product between our input <span class="math inline">\(\mathbf{x}\)</span> and parameter vector <span class="math inline">\(\mathbf{w}\)</span> as:</p>
+<p>We can add an offset <span class="math inline">\(b\)</span> to create an <em>affine</em> function:</p>
+<p><span class="math display">\[
+f(\mathbf{x}) = \sum_{i=1}^n x_iw_i +b
+\]</span></p>
+<p>Here, <span class="math inline">\(w_i\)</span> and <span class="math inline">\(b\)</span> are constants that define the particular function. We will refer to these as the <strong>parameters</strong> of the function. We can also write this using a dot-product between our input <span class="math inline">\(\mathbf{x}\)</span> and parameter vector <span class="math inline">\(\mathbf{w}\)</span> as:</p>
 <p><span class="math display">\[
 f(\mathbf{x}) = \mathbf{x} \cdot \mathbf{w} + b \quad \text{or} \quad f(\mathbf{x}) = \mathbf{x}^T  \mathbf{w} + b
 \]</span></p>
 <p>We typically refer to <span class="math inline">\(\mathbf{w}\)</span> specifically as the <strong>weight vector</strong> (or weights) and <span class="math inline">\(b\)</span> as the <strong>bias</strong>. To summarize:</p>
 <p><span class="math display">\[
-\textbf{Linear function:  }f(\mathbf{x}) = \mathbf{x}^T\mathbf{w}+b,\quad \textbf{Parameters:}\quad \big(\text{Weights:  } \mathbf{w},\ \text{Bias:  } b \big)
+\textbf{Affine function:  }f(\mathbf{x}) = \mathbf{x}^T\mathbf{w}+b,\quad \textbf{Parameters:}\quad \big(\text{Weights:  } \mathbf{w},\ \text{Bias:  } b \big)
 \]</span></p>
-<p>In one dimension, a linear function is always a line, for example:</p>
+<p>In one dimension, a linear (or affine) function is always a line, for example:</p>
 <div class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <p><img src="notes_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
@@ -252,7 +256,7 @@ f(\mathbf{x}) = \mathbf{x} \cdot \mathbf{w} + b \quad \text{or} \quad f(\mathbf{
 <p><img src="notes_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>In numpy we can easily write a linear function of this form:</p>
+<p>In numpy we can easily write a function of this form:</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> np.array([<span class="op">-</span><span class="fl">0.6</span>, <span class="op">-</span><span class="fl">0.2</span>])</span>
@@ -262,7 +266,7 @@ f(\mathbf{x}) = \mathbf{x} \cdot \mathbf{w} + b \quad \text{or} \quad f(\mathbf{
 </section>
 <section id="handling-bias-compactly" class="level2">
 <h2 class="anchored" data-anchor-id="handling-bias-compactly">Handling bias compactly</h2>
-<p>Notationally, it can be tedious to always write the bias term. A common approach to compactly describing linear functions is to use <em>augmented</em> inputs and weights, such that for <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{w}\in \mathbb{R}^n\)</span>, we add <span class="math inline">\(x_{n+1}=1\)</span> and <span class="math inline">\(w_{n+1}=b\)</span>. So:</p>
+<p>Notationally, it can be tedious to always write the bias term. A common approach to compactly describing linear or affine functions is to use <em>augmented</em> inputs and weights, such that for <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{w}\in \mathbb{R}^n\)</span>, we add <span class="math inline">\(x_{n+1}=1\)</span> and <span class="math inline">\(w_{n+1}=b\)</span>. So:</p>
 <p><span class="math display">\[
 \mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} \longrightarrow \mathbf{x}_{aug}= \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \\ 1 \end{bmatrix} \quad \text{and} \quad \mathbf{w} = \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n \end{bmatrix} \longrightarrow \mathbf{w}_{aug}=  \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n \\ b \end{bmatrix}
 \]</span></p>
@@ -270,7 +274,7 @@ f(\mathbf{x}) = \mathbf{x} \cdot \mathbf{w} + b \quad \text{or} \quad f(\mathbf{
 <p><span class="math display">\[
 f(\mathbf{x}) = \mathbf{x}^T \mathbf{w} +b = \mathbf{x}_{aug}^T \mathbf{w}_{aug}
 \]</span></p>
-<p>This approach is common enough that we typically won’t bother with the <span class="math inline">\(aug\)</span> notation and just assume that any linear function defined as <span class="math inline">\(f(\mathbf{x})=\mathbf{x}^T\mathbf{w}\)</span> can be defined to include a bias implicitly.</p>
+<p>This approach is common enough that we typically won’t bother with the <span class="math inline">\(aug\)</span> notation and just assume that any function defined as <span class="math inline">\(f(\mathbf{x})=\mathbf{x}^T\mathbf{w}\)</span> can be defined to include a bias implicitly. Note that in this case the function is a <em>linear function</em> of the augmented input, thus we will still typically refer to functions of this form as linear functions.</p>
 <p>In numpy this is similarly straightforward:</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x):</span>
@@ -657,12 +661,12 @@ p(y_1,...,y_N \mid \mathbf{x}_1, ...,\mathbf{x}_N, \mathbf{w}) = \prod_{i=1}^N p
 \textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N\log\bigg[\frac{1}{\sigma \sqrt{2 \pi}} \text{exp}\bigg(-\frac{1}{2\sigma^2} (y_i - \mathbf{x}_i^T\mathbf{w})^2\bigg)\bigg]
 \]</span></p>
 <p><span class="math display">\[
-= \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 - \frac{N}{\sigma \sqrt{2 \pi}}
+= \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 + N \log \sigma \sqrt{2 \pi}
 \]</span></p>
 <p>We see that this loss is very similar to the MSE loss. Taking the gradient this becomes even more clear.</p>
 <p><span class="math display">\[
 \nabla_{\mathbf{w}}\textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) =
-\frac{d}{d\mathbf{w}}\bigg( \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 - \frac{N}{\sigma \sqrt{2 \pi}} \bigg)
+\frac{d}{d\mathbf{w}}\bigg( \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 + N \log \sigma \sqrt{2 \pi} \bigg)
 \]</span></p>
 <p><span class="math display">\[
 = \frac{1}{2\sigma^2}\sum_{i=1}^N (\mathbf{x}_i^T\mathbf{w} - y_i)\mathbf{x}_i

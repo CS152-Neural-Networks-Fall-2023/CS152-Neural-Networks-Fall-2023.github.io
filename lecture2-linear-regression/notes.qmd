@@ -113,13 +113,19 @@ This function gives us the relationship between *inputs* $\mathbf{x}$ and output
 
 ## Linear Functions
 
-A *linear function* is any function $f$ where the following conditions always hold: $$ f(\mathbf{x} + \mathbf{y}) =f(\mathbf{x}) + f(\mathbf{y})$$ and $$ f(a\mathbf{x}) = a f(\mathbf{x})$$ For a linear function, the output can be defined as a weighted sum of the inputs. In other words a linear function of a vector can always be written as:
+A *linear function* is any function $f$ where the following conditions always hold: $$ f(\mathbf{x} + \mathbf{y}) =f(\mathbf{x}) + f(\mathbf{y})$$ and $$ f(a\mathbf{x}) = a f(\mathbf{x})$$For a linear function, the output can be defined as a weighted sum of the inputs. In other words a linear function of a vector can always be written as:
 
 $$
-f(\mathbf{x}) = \sum_{i=1}^n x_iw_i + b
+f(\mathbf{x}) = \sum_{i=1}^n x_iw_i
 $$
 
-Here, $w_i$ and $b$ are constants that define the particular linear function. We will refer to these as the **parameters** of the function. We can also write this using a dot-product between our input $\mathbf{x}$ and parameter vector $\mathbf{w}$ as:
+We can add an offset $b$ to create an *affine* function:
+
+$$
+f(\mathbf{x}) = \sum_{i=1}^n x_iw_i +b
+$$
+
+Here, $w_i$ and $b$ are constants that define the particular function. We will refer to these as the **parameters** of the function. We can also write this using a dot-product between our input $\mathbf{x}$ and parameter vector $\mathbf{w}$ as:
 
 $$
 f(\mathbf{x}) = \mathbf{x} \cdot \mathbf{w} + b \quad \text{or} \quad f(\mathbf{x}) = \mathbf{x}^T  \mathbf{w} + b
@@ -128,10 +134,10 @@ $$
 We typically refer to $\mathbf{w}$ specifically as the **weight vector** (or weights) and $b$ as the **bias**. To summarize:
 
 $$
-\textbf{Linear function:  }f(\mathbf{x}) = \mathbf{x}^T\mathbf{w}+b,\quad \textbf{Parameters:}\quad \big(\text{Weights:  } \mathbf{w},\ \text{Bias:  } b \big)
+\textbf{Affine function:  }f(\mathbf{x}) = \mathbf{x}^T\mathbf{w}+b,\quad \textbf{Parameters:}\quad \big(\text{Weights:  } \mathbf{w},\ \text{Bias:  } b \big)
 $$
 
-In one dimension, a linear function is always a line, for example:
+In one dimension, a linear (or affine) function is always a line, for example:
 
 ```{python}
 #| echo: false
@@ -198,7 +204,7 @@ class ThreeDSurfacePlot(ThreeDLectureScene):
         
 ```
 
-In numpy we can easily write a linear function of this form:
+In numpy we can easily write a function of this form:
 
 ```{python}
 def f(x):
@@ -209,7 +215,7 @@ def f(x):
 
 ## Handling bias compactly
 
-Notationally, it can be tedious to always write the bias term. A common approach to compactly describing linear functions is to use *augmented* inputs and weights, such that for $\mathbf{x}$ and $\mathbf{w}\in \mathbb{R}^n$, we add $x_{n+1}=1$ and $w_{n+1}=b$. So:
+Notationally, it can be tedious to always write the bias term. A common approach to compactly describing linear or affine functions is to use *augmented* inputs and weights, such that for $\mathbf{x}$ and $\mathbf{w}\in \mathbb{R}^n$, we add $x_{n+1}=1$ and $w_{n+1}=b$. So:
 
 $$
 \mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} \longrightarrow \mathbf{x}_{aug}= \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \\ 1 \end{bmatrix} \quad \text{and} \quad \mathbf{w} = \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n \end{bmatrix} \longrightarrow \mathbf{w}_{aug}=  \begin{bmatrix} w_1 \\ w_2 \\ \vdots \\ w_n \\ b \end{bmatrix}
@@ -221,7 +227,7 @@ $$
 f(\mathbf{x}) = \mathbf{x}^T \mathbf{w} +b = \mathbf{x}_{aug}^T \mathbf{w}_{aug}
 $$
 
-This approach is common enough that we typically won't bother with the $aug$ notation and just assume that any linear function defined as $f(\mathbf{x})=\mathbf{x}^T\mathbf{w}$ can be defined to include a bias implicitly.
+This approach is common enough that we typically won't bother with the $aug$ notation and just assume that any function defined as $f(\mathbf{x})=\mathbf{x}^T\mathbf{w}$ can be defined to include a bias implicitly. Note that in this case the function is a *linear function* of the augmented input, thus we will still typically refer to functions of this form as linear functions.
 
 In numpy this is similarly straightforward:
 
@@ -1285,14 +1291,14 @@ $$
 $$
 
 $$
- = \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 - \frac{N}{\sigma \sqrt{2 \pi}}
+ = \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 + N \log \sigma \sqrt{2 \pi}
 $$
 
 We see that this loss is very similar to the MSE loss. Taking the gradient this becomes even more clear.
 
 $$
 \nabla_{\mathbf{w}}\textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = 
-\frac{d}{d\mathbf{w}}\bigg( \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 - \frac{N}{\sigma \sqrt{2 \pi}} \bigg)
+\frac{d}{d\mathbf{w}}\bigg( \frac{1}{2\sigma^2} \sum_{i=1}^N(y_i - \mathbf{x}_i^T\mathbf{w})^2 + N \log \sigma \sqrt{2 \pi} \bigg)
 $$
 
 $$

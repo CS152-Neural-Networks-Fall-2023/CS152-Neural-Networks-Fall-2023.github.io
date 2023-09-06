@@ -277,14 +277,14 @@
     "href": "lecture2-linear-regression/notes.html#linear-functions",
     "title": "Lecture 2: Linear regression",
     "section": "Linear Functions",
-    "text": "Linear Functions\nA linear function is any function \\(f\\) where the following conditions always hold: \\[ f(\\mathbf{x} + \\mathbf{y}) =f(\\mathbf{x}) + f(\\mathbf{y})\\] and \\[ f(a\\mathbf{x}) = a f(\\mathbf{x})\\] For a linear function, the output can be defined as a weighted sum of the inputs. In other words a linear function of a vector can always be written as:\n\\[\nf(\\mathbf{x}) = \\sum_{i=1}^n x_iw_i + b\n\\]\nHere, \\(w_i\\) and \\(b\\) are constants that define the particular linear function. We will refer to these as the parameters of the function. We can also write this using a dot-product between our input \\(\\mathbf{x}\\) and parameter vector \\(\\mathbf{w}\\) as:\n\\[\nf(\\mathbf{x}) = \\mathbf{x} \\cdot \\mathbf{w} + b \\quad \\text{or} \\quad f(\\mathbf{x}) = \\mathbf{x}^T  \\mathbf{w} + b\n\\]\nWe typically refer to \\(\\mathbf{w}\\) specifically as the weight vector (or weights) and \\(b\\) as the bias. To summarize:\n\\[\n\\textbf{Linear function:  }f(\\mathbf{x}) = \\mathbf{x}^T\\mathbf{w}+b,\\quad \\textbf{Parameters:}\\quad \\big(\\text{Weights:  } \\mathbf{w},\\ \\text{Bias:  } b \\big)\n\\]\nIn one dimension, a linear function is always a line, for example:\n\n\n\n\n\nIn higher dimensions, it is a plane or hyperplane:\n\n\n\n\n\nIn numpy we can easily write a linear function of this form:\n\ndef f(x):\n    w = np.array([-0.6, -0.2])\n    b = -1\n    return np.dot(x, w) + b"
+    "text": "Linear Functions\nA linear function is any function \\(f\\) where the following conditions always hold: \\[ f(\\mathbf{x} + \\mathbf{y}) =f(\\mathbf{x}) + f(\\mathbf{y})\\] and \\[ f(a\\mathbf{x}) = a f(\\mathbf{x})\\]For a linear function, the output can be defined as a weighted sum of the inputs. In other words a linear function of a vector can always be written as:\n\\[\nf(\\mathbf{x}) = \\sum_{i=1}^n x_iw_i\n\\]\nWe can add an offset \\(b\\) to create an affine function:\n\\[\nf(\\mathbf{x}) = \\sum_{i=1}^n x_iw_i +b\n\\]\nHere, \\(w_i\\) and \\(b\\) are constants that define the particular function. We will refer to these as the parameters of the function. We can also write this using a dot-product between our input \\(\\mathbf{x}\\) and parameter vector \\(\\mathbf{w}\\) as:\n\\[\nf(\\mathbf{x}) = \\mathbf{x} \\cdot \\mathbf{w} + b \\quad \\text{or} \\quad f(\\mathbf{x}) = \\mathbf{x}^T  \\mathbf{w} + b\n\\]\nWe typically refer to \\(\\mathbf{w}\\) specifically as the weight vector (or weights) and \\(b\\) as the bias. To summarize:\n\\[\n\\textbf{Affine function:  }f(\\mathbf{x}) = \\mathbf{x}^T\\mathbf{w}+b,\\quad \\textbf{Parameters:}\\quad \\big(\\text{Weights:  } \\mathbf{w},\\ \\text{Bias:  } b \\big)\n\\]\nIn one dimension, a linear (or affine) function is always a line, for example:\n\n\n\n\n\nIn higher dimensions, it is a plane or hyperplane:\n\n\n\n\n\nIn numpy we can easily write a function of this form:\n\ndef f(x):\n    w = np.array([-0.6, -0.2])\n    b = -1\n    return np.dot(x, w) + b"
   },
   {
     "objectID": "lecture2-linear-regression/notes.html#handling-bias-compactly",
     "href": "lecture2-linear-regression/notes.html#handling-bias-compactly",
     "title": "Lecture 2: Linear regression",
     "section": "Handling bias compactly",
-    "text": "Handling bias compactly\nNotationally, it can be tedious to always write the bias term. A common approach to compactly describing linear functions is to use augmented inputs and weights, such that for \\(\\mathbf{x}\\) and \\(\\mathbf{w}\\in \\mathbb{R}^n\\), we add \\(x_{n+1}=1\\) and \\(w_{n+1}=b\\). So:\n\\[\n\\mathbf{x} = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ \\vdots \\\\ x_n \\end{bmatrix} \\longrightarrow \\mathbf{x}_{aug}= \\begin{bmatrix} x_1 \\\\ x_2 \\\\ \\vdots \\\\ x_n \\\\ 1 \\end{bmatrix} \\quad \\text{and} \\quad \\mathbf{w} = \\begin{bmatrix} w_1 \\\\ w_2 \\\\ \\vdots \\\\ w_n \\end{bmatrix} \\longrightarrow \\mathbf{w}_{aug}=  \\begin{bmatrix} w_1 \\\\ w_2 \\\\ \\vdots \\\\ w_n \\\\ b \\end{bmatrix}\n\\]\nWe can easily see then that using this notation:\n\\[\nf(\\mathbf{x}) = \\mathbf{x}^T \\mathbf{w} +b = \\mathbf{x}_{aug}^T \\mathbf{w}_{aug}\n\\]\nThis approach is common enough that we typically won’t bother with the \\(aug\\) notation and just assume that any linear function defined as \\(f(\\mathbf{x})=\\mathbf{x}^T\\mathbf{w}\\) can be defined to include a bias implicitly.\nIn numpy this is similarly straightforward:\n\ndef f(x):\n    w = np.array([-0.6, -0.2, -1])\n    x = np.pad(x, ((0,1),), constant_values=1)\n    return np.dot(x, w)"
+    "text": "Handling bias compactly\nNotationally, it can be tedious to always write the bias term. A common approach to compactly describing linear or affine functions is to use augmented inputs and weights, such that for \\(\\mathbf{x}\\) and \\(\\mathbf{w}\\in \\mathbb{R}^n\\), we add \\(x_{n+1}=1\\) and \\(w_{n+1}=b\\). So:\n\\[\n\\mathbf{x} = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ \\vdots \\\\ x_n \\end{bmatrix} \\longrightarrow \\mathbf{x}_{aug}= \\begin{bmatrix} x_1 \\\\ x_2 \\\\ \\vdots \\\\ x_n \\\\ 1 \\end{bmatrix} \\quad \\text{and} \\quad \\mathbf{w} = \\begin{bmatrix} w_1 \\\\ w_2 \\\\ \\vdots \\\\ w_n \\end{bmatrix} \\longrightarrow \\mathbf{w}_{aug}=  \\begin{bmatrix} w_1 \\\\ w_2 \\\\ \\vdots \\\\ w_n \\\\ b \\end{bmatrix}\n\\]\nWe can easily see then that using this notation:\n\\[\nf(\\mathbf{x}) = \\mathbf{x}^T \\mathbf{w} +b = \\mathbf{x}_{aug}^T \\mathbf{w}_{aug}\n\\]\nThis approach is common enough that we typically won’t bother with the \\(aug\\) notation and just assume that any function defined as \\(f(\\mathbf{x})=\\mathbf{x}^T\\mathbf{w}\\) can be defined to include a bias implicitly. Note that in this case the function is a linear function of the augmented input, thus we will still typically refer to functions of this form as linear functions.\nIn numpy this is similarly straightforward:\n\ndef f(x):\n    w = np.array([-0.6, -0.2, -1])\n    x = np.pad(x, ((0,1),), constant_values=1)\n    return np.dot(x, w)"
   },
   {
     "objectID": "lecture2-linear-regression/notes.html#datasets-and-observations",
@@ -396,7 +396,7 @@
     "href": "lecture2-linear-regression/notes.html#maximum-likelihood-estimation-1",
     "title": "Lecture 2: Linear regression",
     "section": "Maximum likelihood estimation",
-    "text": "Maximum likelihood estimation\nWith this view of linear regression in mind, let’s ask again how we find the optimal value for \\(\\mathbf{w}\\). Possibly the most widely used approach to this is to simply choose the \\(\\mathbf{w}\\) that maximizes the likelihood (conditional probability) of all of the outputs in our dataset:\n\\[\n\\mathbf{w}^* = \\underset{\\mathbf{w}}{\\text{argmax}} \\ p(\\mathbf{y} \\mid \\mathbf{X}, \\mathbf{w}) =\\underset{\\mathbf{w}}{\\text{argmax}} \\ p(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) \\]\nGenerally our model also assumes conditional independence across observations so:\n\\[\np(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) = \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\nFor convenience, it is typical to frame the optimal value in terms of the negative log-likelihood rather than the likelihood, but the two are equivalent.\n\\[\n\\underset{\\mathbf{w}}{\\text{argmax}} \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w}) = \\underset{\\mathbf{w}}{\\text{argmin}} - \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]\nWe see that the negative log-likelihood is a natural loss function to optimize to find \\(\\mathbf{w}^*\\).\n\\[\n\\textbf{Loss}(\\mathbf{w}) =\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\nWe can write out the negative log-likelihood explicitly using the normal PDF:\n\\[\n\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = -\\sum_{i=1}^N\\log\\bigg[\\frac{1}{\\sigma \\sqrt{2 \\pi}} \\text{exp}\\bigg(-\\frac{1}{2\\sigma^2} (y_i - \\mathbf{x}_i^T\\mathbf{w})^2\\bigg)\\bigg]\n\\]\n\\[\n= \\frac{1}{2\\sigma^2} \\sum_{i=1}^N(y_i - \\mathbf{x}_i^T\\mathbf{w})^2 - \\frac{N}{\\sigma \\sqrt{2 \\pi}}\n\\]\nWe see that this loss is very similar to the MSE loss. Taking the gradient this becomes even more clear.\n\\[\n\\nabla_{\\mathbf{w}}\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) =\n\\frac{d}{d\\mathbf{w}}\\bigg( \\frac{1}{2\\sigma^2} \\sum_{i=1}^N(y_i - \\mathbf{x}_i^T\\mathbf{w})^2 - \\frac{N}{\\sigma \\sqrt{2 \\pi}} \\bigg)\n\\]\n\\[\n= \\frac{1}{2\\sigma^2}\\sum_{i=1}^N (\\mathbf{x}_i^T\\mathbf{w} - y_i)\\mathbf{x}_i\n\\]\nAs we saw in the MSE case, the optimal value \\(\\mathbf{w}^*\\) does not depend on the constant value outside the summation. This means that the optimal value for \\(\\mathbf{w}\\) is the same for both MSE and negative log-likelihood and the optimal value does not depend on \\(\\sigma^2\\)!\n\\[\n\\underset{\\mathbf{w}}{\\text{argmin}}\\  MSE(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = \\underset{\\mathbf{w}}{\\text{argmin}}\\ \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]"
+    "text": "Maximum likelihood estimation\nWith this view of linear regression in mind, let’s ask again how we find the optimal value for \\(\\mathbf{w}\\). Possibly the most widely used approach to this is to simply choose the \\(\\mathbf{w}\\) that maximizes the likelihood (conditional probability) of all of the outputs in our dataset:\n\\[\n\\mathbf{w}^* = \\underset{\\mathbf{w}}{\\text{argmax}} \\ p(\\mathbf{y} \\mid \\mathbf{X}, \\mathbf{w}) =\\underset{\\mathbf{w}}{\\text{argmax}} \\ p(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) \\]\nGenerally our model also assumes conditional independence across observations so:\n\\[\np(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) = \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\nFor convenience, it is typical to frame the optimal value in terms of the negative log-likelihood rather than the likelihood, but the two are equivalent.\n\\[\n\\underset{\\mathbf{w}}{\\text{argmax}} \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w}) = \\underset{\\mathbf{w}}{\\text{argmin}} - \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]\nWe see that the negative log-likelihood is a natural loss function to optimize to find \\(\\mathbf{w}^*\\).\n\\[\n\\textbf{Loss}(\\mathbf{w}) =\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\nWe can write out the negative log-likelihood explicitly using the normal PDF:\n\\[\n\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = -\\sum_{i=1}^N\\log\\bigg[\\frac{1}{\\sigma \\sqrt{2 \\pi}} \\text{exp}\\bigg(-\\frac{1}{2\\sigma^2} (y_i - \\mathbf{x}_i^T\\mathbf{w})^2\\bigg)\\bigg]\n\\]\n\\[\n= \\frac{1}{2\\sigma^2} \\sum_{i=1}^N(y_i - \\mathbf{x}_i^T\\mathbf{w})^2 + N \\log \\sigma \\sqrt{2 \\pi}\n\\]\nWe see that this loss is very similar to the MSE loss. Taking the gradient this becomes even more clear.\n\\[\n\\nabla_{\\mathbf{w}}\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) =\n\\frac{d}{d\\mathbf{w}}\\bigg( \\frac{1}{2\\sigma^2} \\sum_{i=1}^N(y_i - \\mathbf{x}_i^T\\mathbf{w})^2 + N \\log \\sigma \\sqrt{2 \\pi} \\bigg)\n\\]\n\\[\n= \\frac{1}{2\\sigma^2}\\sum_{i=1}^N (\\mathbf{x}_i^T\\mathbf{w} - y_i)\\mathbf{x}_i\n\\]\nAs we saw in the MSE case, the optimal value \\(\\mathbf{w}^*\\) does not depend on the constant value outside the summation. This means that the optimal value for \\(\\mathbf{w}\\) is the same for both MSE and negative log-likelihood and the optimal value does not depend on \\(\\sigma^2\\)!\n\\[\n\\underset{\\mathbf{w}}{\\text{argmin}}\\  MSE(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = \\underset{\\mathbf{w}}{\\text{argmin}}\\ \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]"
   },
   {
     "objectID": "lecture2-linear-regression/slides.html",
@@ -1412,5 +1412,558 @@
     "title": "Lecture 1: Background and Prerequisites",
     "section": "Subplots and plot sizes",
     "text": "Subplots and plot sizes\nIt is often useful to put more than one plot together in a group; you can do this using the subplot function. There are various options; for example, “sharex” and “sharey” allow multiple plots to share a single axis range (or, you can set it manually, of course).\n\nfig,ax = plt.subplots(1,3, figsize=(8.0, 2.0))      # make a 1 x 3 grid of plots:\nax[0].plot(x_values, y1, 'b-');   # plot y1 in the first subplot\nax[1].plot(x_values, y2, 'g--');  #   y2 in the 2nd\nax[2].plot(x_values, y3, 'r:');   #   and y3 in the last"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html",
+    "href": "lecture3-logistic-regression/notes.html",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "A function does not need to be restricted to having a single input. We can specify a function with multiple inputs as follows:\n\\[\nf(x, y, z) = x^2 + 3xy - \\log(z)\n\\]\nIn code this would look like;\n\ndef f(x, y, z):\n    return x ** 2 + 3 * y + np.log(z)\n\nA partial derivative is the derivative of a multiple-input function with respect to a single input, assuming all other inputs are constant. We will explore the implications of that condition later on in this course. For now, we will simply view partial derivatives as a straightforward extension of derivatives, using the modified notation \\(\\frac{\\partial}{\\partial x}\\).\nMore formally, we can define the partial derivative with respect to each input of a function as:\n\\[\n\\frac{\\partial f}{\\partial x} = \\underset{\\epsilon\\rightarrow0}{\\lim} \\frac{f(x+\\epsilon, y, z) - f(x,y,z)}{\\epsilon}, \\quad \\frac{\\partial f}{\\partial y} = \\underset{\\epsilon\\rightarrow0}{\\lim} \\frac{f(x, y+\\epsilon, z) - f(x,y,z)}{\\epsilon}\n\\]\nThese partial derivatives tell us how the output of the function changes as we change each of the inputs individually.\n\n\n\nWe can also specify partial derivative functions in the same way as derivative functions. We’ll use subscript notation to specify which input we are differentiating with respect to.\n\\[\n\\frac{\\partial f}{\\partial x} = f_x'(x, y, z)\n\\]\nWe can derive partial derivative functions using the same set of derivative rules:\n\\[\nf(x, y, z) = x^2 + 3xy - \\log(z)\n\\]\n\\[\nf_x'(x, y, z) = 2x + 3y\n\\]\n\\[\nf_y'(x, y, z) = 3x\n\\]\n\\[\nf_z'(x, y, z) = -\\frac{1}{z}\n\\]\n\n\n\nWe can also define functions that take vectors (or matrices) as inputs.\n\\[\ny = f(\\mathbf{x}) \\quad f: \\mathbb{R}^n \\rightarrow \\mathbb{R}\n\\]\nHere \\(f\\) is a mapping from length \\(n\\) vectors to real numbers. As a concrete example we could define the function:\n\\[\nf(\\mathbf{x}) = \\sum_{i=1}^n x_i^3 + 1\n\\]\nHere’s the same function in numpy:\n\ndef f(x):\n    return np.sum(x ** 3) + 1\n\nf(np.array([1, 2, 3]))\n\n37\n\n\nNote that functions of vectors are equivalent to multiple-input functions, but with a more compact notation!\n\n\n\nThe gradient of a vector-input function is a vector such that each element is the partial derivative of the function with respect to the corresponding element of the input vector. We’ll use the same notation as derivatives for gradients.\n\\[\n\\frac{df}{d\\mathbf{x}} = \\begin{bmatrix} \\frac{\\partial f}{\\partial x_1} \\\\ \\frac{\\partial f}{\\partial x_2} \\\\ \\frac{\\partial f}{\\partial x_3} \\\\ \\vdots \\end{bmatrix}\n\\]\nThe gradient is a vector that tangent to the function \\(f\\) at the input \\(\\mathbf{x}\\). Just as with derivatives, this means that the gradient defines a linear approximation to the function at the point \\(\\mathbf{x}\\).\n\\[\nf(\\mathbf{x}+\\mathbf{\\epsilon}) \\approx f(\\mathbf{x}) + \\frac{df}{d\\mathbf{x}} \\cdot \\mathbf{\\epsilon}\n\\]\nWhere \\(\\mathbf{\\epsilon}\\) is now a small vector. Intuitively, this means that if we take a small step in any direction as defined by \\(\\mathbf{\\epsilon}\\), the gradient will approximate the change in the output of the function. Becuase we are now in more than 1 dimension, this approximation defines a plane in \\(\\mathbb{R}^n\\).\nAnother extremely important property of the gradient is that it points in the direction of maximum change in the function. Meaning that if we were to take an infinitesimal step \\(\\mathbf{\\epsilon}\\) from \\(\\mathbf{x}\\) in any direction, stepping in the gradient direction would give use the maximum value of \\(f(\\mathbf{x} +\\mathbf{\\epsilon})\\). We can see this from the approximation above: \\(f(\\mathbf{x} +\\mathbf{\\epsilon})\\) is maximized when \\(\\frac{df}{d\\mathbf{x}}\\) and \\(\\mathbf{\\epsilon}\\) are colinear.\nWe can define the gradient in this sense this more formally as:\n\\[\n\\frac{df}{d\\mathbf{x}}= \\underset{\\gamma \\rightarrow 0}{\\lim}\\ \\underset{\\|\\mathbf{\\epsilon}\\|_2 &lt; \\gamma}{\\max} \\frac{f(\\mathbf{x} + \\mathbf{\\epsilon}) - f(\\mathbf{x})}{\\|\\mathbf{\\epsilon}\\|_2}\n\\]\n\n\n\nJust as with derivatives and partial derivatives, we can define a gradient function that maps an input vector \\(\\mathbf{x}\\) to the gradient of the function \\(f\\) at \\(\\mathbf{x}\\) as:\n\\[\n\\frac{df}{d\\mathbf{x}}=\\nabla f(\\mathbf{x})\n\\]\nHere \\(\\nabla f\\) is the gradient function for \\(f\\). If the function takes multiple vectors as input, we can specify the gradient function with respect to a particular input using subscript notation:\n\\[\n\\frac{df}{d\\mathbf{x}}= \\nabla_{\\mathbf{x}} f(\\mathbf{x}, \\mathbf{y}), \\quad \\frac{df}{d\\mathbf{y}}= \\nabla_{\\mathbf{y}} f(\\mathbf{x}, \\mathbf{y})\n\\]\nNote that the gradient function is a mapping from \\(\\mathbb{R}^n\\rightarrow\\mathbb{R}^n\\), meaning that it returns a vector with the same size as the input.\n\n\n\nAs we’ve seen a vector is a 1-dimensional set of numbers. For example, we can write the vector \\(\\mathbf{x} \\in \\mathbb{R}^3\\) as:\n\\[\\mathbf{x} = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ x_3 \\end{bmatrix}\\]\nRecall that a vector can also be seen as either an \\(n \\times 1\\) matrix (column vector) or a \\(1 \\times n\\) matrix (row vector).\n\\[\\text{Column vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3\n\\end{bmatrix}, \\quad \\text{Row vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 & x_2 & x_3\n\\end{bmatrix}\\]\nNote that we may use the same notation for both as they refer to the same concept (a vector).\n\n\n\nThe difference between row and column vectors becomes relevant when we consider matrix-vector multiplication. We can write matrix-vector multiplication in two ways: \\[\\text{Matrix-vector: }\\mathbf{A}\\mathbf{x} = \\mathbf{b}, \\quad \\text{Vector-matrix: }\\mathbf{x}\\mathbf{A}^T= \\mathbf{b}\\] In matrix-vector multiplication we treat \\(\\textbf{x}\\) as a column vector (\\(n \\times 1\\) matrix), while in vector-matrix multiplication we treat it as a row vector (\\(n \\times 1\\) matrix). Transposing \\(A\\) for left multiplication ensures that the two forms give the same answer.\nIn Numpy the np.dot function works in this way. Given a matrix A and a 1-dimensional vector x, performing both operations will give the same result (another 1-dimensional vector):\n\nA = np.array([[ 1,  2, -1],\n              [ 5, -3,  2],\n              [-2,  1, -4],\n             ])\nx = np.array([1, -2, 1])\n\nAx   = np.dot(A, x)\nxA_T = np.dot(x, A.T)\nprint('Ax   = ', Ax)\nprint('xA^T = ', xA_T)\n\nAx   =  [-4 13 -8]\nxA^T =  [-4 13 -8]\n\n\n\n\n\nIt often is much simpler to explicitly define vectors as being either row or column vectors. The common convention in machine learning is to assume that all vectors are column vectors (\\(n \\times 1\\) matricies) and thus a row vector ( \\(1\\times n\\) matrix) is obtained by explicit transposition:\n\\[\\text{Column vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3\n\\end{bmatrix}, \\quad \\text{Row vector: } \\mathbf{x}^T = \\begin{bmatrix}\nx_1 & x_2 & x_3\n\\end{bmatrix}\\]\nIn this case, we would rewrite the matrix-vector and vector-matrix products we saw above as:\n\\[\\text{Matrix-vector: }\\mathbf{A}\\mathbf{x} = \\mathbf{b}, \\quad \\text{Vector-matrix: }\\mathbf{x}^T\\mathbf{A}^T= \\mathbf{b}^T\\]\nIn Numpy, we can make a vector into an explicit column or row vector by inserting a new dimension, either with the np.expand_dims function or with the indexing operator:\n\nrow_x = np.expand_dims(x, axis=0) # Add a new leading dimension to x\nrow_x\n\narray([[ 1, -2,  1]])\n\n\n\ncolumn_x = np.expand_dims(x, axis=1) # Add a new second dimension to x\nassert np.all(column_x.T == row_x)\ncolumn_x\n\narray([[ 1],\n       [-2],\n       [ 1]])\n\n\nAlternatively:\n\nrow_x = x[None, :]\ncolumn_x = x[:, None]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#partial-derivatives",
+    "href": "lecture3-logistic-regression/notes.html#partial-derivatives",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "A function does not need to be restricted to having a single input. We can specify a function with multiple inputs as follows:\n\\[\nf(x, y, z) = x^2 + 3xy - \\log(z)\n\\]\nIn code this would look like;\n\ndef f(x, y, z):\n    return x ** 2 + 3 * y + np.log(z)\n\nA partial derivative is the derivative of a multiple-input function with respect to a single input, assuming all other inputs are constant. We will explore the implications of that condition later on in this course. For now, we will simply view partial derivatives as a straightforward extension of derivatives, using the modified notation \\(\\frac{\\partial}{\\partial x}\\).\nMore formally, we can define the partial derivative with respect to each input of a function as:\n\\[\n\\frac{\\partial f}{\\partial x} = \\underset{\\epsilon\\rightarrow0}{\\lim} \\frac{f(x+\\epsilon, y, z) - f(x,y,z)}{\\epsilon}, \\quad \\frac{\\partial f}{\\partial y} = \\underset{\\epsilon\\rightarrow0}{\\lim} \\frac{f(x, y+\\epsilon, z) - f(x,y,z)}{\\epsilon}\n\\]\nThese partial derivatives tell us how the output of the function changes as we change each of the inputs individually."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#partial-derivative-functions",
+    "href": "lecture3-logistic-regression/notes.html#partial-derivative-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "We can also specify partial derivative functions in the same way as derivative functions. We’ll use subscript notation to specify which input we are differentiating with respect to.\n\\[\n\\frac{\\partial f}{\\partial x} = f_x'(x, y, z)\n\\]\nWe can derive partial derivative functions using the same set of derivative rules:\n\\[\nf(x, y, z) = x^2 + 3xy - \\log(z)\n\\]\n\\[\nf_x'(x, y, z) = 2x + 3y\n\\]\n\\[\nf_y'(x, y, z) = 3x\n\\]\n\\[\nf_z'(x, y, z) = -\\frac{1}{z}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#functions-of-vectors",
+    "href": "lecture3-logistic-regression/notes.html#functions-of-vectors",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "We can also define functions that take vectors (or matrices) as inputs.\n\\[\ny = f(\\mathbf{x}) \\quad f: \\mathbb{R}^n \\rightarrow \\mathbb{R}\n\\]\nHere \\(f\\) is a mapping from length \\(n\\) vectors to real numbers. As a concrete example we could define the function:\n\\[\nf(\\mathbf{x}) = \\sum_{i=1}^n x_i^3 + 1\n\\]\nHere’s the same function in numpy:\n\ndef f(x):\n    return np.sum(x ** 3) + 1\n\nf(np.array([1, 2, 3]))\n\n37\n\n\nNote that functions of vectors are equivalent to multiple-input functions, but with a more compact notation!"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#gradients",
+    "href": "lecture3-logistic-regression/notes.html#gradients",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "The gradient of a vector-input function is a vector such that each element is the partial derivative of the function with respect to the corresponding element of the input vector. We’ll use the same notation as derivatives for gradients.\n\\[\n\\frac{df}{d\\mathbf{x}} = \\begin{bmatrix} \\frac{\\partial f}{\\partial x_1} \\\\ \\frac{\\partial f}{\\partial x_2} \\\\ \\frac{\\partial f}{\\partial x_3} \\\\ \\vdots \\end{bmatrix}\n\\]\nThe gradient is a vector that tangent to the function \\(f\\) at the input \\(\\mathbf{x}\\). Just as with derivatives, this means that the gradient defines a linear approximation to the function at the point \\(\\mathbf{x}\\).\n\\[\nf(\\mathbf{x}+\\mathbf{\\epsilon}) \\approx f(\\mathbf{x}) + \\frac{df}{d\\mathbf{x}} \\cdot \\mathbf{\\epsilon}\n\\]\nWhere \\(\\mathbf{\\epsilon}\\) is now a small vector. Intuitively, this means that if we take a small step in any direction as defined by \\(\\mathbf{\\epsilon}\\), the gradient will approximate the change in the output of the function. Becuase we are now in more than 1 dimension, this approximation defines a plane in \\(\\mathbb{R}^n\\).\nAnother extremely important property of the gradient is that it points in the direction of maximum change in the function. Meaning that if we were to take an infinitesimal step \\(\\mathbf{\\epsilon}\\) from \\(\\mathbf{x}\\) in any direction, stepping in the gradient direction would give use the maximum value of \\(f(\\mathbf{x} +\\mathbf{\\epsilon})\\). We can see this from the approximation above: \\(f(\\mathbf{x} +\\mathbf{\\epsilon})\\) is maximized when \\(\\frac{df}{d\\mathbf{x}}\\) and \\(\\mathbf{\\epsilon}\\) are colinear.\nWe can define the gradient in this sense this more formally as:\n\\[\n\\frac{df}{d\\mathbf{x}}= \\underset{\\gamma \\rightarrow 0}{\\lim}\\ \\underset{\\|\\mathbf{\\epsilon}\\|_2 &lt; \\gamma}{\\max} \\frac{f(\\mathbf{x} + \\mathbf{\\epsilon}) - f(\\mathbf{x})}{\\|\\mathbf{\\epsilon}\\|_2}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#gradient-functions",
+    "href": "lecture3-logistic-regression/notes.html#gradient-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "Just as with derivatives and partial derivatives, we can define a gradient function that maps an input vector \\(\\mathbf{x}\\) to the gradient of the function \\(f\\) at \\(\\mathbf{x}\\) as:\n\\[\n\\frac{df}{d\\mathbf{x}}=\\nabla f(\\mathbf{x})\n\\]\nHere \\(\\nabla f\\) is the gradient function for \\(f\\). If the function takes multiple vectors as input, we can specify the gradient function with respect to a particular input using subscript notation:\n\\[\n\\frac{df}{d\\mathbf{x}}= \\nabla_{\\mathbf{x}} f(\\mathbf{x}, \\mathbf{y}), \\quad \\frac{df}{d\\mathbf{y}}= \\nabla_{\\mathbf{y}} f(\\mathbf{x}, \\mathbf{y})\n\\]\nNote that the gradient function is a mapping from \\(\\mathbb{R}^n\\rightarrow\\mathbb{R}^n\\), meaning that it returns a vector with the same size as the input."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#notation-revisited",
+    "href": "lecture3-logistic-regression/notes.html#notation-revisited",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Notation revisited",
+    "text": "Notation revisited"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#partial-derivatives-revisited",
+    "href": "lecture3-logistic-regression/notes.html#partial-derivatives-revisited",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Partial derivatives revisited",
+    "text": "Partial derivatives revisited"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#gradients-revisited",
+    "href": "lecture3-logistic-regression/notes.html#gradients-revisited",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Gradients revisited",
+    "text": "Gradients revisited"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#dot-products-as-summations",
+    "href": "lecture3-logistic-regression/notes.html#dot-products-as-summations",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Dot products as summations",
+    "text": "Dot products as summations"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#derivatives-of-summations",
+    "href": "lecture3-logistic-regression/notes.html#derivatives-of-summations",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Derivatives of summations",
+    "text": "Derivatives of summations"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#nested-summations",
+    "href": "lecture3-logistic-regression/notes.html#nested-summations",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Nested summations",
+    "text": "Nested summations"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#derivatives-with-matrix-vector-products",
+    "href": "lecture3-logistic-regression/notes.html#derivatives-with-matrix-vector-products",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Derivatives with matrix-vector products",
+    "text": "Derivatives with matrix-vector products"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#vector-notation-revisited",
+    "href": "lecture3-logistic-regression/notes.html#vector-notation-revisited",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "It often is much simpler to explicitly define vectors as being either row or column vectors. The common convention in machine learning is to assume that all vectors are column vectors (\\(n \\times 1\\) matricies) and thus a row vector ( \\(1\\times n\\) matrix) is obtained by explicit transposition:\n\\[\\text{Column vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3\n\\end{bmatrix}, \\quad \\text{Row vector: } \\mathbf{x}^T = \\begin{bmatrix}\nx_1 & x_2 & x_3\n\\end{bmatrix}\\]\nIn this case, we would rewrite the matrix-vector and vector-matrix products we saw above as:\n\\[\\text{Matrix-vector: }\\mathbf{A}\\mathbf{x} = \\mathbf{b}, \\quad \\text{Vector-matrix: }\\mathbf{x}^T\\mathbf{A}^T= \\mathbf{b}^T\\]\nIn Numpy, we can make a vector into an explicit column or row vector by inserting a new dimension, either with the np.expand_dims function or with the indexing operator:\n\nrow_x = np.expand_dims(x, axis=0) # Add a new leading dimension to x\nrow_x\n\narray([[ 1, -2,  1]])\n\n\n\ncolumn_x = np.expand_dims(x, axis=1) # Add a new second dimension to x\nassert np.all(column_x.T == row_x)\ncolumn_x\n\narray([[ 1],\n       [-2],\n       [ 1]])\n\n\nAlternatively:\n\nrow_x = x[None, :]\ncolumn_x = x[:, None]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#vector-notation",
+    "href": "lecture3-logistic-regression/notes.html#vector-notation",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "As we’ve seen a vector is a 1-dimensional set of numbers. For example, we can write the vector \\(\\mathbf{x} \\in \\mathbb{R}^3\\) as:\n\\[\\mathbf{x} = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ x_3 \\end{bmatrix}\\]\nRecall that a vector can also be seen as either an \\(n \\times 1\\) matrix (column vector) or a \\(1 \\times n\\) matrix (row vector).\n\\[\\text{Column vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3\n\\end{bmatrix}, \\quad \\text{Row vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 & x_2 & x_3\n\\end{bmatrix}\\]\nNote that we may use the same notation for both as they refer to the same concept (a vector)."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#vector-notation-1",
+    "href": "lecture3-logistic-regression/notes.html#vector-notation-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "",
+    "text": "The difference between row and column vectors becomes relevant when we consider matrix-vector multiplication. We can write matrix-vector multiplication in two ways: \\[\\text{Matrix-vector: }\\mathbf{A}\\mathbf{x} = \\mathbf{b}, \\quad \\text{Vector-matrix: }\\mathbf{x}\\mathbf{A}^T= \\mathbf{b}\\] In matrix-vector multiplication we treat \\(\\textbf{x}\\) as a column vector (\\(n \\times 1\\) matrix), while in vector-matrix multiplication we treat it as a row vector (\\(n \\times 1\\) matrix). Transposing \\(A\\) for left multiplication ensures that the two forms give the same answer.\nIn Numpy the np.dot function works in this way. Given a matrix A and a 1-dimensional vector x, performing both operations will give the same result (another 1-dimensional vector):\n\nA = np.array([[ 1,  2, -1],\n              [ 5, -3,  2],\n              [-2,  1, -4],\n             ])\nx = np.array([1, -2, 1])\n\nAx   = np.dot(A, x)\nxA_T = np.dot(x, A.T)\nprint('Ax   = ', Ax)\nprint('xA^T = ', xA_T)\n\nAx   =  [-4 13 -8]\nxA^T =  [-4 13 -8]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#binary-outputs",
+    "href": "lecture3-logistic-regression/notes.html#binary-outputs",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Binary outputs",
+    "text": "Binary outputs\nIn the last lecture we considered approximating functions of the form:\n\\[\ny=f(\\mathbf{x}), \\quad \\text{Input: } \\mathbf{x} \\in\\mathbb{R}^n \\longrightarrow \\text{ Output: }y \\in\\mathbb{R}\n\\]\nIn that setup our function takes in a vector and produces a real number as an output (for example a miles per gallon rating).\nIn many real-world problems, the output we want to model is not a continuous value, but a categorical value, meaning the function produces one a fixed set of known possible outputs. In the simplest binary case our function produces one of two possible outputs.\nFor example: consider the problem of labeling images as containing either cats or dogs. Conceptually we would like a function that maps images to either a cat label or a dog label:\n\n\n\n\n\nFor convenience and generality, we will typically use the set \\(\\{0, 1\\}\\) to denote the possible outputs for a binary categorical function. Therefore in general we are considering functions of the form:\n\\[\ny=f(\\mathbf{x}), \\quad \\text{Input: } \\mathbf{x} \\in\\mathbb{R}^n \\longrightarrow \\text{ Output: }y \\in \\{0, 1\\}\n\\]\nWe can assign these outputs to correspond to our actual target labels. For instance we might say that \\(0 = \\textbf{\"cat\"}\\) and \\(1=\\textbf{\"dog\"}\\).\nWe call prediction of a categorical output classification."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#visualizing-categorical-functions",
+    "href": "lecture3-logistic-regression/notes.html#visualizing-categorical-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Visualizing categorical functions",
+    "text": "Visualizing categorical functions\nAs a simpler example, let’s again consider the fuel efficiency example from the previous lecture. Perhaps our company has set a target fuel efficiency of 30 miles per gallon for our new model and we want to predict whether our design will meet that target. In this case our inputs will be the same as before, but our output will become a binary label:\n\\[\n\\text{Input: } \\mathbf{x}_i= \\begin{bmatrix} \\text{Weight} \\\\ \\text{Horsepower} \\\\ \\text{Displacement} \\\\ \\text{0-60mph}  \\end{bmatrix}, \\quad \\text{Output: } y_i = \\begin{cases} 1: \\text{Meets target } (MPG \\geq 30) \\\\ 0:\n\\text{Fails to meet target } (MPG &lt; 30) \\\\  \\end{cases}\n\\]\nWe can visualize which observations meet our target efficiency by again plotting weight against MPG and using colors to distinguish observations would have label \\(1\\) vs. label \\(0\\).\n\n\n\n\n\nWith this new output definition our dataset will look like:\n\\[\n\\text{Honda Accord: } \\begin{bmatrix} \\text{Weight:} & \\text{2500 lbs} \\\\ \\text{Horsepower:} & \\text{ 123 HP} \\\\ \\text{Displacement:} & \\text{ 2.4 L} \\\\ \\text{0-60mph:} & \\text{ 7.8 Sec} \\end{bmatrix} \\longrightarrow \\text{1   (Meets target)}\n\\]\n\\[\n\\text{Dodge Aspen: } \\begin{bmatrix} \\text{Weight:} & \\text{3800 lbs} \\\\ \\text{Horsepower:} & \\text{ 155 HP} \\\\ \\text{Displacement:} & \\text{ 3.2 L} \\\\ \\text{0-60mph:} & \\text{ 6.8 Sec} \\end{bmatrix} \\longrightarrow  \\text{0   (Does not meet target)}\n\\]\n\\[\n\\vdots \\quad \\vdots\n\\]\nIn this case, we’ve gotten rid of the \\(MPG\\) output variable and replaced it with a binary output \\(y_i \\in \\{0, 1\\}\\). If we plot this version of the data, we can see more directly how this classification task differs from the regression task we saw in the last lecture."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#making-binary-predictions",
+    "href": "lecture3-logistic-regression/notes.html#making-binary-predictions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Making binary predictions",
+    "text": "Making binary predictions\nWe could fit a linear regression model to our binary data, by simply treating the labels \\(0\\) and \\(1\\) as real-valued outputs. For our fuel economy example, such a model would look like this:\n\n\n\n\n\nHowever, this doesn’t really address our problem. How do we interpret a prediction of \\(-1\\) or \\(10\\) or \\(0.5\\)? A more suitable prediction function would only output one of our two possible labels \\(\\{0, 1\\}\\). Fortunately, we can simply adapt our linear regression function in this way by defining a cutoff (typically 0), as follows:\n\\[\nf(\\mathbf{x})=\\mathbf{x}^T\\mathbf{w} \\quad \\longrightarrow \\quad f(\\mathbf{x})=\\begin{cases} 1\\ \\text{   if   }\\ \\mathbf{x}^T\\mathbf{w} \\geq 0 \\\\\n0\\ \\text{   if   }\\ \\mathbf{x}^T\\mathbf{w} &lt; 0\\end{cases}\n\\]\nWe might also write this as:\n\\[\nf(\\mathbf{x}) = \\mathbb{I}(\\mathbf{x}^T\\mathbf{w} \\geq 0)\n\\]\nWhere \\(\\mathbb{I}\\) is an indicator function that is simply \\(1\\) if the boolean expression is true and \\(0\\) otherwise.\nThis gives us a prediction function that looks like step function in 1 dimension:\n\n\n\n\n\nFor our efficiency example, the binary prediction function can be written as:\n\\[\n\\text{Meets target} = f(\\mathbf{x})=\n\\]\n\\[\n\\big((\\text{weight})w_1 + (\\text{horsepower})w_2 + (\\text{displacement})w_3 + (\\text{0-60mph})w_4 + b\\big) \\geq 0\n\\]\nOr in matrix notation:\n\\[\nf(\\mathbf{x})= \\left( \\begin{bmatrix} \\text{Weight} \\\\ \\text{Horsepower} \\\\ \\text{Displacement} \\\\ \\text{0-60mph} \\\\ 1 \\end{bmatrix} \\cdot \\begin{bmatrix} w_1 \\\\ w_2\\\\ w_3 \\\\ w_4\\\\ b\\end{bmatrix} \\geq  0\\right)\n\\]\nIn this form we can see that the sign of each weight parameter determines whether the corresponding feature is more predictive of label \\(1\\) or \\(0\\) and to what extent. For instance, large positive weights indicate features that are very predictive of \\(1\\).\nThis has a geometric interpretation if we think of \\(\\mathbf{w}\\) and \\(\\mathbf{x}\\) as vectors. If the angle between \\(\\mathbf{w}\\) and \\(\\mathbf{x}\\) is in the range \\([-\\frac{\\pi}{2}, \\frac{\\pi}{2}]\\) (or \\([-90^o, 90^o]\\) in degrees), then the prediction will be \\(1\\)."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#descision-boundaries",
+    "href": "lecture3-logistic-regression/notes.html#descision-boundaries",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Descision boundaries",
+    "text": "Descision boundaries\nWe can visualize a classification dataset as a function of two variables using color to distinguish between observations with each label. In this example we’ll look at weight and engine displacement.\n\n\n\n\n\nFor a binary classification model the decision boundary is the border between regions of the input space corresponding to each prediction. For a linear classification model the decision boundary is line or plane:\n\\[\\mathbf{x}^T\\mathbf{w}=0\\]\nWe can similarly plot the predictions made by a linear model using colors.\n\n\nModel accuracy: 0.8291"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#measuring-error",
+    "href": "lecture3-logistic-regression/notes.html#measuring-error",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Measuring error",
+    "text": "Measuring error\nA natural measure for error for binary classifiers is accuracy. The accuracy of a prediction function is the fraction of observations where the prediction matches the true output:\n\\[\n\\textbf{Accuracy} = \\frac{1}{N} \\sum_{i=1}^N \\mathbb{I}\\big(f(\\mathbf{x}_i) = y_i\\big)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#defining-a-loss-function",
+    "href": "lecture3-logistic-regression/notes.html#defining-a-loss-function",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Defining a loss function",
+    "text": "Defining a loss function\nIn the last lecture we saw that we can find an optimal choice of parameters \\(\\mathbf{w}\\) for a linear regression model by defining a measure of error or loss for our approximation on our dataset and minimizing that error as a function of \\(\\mathbf{w}\\), either directly or with gradient descent.\nWe might consider using (negative) accuracy as a loss function or the same mean squared error that we used for linear regression. However, if we tried to minimize one of these losses with gradient descent, we would run into a fundamental problem: the derivative of the prediction function is always \\(0\\). We can see this if we"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#a-pro",
+    "href": "lecture3-logistic-regression/notes.html#a-pro",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A pro",
+    "text": "A pro"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#the-bernoulli-distribution",
+    "href": "lecture3-logistic-regression/notes.html#the-bernoulli-distribution",
+    "title": "Lecture 3: Logistic regression",
+    "section": "The Bernoulli distribution",
+    "text": "The Bernoulli distribution\n\\[\np(y)=\\begin{cases} q\\quad\\ \\ \\ \\ \\ \\ \\  \\text{if }\\ y=1\\\\\n1-q\\quad \\text{if }\\ y=0\\\\\n\\end{cases}\\quad q\\in[0,1],\\ y\\in\\{0, 1\\}\n\\]\nor\n\\[\np(y) = q^y(1-q)^{1-y}\n\\]\n\\[\n\\log p(y) = y\\log q + (1-y)\\log(1-q)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-binary-classification",
+    "href": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-binary-classification",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for binary classification",
+    "text": "A probabilistic model for binary classification\n\\[\ny_i \\sim \\mathcal{N}(\\mathbf{x}^T\\mathbf{w},\\ \\sigma^2)\n\\]\n\\[\n\\mathbf{x}^T\\mathbf{w}\\notin [0, 1] \\quad \\longrightarrow \\quad y_i \\sim \\mathbf{Bernoulli}(\\mathbf{ q=? })\\quad\n\\]\n\\[\n\\textbf{Need }\\ f(x):\\ \\mathbb{R} \\longrightarrow [0,1]\n\\]\n\\[\n\\textbf{Input: } x \\in \\mathbb{R} \\longrightarrow \\textbf{Output: } y \\in [0,1]\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#sigmoid-function",
+    "href": "lecture3-logistic-regression/notes.html#sigmoid-function",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Sigmoid function",
+    "text": "Sigmoid function\n\\[\n\\sigma(x) = \\frac{1}{1+e^{-x}}\n\\]\n\n\n\n\n\n\\[\n\\frac{d}{dx}\\sigma(x) = \\sigma(x)\\big(1-\\sigma(x)\\big)\n\\]\n\\[\n\\sigma(0) = 0.5\n\\]\n\\[\n1-\\sigma(x) = \\sigma(-x)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-binary-classification-1",
+    "href": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-binary-classification-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for binary classification",
+    "text": "A probabilistic model for binary classification\n\\[\ny_i \\sim \\mathbf{Bernoulli}\\big(\\mathbf{ \\sigma(\\mathbf{x}_i^T\\mathbf{w} })\\big)\n\\]\n\\[\np(y_i = 1) = \\sigma(\\mathbf{x}_i^T\\mathbf{w}), \\quad p(y_i=0)=1-\\sigma(\\mathbf{x}_i^T\\mathbf{w})=\\sigma(-\\mathbf{x}_i^T\\mathbf{w})\n\\]\n\n\n\n\n\n\\[\np(y_i=1)\\geq 0.5 \\quad \\longrightarrow \\quad \\mathbf{x}^T\\mathbf{w}\\geq 0\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#maximum-likelihood-estimation",
+    "href": "lecture3-logistic-regression/notes.html#maximum-likelihood-estimation",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\n(conditional probability) of all of the outputs in our dataset:\n\\[\n\\mathbf{w}^* = \\underset{\\mathbf{w}}{\\text{argmax}} \\ p(\\mathbf{y} \\mid \\mathbf{X}, \\mathbf{w}) =\\underset{\\mathbf{w}}{\\text{argmax}} \\ p(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) \\]\nGenerally our model also assumes conditional independence across observations so:\n\\[\np(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) = \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\nFor convenience, it is typical to frame the optimal value in terms of the negative log-likelihood rather than the likelihood, but the two are equivalent.\n\\[\n\\underset{\\mathbf{w}}{\\text{argmax}} \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w}) = \\underset{\\mathbf{w}}{\\text{argmin}} - \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]\nWe see that the negative log-likelihood is a natural loss function to optimize to find \\(\\mathbf{w}^*\\).\n\\[\n\\textbf{Loss}(\\mathbf{w}) =\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\nWe can w\n\\[\n\\mathbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = -\\sum_{i=1}^N y_i\\log \\sigma(\\mathbf{x}^T\\mathbf{w}) + (1-y_i)\\log(1-\\sigma(\\mathbf{x}^T\\mathbf{w}))\n\\]\n\\[\n=-\\sum_{i=1}^N y_i\\log \\sigma(\\mathbf{x}^T\\mathbf{w}) + (1-y_i)\\log \\sigma(-\\mathbf{x}^T\\mathbf{w})\n\\]\n\\[\n\\textbf{Ideally: }\\ p(y_i\\mid \\mathbf{x}_i, \\mathbf{w})=1,\\ \\forall (\\mathbf{x}_i, y_i)\\in \\mathcal{D}\n\\]\n\\[\n\\mathbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = -\\mathbf{y}^T\\log \\sigma(\\mathbf{X}\\mathbf{w})\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#comparing-loss-functions",
+    "href": "lecture3-logistic-regression/notes.html#comparing-loss-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Comparing loss functions",
+    "text": "Comparing loss functions\nLoss for \\(y=0\\) as a function of \\(z=\\mathbf{x}^T\\mathbf{w}\\)\n\\[\n\\textbf{Let: }\\ z=\\mathbf{x}^T\\mathbf{w}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#multi-class-prediction-functions",
+    "href": "lecture3-logistic-regression/notes.html#multi-class-prediction-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Multi-class prediction functions",
+    "text": "Multi-class prediction functions\nWe will typically use a set of integers \\(\\{0,1, 2,...,C\\}\\) to denote the possible outputs for a general categorical function. Therefore in general we are considering functions of the form:\n\\[\ny=f(\\mathbf{x}), \\quad \\text{Input: } \\mathbf{x} \\in\\mathbb{R}^n \\longrightarrow \\text{ Output: }y \\in \\{0, 1, 2, ...,C\\}\n\\]\nIt’s important to note that we are not assuming that the ordering of labels is meaningful For instance if we’re classifying images of animals we might set the labels such that:\n\\[\n\\textbf{0:  Cat},\\quad\n\\textbf{1:  Dog},\\quad\n\\textbf{2:  Mouse}\n\\]\nBut\n\\[\n\\textbf{0:  Dog},\\quad\n\\textbf{1:  Mouse},\\quad\n\\textbf{2:  Cat}\n\\]\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0...C\\}}{\\text{argmax}}\\ \\mathbf{x}^T\\mathbf{w}_c\n\\]\nAlternatively:\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0...C\\}}{\\text{argmax}}\\ (\\mathbf{x}^T\\mathbf{W})_c, \\quad \\mathbf{W} \\in \\mathbb{R}^{d\\times C}\n\\]\nif \\(C=2\\):\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0,1\\}}{\\text{argmax}}\\ (\\mathbf{x}^T\\mathbf{W})_c = \\mathbb{I}(\\mathbf{x}^T\\mathbf{w}_1 - \\mathbf{x}^T\\mathbf{w}_0 \\geq 0)\n\\]\n\\[\n=\\mathbb{I}(\\mathbf{x}^T(\\mathbf{w}_1 - \\mathbf{w}_0) \\geq 0) \\quad \\longrightarrow \\quad \\mathbb{I}(\\mathbf{x}^T\\mathbf{w} \\geq 0), \\quad \\mathbf{w}=\\mathbf{w}_1-\\mathbf{w}_0\n\\]\nWe call prediction of a categorical output classification."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#categorical-distribution",
+    "href": "lecture3-logistic-regression/notes.html#categorical-distribution",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Categorical distribution",
+    "text": "Categorical distribution\n\\[\np(y=c) = q_c, \\quad y\\in \\{1...C\\}\n\\]\n\\[\n\\mathbf{q} \\in \\mathbb{R}^C\\quad q_c \\geq 0\\ \\forall c\\in \\{1...C\\}\\quad \\sum_{c=1}^C q_c=1\n\\]\n\\[\np(y)=\\prod q_c^{\\mathbb{I}(y=c)}\n\\]\n\\[\n\\log p(y) = \\sum_{c=1}^C \\mathbb{I}(y=c)\\log q_c = \\log q_y\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-multi-class-classification",
+    "href": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-multi-class-classification",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for multi-class classification",
+    "text": "A probabilistic model for multi-class classification\n\\[\ny_i\\sim \\mathbf{Categorical}(\\mathbf{q}=?)\n\\]\n\\[\n\\mathbf{q}=\\mathbf{x}^T\\mathbf{W}?\n\\]\n\\[\n\\mathbf{x}^T\\mathbf{W}\\in \\mathbb{R}^C,\\quad  q_c \\ngeq 0\\ \\forall c\\in \\{1...C\\}, \\quad \\sum_{c=1}^C q_c\\neq1\n\\]\n\\[\n\\textbf{Need }\\ f(\\mathbf{x}):\\ \\mathbb{R}^C \\longrightarrow [0,\\infty)^C,\\ \\sum_{i=1}^Cf(\\mathbf{x})_c = 1\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#softmax-function",
+    "href": "lecture3-logistic-regression/notes.html#softmax-function",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Softmax function",
+    "text": "Softmax function\n\\[\n\\text{softmax}(\\mathbf{x})_c = \\frac{e^{x_c}}{\\sum_{j=1}^Ce^{x_j}}\n\\]\nif \\(C=2\\)"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-multi-class-classification-1",
+    "href": "lecture3-logistic-regression/notes.html#a-probabilistic-model-for-multi-class-classification-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for multi-class classification",
+    "text": "A probabilistic model for multi-class classification\n\\[\ny_i\\sim \\mathbf{Categorical}\\big(\\text{softmax}(\\mathbf{x}^T\\mathbf{W})\\big)\n\\]\n\\[\np(y_i=c) = \\text{softmax}(\\mathbf{x}^T\\mathbf{W})_c=\\frac{e^{\\mathbf{x}^T\\mathbf{w}_c}}{\\sum_{j=1}^Ce^{\\mathbf{x}^T\\mathbf{w}_j}}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#maximum-likelihood-estimation-1",
+    "href": "lecture3-logistic-regression/notes.html#maximum-likelihood-estimation-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\n\\[\n\\textbf{Loss}(\\mathbf{W}) =\\textbf{NLL}(\\mathbf{W}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{W})\n\\]\n\\[\n= \\sum_{i=1}^N \\log\\ \\text{softmax}(\\mathbf{x}_i^T\\mathbf{W})_{y_i} = \\sum_{i=1}^N  \\log \\frac{e^{\\mathbf{x}_i^T\\mathbf{w}_{y_i}}}{\\sum_{j=1}^Ce^{\\mathbf{x}_i^T\\mathbf{w}_{j}}}\n\\]\n\\[\n=\\sum_{i=1}^N \\bigg(\\mathbf{x}_i^T\\mathbf{w}_{y_i}- \\log\\sum_{j=1}^Ce^{\\mathbf{x}_i^T\\mathbf{w}_{j}}\\bigg)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/notes.html#training-and-test-datasets",
+    "href": "lecture3-logistic-regression/notes.html#training-and-test-datasets",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Training and test datasets",
+    "text": "Training and test datasets\nIn machine learning we are typically less interested in how our model predicts the data we’ve already seen than we are in how well it makes predictions for new data. One way to estimate how well our model our model will generalize to new data is to hold out data while fitting our model. To do this we will split our dataset into two smaller datasets: a training dataset that we will use to fit our model, and a test or held-out dataset that we will only use to evaluate our model. By computing the loss on this test dataset, we can get a sense of how well our model will make prediction for new data.\n\\[\\mathcal{D} = \\{ (\\mathbf{x}_1, y_1),\\ (\\mathbf{x}_2, y_2),\\ ... \\,(\\mathbf{x}_N, y_N) \\}\\quad \\longrightarrow \\quad\n\\]\n\\[\n\\mathcal{D}_{train} = \\{ (\\mathbf{x}_1, y_1),\\ (\\mathbf{x}_2, y_2),\\ ... \\,(\\mathbf{x}_{Ntrain}, y_{Ntrain}) \\},\\  \n\\mathcal{D}_{test} = \\{ (\\mathbf{x}_1, y_1),\\ (\\mathbf{x}_2, y_2),\\ ... \\,(\\mathbf{x}_{Ntest}, y_{Ntest}) \\}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#partial-derivatives",
+    "href": "lecture3-logistic-regression/slides.html#partial-derivatives",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Partial derivatives",
+    "text": "Partial derivatives\nA function does not need to be restricted to having a single input. We can specify a function with multiple inputs as follows:\n\\[\nf(x, y, z) = x^2 + 3xy - \\log(z)\n\\]\nIn code this would look like;\n\ndef f(x, y, z):\n    return x ** 2 + 3 * y + np.log(z)\n\nA partial derivative is the derivative of a multiple-input function with respect to a single input, assuming all other inputs are constant. We will explore the implications of that condition later on in this course. For now, we will simply view partial derivatives as a straightforward extension of derivatives, using the modified notation \\(\\frac{\\partial}{\\partial x}\\).\nMore formally, we can define the partial derivative with respect to each input of a function as:\n\\[\n\\frac{\\partial f}{\\partial x} = \\underset{\\epsilon\\rightarrow0}{\\lim} \\frac{f(x+\\epsilon, y, z) - f(x,y,z)}{\\epsilon}, \\quad \\frac{\\partial f}{\\partial y} = \\underset{\\epsilon\\rightarrow0}{\\lim} \\frac{f(x, y+\\epsilon, z) - f(x,y,z)}{\\epsilon}\n\\]\nThese partial derivatives tell us how the output of the function changes as we change each of the inputs individually."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#partial-derivative-functions",
+    "href": "lecture3-logistic-regression/slides.html#partial-derivative-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Partial derivative functions",
+    "text": "Partial derivative functions\nWe can also specify partial derivative functions in the same way as derivative functions. We’ll use subscript notation to specify which input we are differentiating with respect to.\n\\[\n\\frac{\\partial f}{\\partial x} = f_x'(x, y, z)\n\\]\nWe can derive partial derivative functions using the same set of derivative rules:\n\\[\nf(x, y, z) = x^2 + 3xy - \\log(z)\n\\]\n\\[\nf_x'(x, y, z) = 2x + 3y\n\\]\n\\[\nf_y'(x, y, z) = 3x\n\\]\n\\[\nf_z'(x, y, z) = -\\frac{1}{z}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#functions-of-vectors",
+    "href": "lecture3-logistic-regression/slides.html#functions-of-vectors",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Functions of vectors",
+    "text": "Functions of vectors\nWe can also define functions that take vectors (or matrices) as inputs.\n\\[\ny = f(\\mathbf{x}) \\quad f: \\mathbb{R}^n \\rightarrow \\mathbb{R}\n\\]\nHere \\(f\\) is a mapping from length \\(n\\) vectors to real numbers. As a concrete example we could define the function:\n\\[\nf(\\mathbf{x}) = \\sum_{i=1}^n x_i^3 + 1\n\\]\nHere’s the same function in numpy:\n\ndef f(x):\n    return np.sum(x ** 3) + 1\n\nf(np.array([1, 2, 3]))\n\n37\n\n\nNote that functions of vectors are equivalent to multiple-input functions, but with a more compact notation!"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#gradients",
+    "href": "lecture3-logistic-regression/slides.html#gradients",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Gradients",
+    "text": "Gradients\nThe gradient of a vector-input function is a vector such that each element is the partial derivative of the function with respect to the corresponding element of the input vector. We’ll use the same notation as derivatives for gradients.\n\\[\n\\frac{df}{d\\mathbf{x}} = \\begin{bmatrix} \\frac{\\partial f}{\\partial x_1} \\\\ \\frac{\\partial f}{\\partial x_2} \\\\ \\frac{\\partial f}{\\partial x_3} \\\\ \\vdots \\end{bmatrix}\n\\]\nThe gradient is a vector that tangent to the function \\(f\\) at the input \\(\\mathbf{x}\\). Just as with derivatives, this means that the gradient defines a linear approximation to the function at the point \\(\\mathbf{x}\\).\n\\[\nf(\\mathbf{x}+\\mathbf{\\epsilon}) \\approx f(\\mathbf{x}) + \\frac{df}{d\\mathbf{x}} \\cdot \\mathbf{\\epsilon}\n\\]\nWhere \\(\\mathbf{\\epsilon}\\) is now a small vector. Intuitively, this means that if we take a small step in any direction as defined by \\(\\mathbf{\\epsilon}\\), the gradient will approximate the change in the output of the function. Becuase we are now in more than 1 dimension, this approximation defines a plane in \\(\\mathbb{R}^n\\).\nAnother extremely important property of the gradient is that it points in the direction of maximum change in the function. Meaning that if we were to take an infinitesimal step \\(\\mathbf{\\epsilon}\\) from \\(\\mathbf{x}\\) in any direction, stepping in the gradient direction would give use the maximum value of \\(f(\\mathbf{x} +\\mathbf{\\epsilon})\\). We can see this from the approximation above: \\(f(\\mathbf{x} +\\mathbf{\\epsilon})\\) is maximized when \\(\\frac{df}{d\\mathbf{x}}\\) and \\(\\mathbf{\\epsilon}\\) are colinear.\nWe can define the gradient in this sense this more formally as:\n\\[\n\\frac{df}{d\\mathbf{x}}= \\underset{\\gamma \\rightarrow 0}{\\lim}\\ \\underset{\\|\\mathbf{\\epsilon}\\|_2 &lt; \\gamma}{\\max} \\frac{f(\\mathbf{x} + \\mathbf{\\epsilon}) - f(\\mathbf{x})}{\\|\\mathbf{\\epsilon}\\|_2}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#gradient-functions",
+    "href": "lecture3-logistic-regression/slides.html#gradient-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Gradient functions",
+    "text": "Gradient functions\nJust as with derivatives and partial derivatives, we can define a gradient function that maps an input vector \\(\\mathbf{x}\\) to the gradient of the function \\(f\\) at \\(\\mathbf{x}\\) as:\n\\[\n\\frac{df}{d\\mathbf{x}}=\\nabla f(\\mathbf{x})\n\\]\nHere \\(\\nabla f\\) is the gradient function for \\(f\\). If the function takes multiple vectors as input, we can specify the gradient function with respect to a particular input using subscript notation:\n\\[\n\\frac{df}{d\\mathbf{x}}= \\nabla_{\\mathbf{x}} f(\\mathbf{x}, \\mathbf{y}), \\quad \\frac{df}{d\\mathbf{y}}= \\nabla_{\\mathbf{y}} f(\\mathbf{x}, \\mathbf{y})\n\\]\nNote that the gradient function is a mapping from \\(\\mathbb{R}^n\\rightarrow\\mathbb{R}^n\\), meaning that it returns a vector with the same size as the input."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#vector-notation",
+    "href": "lecture3-logistic-regression/slides.html#vector-notation",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Vector notation",
+    "text": "Vector notation\nAs we’ve seen a vector is a 1-dimensional set of numbers. For example, we can write the vector \\(\\mathbf{x} \\in \\mathbb{R}^3\\) as:\n\\[\\mathbf{x} = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ x_3 \\end{bmatrix}\\]\nRecall that a vector can also be seen as either an \\(n \\times 1\\) matrix (column vector) or a \\(1 \\times n\\) matrix (row vector).\n\\[\\text{Column vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3\n\\end{bmatrix}, \\quad \\text{Row vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 & x_2 & x_3\n\\end{bmatrix}\\]\nNote that we may use the same notation for both as they refer to the same concept (a vector)."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#vector-notation-1",
+    "href": "lecture3-logistic-regression/slides.html#vector-notation-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Vector notation",
+    "text": "Vector notation\nThe difference between row and column vectors becomes relevant when we consider matrix-vector multiplication. We can write matrix-vector multiplication in two ways: \\[\\text{Matrix-vector: }\\mathbf{A}\\mathbf{x} = \\mathbf{b}, \\quad \\text{Vector-matrix: }\\mathbf{x}\\mathbf{A}^T= \\mathbf{b}\\] In matrix-vector multiplication we treat \\(\\textbf{x}\\) as a column vector (\\(n \\times 1\\) matrix), while in vector-matrix multiplication we treat it as a row vector (\\(n \\times 1\\) matrix). Transposing \\(A\\) for left multiplication ensures that the two forms give the same answer.\nIn Numpy the np.dot function works in this way. Given a matrix A and a 1-dimensional vector x, performing both operations will give the same result (another 1-dimensional vector):\n\nA = np.array([[ 1,  2, -1],\n              [ 5, -3,  2],\n              [-2,  1, -4],\n             ])\nx = np.array([1, -2, 1])\n\nAx   = np.dot(A, x)\nxA_T = np.dot(x, A.T)\nprint('Ax   = ', Ax)\nprint('xA^T = ', xA_T)\n\nAx   =  [-4 13 -8]\nxA^T =  [-4 13 -8]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#vector-notation-revisited",
+    "href": "lecture3-logistic-regression/slides.html#vector-notation-revisited",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Vector notation revisited",
+    "text": "Vector notation revisited\nIt often is much simpler to explicitly define vectors as being either row or column vectors. The common convention in machine learning is to assume that all vectors are column vectors (\\(n \\times 1\\) matricies) and thus a row vector ( \\(1\\times n\\) matrix) is obtained by explicit transposition:\n\\[\\text{Column vector: } \\mathbf{x} = \\begin{bmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3\n\\end{bmatrix}, \\quad \\text{Row vector: } \\mathbf{x}^T = \\begin{bmatrix}\nx_1 & x_2 & x_3\n\\end{bmatrix}\\]\nIn this case, we would rewrite the matrix-vector and vector-matrix products we saw above as:\n\\[\\text{Matrix-vector: }\\mathbf{A}\\mathbf{x} = \\mathbf{b}, \\quad \\text{Vector-matrix: }\\mathbf{x}^T\\mathbf{A}^T= \\mathbf{b}^T\\]\nIn Numpy, we can make a vector into an explicit column or row vector by inserting a new dimension, either with the np.expand_dims function or with the indexing operator:\n\nrow_x = np.expand_dims(x, axis=0) # Add a new leading dimension to x\nrow_x\n\narray([[ 1, -2,  1]])\n\n\n\ncolumn_x = np.expand_dims(x, axis=1) # Add a new second dimension to x\nassert np.all(column_x.T == row_x)\ncolumn_x\n\narray([[ 1],\n       [-2],\n       [ 1]])\n\n\nAlternatively:\n\nrow_x = x[None, :]\ncolumn_x = x[:, None]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#binary-outputs",
+    "href": "lecture3-logistic-regression/slides.html#binary-outputs",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Binary outputs",
+    "text": "Binary outputs\nIn the simplest case there are two possible outputs.\n\nWe use the set \\(\\{0, 1\\}\\) to denote the possible outputs for a binary categorical function.\n\\[\ny=f(\\mathbf{x}), \\quad \\text{Input: } \\mathbf{x} \\in\\mathbb{R}^n \\longrightarrow \\text{ Output: }y \\in \\{0, 1\\}\n\\]\nWe might say that \\(0 = \\textbf{\"cat\"}\\) and \\(1=\\textbf{\"dog\"}\\).\nWe call prediction of a categorical output classification."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#visualizing-categorical-functions",
+    "href": "lecture3-logistic-regression/slides.html#visualizing-categorical-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Visualizing categorical functions",
+    "text": "Visualizing categorical functions\nConsider the fuel efficiency example from the previous lecture.\n\\[\n\\text{Input: } \\mathbf{x}_i= \\begin{bmatrix} \\text{Weight} \\\\ \\text{Horsepower} \\\\ \\text{Displacement} \\\\ \\text{0-60mph}  \\end{bmatrix}, \\quad \\text{Output: } y_i = \\begin{cases} 1: \\text{Meets target } (MPG \\geq 30) \\\\ 0:\n\\text{Fails to meet target } (MPG &lt; 30) \\\\  \\end{cases}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#making-binary-predictions",
+    "href": "lecture3-logistic-regression/slides.html#making-binary-predictions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Making binary predictions",
+    "text": "Making binary predictions\nWe could fit a linear regression model to our binary data, by simply treating the labels \\(0\\) and \\(1\\) as real-valued outputs."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#descision-boundaries",
+    "href": "lecture3-logistic-regression/slides.html#descision-boundaries",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Descision boundaries",
+    "text": "Descision boundaries\nWe can visualize a classification dataset as a function of two variables using color to distinguish between observations with each label. In this example we’ll look at weight and engine displacement."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#measuring-error",
+    "href": "lecture3-logistic-regression/slides.html#measuring-error",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Measuring error",
+    "text": "Measuring error\nA natural measure for error for binary classifiers is accuracy. The accuracy of a prediction function is the fraction of observations where the prediction matches the true output:\n\\[\n\\textbf{Accuracy} = \\frac{1}{N} \\sum_{i=1}^N \\mathbb{I}\\big(f(\\mathbf{x}_i) = y_i\\big)\n\\]\n\n\nModel accuracy: 0.8291"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#defining-a-loss-function",
+    "href": "lecture3-logistic-regression/slides.html#defining-a-loss-function",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Defining a loss function",
+    "text": "Defining a loss function\nIn the last lecture we saw that we can find an optimal choice of parameters \\(\\mathbf{w}\\) for a linear regression model by defining a measure of error or loss for our approximation on our dataset and minimizing that error as a function of \\(\\mathbf{w}\\), either directly or with gradient descent.\nWe might consider using (negative) accuracy as a loss function or the same mean squared error that we used for linear regression. However, if we tried to minimize one of these losses with gradient descent, we would run into a fundamental problem: the derivative of the prediction function is always \\(0\\). We can see this if we"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#the-bernoulli-distribution",
+    "href": "lecture3-logistic-regression/slides.html#the-bernoulli-distribution",
+    "title": "Lecture 3: Logistic regression",
+    "section": "The Bernoulli distribution",
+    "text": "The Bernoulli distribution\nThe Beroulli distribution is a distribution over binary outcomes (0 or 1). It is parameterized simply by \\(q=p(y=1)\\)\n\\[\np(y)=\\begin{cases} q\\quad\\ \\ \\ \\ \\ \\ \\  \\text{if }\\ y=1\\\\\n1-q\\quad \\text{if }\\ y=0\\\\\n\\end{cases}\\quad q\\in[0,1],\\ y\\in\\{0, 1\\}\n\\]\nWe can also write this as:\n\\[\np(y) = q^y(1-q)^{1-y}\n\\]\nThe log-probability or log-likelihood is then:\n\\[\n\\log p(y) = y\\log q + (1-y)\\log(1-q)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-binary-classification",
+    "href": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-binary-classification",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for binary classification",
+    "text": "A probabilistic model for binary classification\nLast lecture saw a probabilistic model for linear regression could be defined as:\n\\[\ny_i \\sim \\mathcal{N}(\\mathbf{x}^T\\mathbf{w},\\ \\sigma^2)\n\\]\nWe’d ideally like to define a similar model for the case of binary outputs using the Bernoulli distribution. However we need to enforce that the Bernoulli parameter is in \\([0,1]\\)\n\\[\n\\mathbf{x}^T\\mathbf{w}\\notin [0, 1] \\quad \\longrightarrow \\quad y_i \\sim \\mathbf{Bernoulli}(\\mathbf{ q=? })\\quad\n\\]\nSo we need a function that can map \\(\\mathbf{x}^T\\mathbf{w}\\) to \\([0,1]\\)\n\\[\n\\textbf{Need }\\ f(x):\\ \\mathbb{R} \\longrightarrow [0,1]\n\\]\n\\[\n\\textbf{Input: } x \\in \\mathbb{R} \\longrightarrow \\textbf{Output: } y \\in [0,1]\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#sigmoid-function",
+    "href": "lecture3-logistic-regression/slides.html#sigmoid-function",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Sigmoid function",
+    "text": "Sigmoid function\nThe sigmoid (or logistic) function is a convenient choice\n\\[\n\\sigma(x) = \\frac{1}{1+e^{-x}}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-binary-classification-1",
+    "href": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-binary-classification-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for binary classification",
+    "text": "A probabilistic model for binary classification\nWith the sigmoid function we can define our probabilistic model\n\\[\ny_i \\sim \\mathbf{Bernoulli}\\big(\\mathbf{ \\sigma(\\mathbf{x}_i^T\\mathbf{w} })\\big)\n\\]\n\\[\np(y_i = 1) = \\sigma(\\mathbf{x}_i^T\\mathbf{w}), \\quad p(y_i=0)=1-\\sigma(\\mathbf{x}_i^T\\mathbf{w})=\\sigma(-\\mathbf{x}_i^T\\mathbf{w})\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation",
+    "href": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\nLet’s review how to find the parameters of a model using maximum likelihood estimation\n\\[\n\\mathbf{w}^* = \\underset{\\mathbf{w}}{\\text{argmax}} \\ p(\\mathbf{y} \\mid \\mathbf{X}, \\mathbf{w}) =\\underset{\\mathbf{w}}{\\text{argmax}} \\ p(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) \\]\nGenerally our model also assumes conditional independence across observations so:\n\\[\np(y_1,...,y_N \\mid \\mathbf{x}_1, ...,\\mathbf{x}_N, \\mathbf{w}) = \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w})\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#comparing-loss-functions",
+    "href": "lecture3-logistic-regression/slides.html#comparing-loss-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Comparing loss functions",
+    "text": "Comparing loss functions\nLoss for \\(y=0\\) as a function of \\(z=\\mathbf{x}^T\\mathbf{w}\\)\n\\[\n\\textbf{Let: }\\ z=\\mathbf{x}^T\\mathbf{w}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions",
+    "href": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Multi-class prediction functions",
+    "text": "Multi-class prediction functions\nWe will typically use a set of integers \\(\\{0,1, 2,...,C\\}\\) to denote the possible outputs for a general categorical function.\n\nTherefore in general we are considering functions of the form:\n\\[\ny=f(\\mathbf{x}), \\quad \\text{Input: } \\mathbf{x} \\in\\mathbb{R}^n \\longrightarrow \\text{ Output: }y \\in \\{0, 1, 2, ...,C\\}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#categorical-distribution",
+    "href": "lecture3-logistic-regression/slides.html#categorical-distribution",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Categorical distribution",
+    "text": "Categorical distribution\nThe Categorical distribution is a distribution over several distinct (discrete) outcomes. It’s parameterized by a vector of probabilities for each outcome:\n\\[\np(y=c) = q_c, \\quad y\\in \\{1...C\\}\n\\]\n\\[\n\\mathbf{q} \\in \\mathbb{R}^C\\quad q_c \\geq 0\\ \\forall c\\in \\{1...C\\}\\quad \\sum_{c=1}^C q_c=1\n\\]\nIt can also be written as:\n\\[\np(y)=\\prod q_c^{\\mathbb{I}(y=c)}\n\\]\nThe log-likelihood is then:\n\\[\n\\log p(y) = \\sum_{c=1}^C \\mathbb{I}(y=c)\\log q_c = \\log q_y\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-multi-class-classification",
+    "href": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-multi-class-classification",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for multi-class classification",
+    "text": "A probabilistic model for multi-class classification\nOnce again we need to translate our linear function output into a valid parameter for this distribution:\n\\[\ny_i\\sim \\mathbf{Categorical}(\\mathbf{q}=?)\n\\]\n\\[\n\\mathbf{q}=\\mathbf{x}^T\\mathbf{W}?\n\\]\n\\[\n\\mathbf{x}^T\\mathbf{W}\\in \\mathbb{R}^C,\\quad  q_c \\ngeq 0\\ \\forall c\\in \\{1...C\\}, \\quad \\sum_{c=1}^C q_c\\neq1\n\\]\n\\[\n\\textbf{Need }\\ f(\\mathbf{x}):\\ \\mathbb{R}^C \\longrightarrow [0,\\infty)^C,\\ \\sum_{i=1}^Cf(\\mathbf{x})_c = 1\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#softmax-function",
+    "href": "lecture3-logistic-regression/slides.html#softmax-function",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Softmax function",
+    "text": "Softmax function\nHere we can use the softmax function!\n\\[\n\\text{softmax}(\\mathbf{x})_c = \\frac{e^{x_c}}{\\sum_{j=1}^Ce^{x_j}}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-multi-class-classification-1",
+    "href": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-multi-class-classification-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for multi-class classification",
+    "text": "A probabilistic model for multi-class classification\n\\[\ny_i\\sim \\mathbf{Categorical}\\big(\\text{softmax}(\\mathbf{x}^T\\mathbf{W})\\big)\n\\]\n\\[\np(y_i=c) = \\text{softmax}(\\mathbf{x}^T\\mathbf{W})_c=\\frac{e^{\\mathbf{x}^T\\mathbf{w}_c}}{\\sum_{j=1}^Ce^{\\mathbf{x}^T\\mathbf{w}_j}}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-1",
+    "href": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\nFor convenience, it is typical to frame the optimal value in terms of the negative log-likelihood rather than the likelihood, but the two are equivalent.\n\\[\n\\underset{\\mathbf{w}}{\\text{argmax}} \\prod_{i=1}^N p(y_i\\mid \\mathbf{x}_i, \\mathbf{w}) = \\underset{\\mathbf{w}}{\\text{argmin}} - \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]\nWe see that the negative log-likelihood is a natural loss function to optimize to find \\(\\mathbf{w}^*\\).\n\\[\n\\textbf{Loss}(\\mathbf{w}) =\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w})\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-2",
+    "href": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-2",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\nWe can now write the maximum likelihood loss for logistic regression.\n\\[\n\\mathbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = -\\sum_{i=1}^N y_i\\log \\sigma(\\mathbf{x}^T\\mathbf{w}) + (1-y_i)\\log(1-\\sigma(\\mathbf{x}^T\\mathbf{w}))\n\\]\n\\[\n=-\\sum_{i=1}^N y_i\\log \\sigma(\\mathbf{x}^T\\mathbf{w}) + (1-y_i)\\log \\sigma(-\\mathbf{x}^T\\mathbf{w})\n\\]\n\\[\n\\textbf{Ideally: }\\ p(y_i\\mid \\mathbf{x}_i, \\mathbf{w})=1,\\ \\forall (\\mathbf{x}_i, y_i)\\in \\mathcal{D}\n\\]\n\\[\n\\mathbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y}) = -\\mathbf{y}^T\\log \\sigma(\\mathbf{X}\\mathbf{w})\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#training-and-test-datasets",
+    "href": "lecture3-logistic-regression/slides.html#training-and-test-datasets",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Training and test datasets",
+    "text": "Training and test datasets\nIn machine learning we are typically less interested in how our model predicts the data we’ve already seen than we are in how well it makes predictions for new data. One way to estimate how well our model our model will generalize to new data is to hold out data while fitting our model. To do this we will split our dataset into two smaller datasets: a training dataset that we will use to fit our model, and a test or held-out dataset that we will only use to evaluate our model. By computing the loss on this test dataset, we can get a sense of how well our model will make prediction for new data.\n\\[\\mathcal{D} = \\{ (\\mathbf{x}_1, y_1),\\ (\\mathbf{x}_2, y_2),\\ ... \\,(\\mathbf{x}_N, y_N) \\}\\quad \\longrightarrow \\quad\n\\]\n\\[\n\\mathcal{D}_{train} = \\{ (\\mathbf{x}_1, y_1),\\ (\\mathbf{x}_2, y_2),\\ ... \\,(\\mathbf{x}_{Ntrain}, y_{Ntrain}) \\},\\  \n\\mathcal{D}_{test} = \\{ (\\mathbf{x}_1, y_1),\\ (\\mathbf{x}_2, y_2),\\ ... \\,(\\mathbf{x}_{Ntest}, y_{Ntest}) \\}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#categorical-outputs",
+    "href": "lecture3-logistic-regression/slides.html#categorical-outputs",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Categorical outputs",
+    "text": "Categorical outputs\nIn the last lecture we considered approximating functions of the form:\n\\[\ny=f(\\mathbf{x}), \\quad \\text{Input: } \\mathbf{x} \\in\\mathbb{R}^n \\longrightarrow \\text{ Output: }y \\in\\mathbb{R}\n\\]\nIn many real-world problems, the output we want to model is not a continuous value, but a categorical value."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#visualizing-categorical-functions-1",
+    "href": "lecture3-logistic-regression/slides.html#visualizing-categorical-functions-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Visualizing categorical functions",
+    "text": "Visualizing categorical functions\nWith this new output definition our dataset will look like:\n\\[\n\\text{Honda Accord: } \\begin{bmatrix} \\text{Weight:} & \\text{2500 lbs} \\\\ \\text{Horsepower:} & \\text{ 123 HP} \\\\ \\text{Displacement:} & \\text{ 2.4 L} \\\\ \\text{0-60mph:} & \\text{ 7.8 Sec} \\end{bmatrix} \\longrightarrow \\text{1   (Meets target)}\n\\]\n\\[\n\\text{Dodge Aspen: } \\begin{bmatrix} \\text{Weight:} & \\text{3800 lbs} \\\\ \\text{Horsepower:} & \\text{ 155 HP} \\\\ \\text{Displacement:} & \\text{ 3.2 L} \\\\ \\text{0-60mph:} & \\text{ 6.8 Sec} \\end{bmatrix} \\longrightarrow  \\text{0   (Does not meet target)}\n\\]\n\\[\n\\vdots \\quad \\vdots\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#visualizing-categorical-functions-2",
+    "href": "lecture3-logistic-regression/slides.html#visualizing-categorical-functions-2",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Visualizing categorical functions",
+    "text": "Visualizing categorical functions"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#making-binary-predictions-1",
+    "href": "lecture3-logistic-regression/slides.html#making-binary-predictions-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Making binary predictions",
+    "text": "Making binary predictions\nA more suitable prediction function would only output one of our two possible labels \\(\\{0, 1\\}\\). Using a cutoff (typically 0), as follows:\n\\[\nf(\\mathbf{x})=\\mathbf{x}^T\\mathbf{w} \\quad \\longrightarrow \\quad f(\\mathbf{x})=\\begin{cases} 1\\ \\text{   if   }\\ \\mathbf{x}^T\\mathbf{w} \\geq 0 \\\\\n0\\ \\text{   if   }\\ \\mathbf{x}^T\\mathbf{w} &lt; 0\\end{cases}\n\\]\nWe might also write this as:\n\\[\nf(\\mathbf{x}) = \\mathbb{I}(\\mathbf{x}^T\\mathbf{w} \\geq 0)\n\\]\nWhere \\(\\mathbb{I}\\) is an indicator function that is simply \\(1\\) if the boolean expression is true and \\(0\\) otherwise."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#making-binary-predictions-2",
+    "href": "lecture3-logistic-regression/slides.html#making-binary-predictions-2",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Making binary predictions",
+    "text": "Making binary predictions\nThis gives us a prediction function that looks like step function in 1 dimension:"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#making-binary-predictions-3",
+    "href": "lecture3-logistic-regression/slides.html#making-binary-predictions-3",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Making binary predictions",
+    "text": "Making binary predictions\nFor our efficiency example, the binary prediction function can be written as:\n\\[\n\\text{Meets target} = f(\\mathbf{x})=\n\\]\n\\[\n\\big((\\text{weight})w_1 + (\\text{horsepower})w_2 + (\\text{displacement})w_3 + (\\text{0-60mph})w_4 + b\\big) \\geq 0\n\\]\nOr in matrix notation:\n\\[\nf(\\mathbf{x})= \\left( \\begin{bmatrix} \\text{Weight} \\\\ \\text{Horsepower} \\\\ \\text{Displacement} \\\\ \\text{0-60mph} \\\\ 1 \\end{bmatrix} \\cdot \\begin{bmatrix} w_1 \\\\ w_2\\\\ w_3 \\\\ w_4\\\\ b\\end{bmatrix} \\geq  0\\right)\n\\]\nIn this form we can see that the sign of each weight parameter determines whether the corresponding feature is more predictive of label \\(1\\) or \\(0\\) and to what extent."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#making-binary-predictions-4",
+    "href": "lecture3-logistic-regression/slides.html#making-binary-predictions-4",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Making binary predictions",
+    "text": "Making binary predictions\nThis has a geometric interpretation if we think of \\(\\mathbf{w}\\) and \\(\\mathbf{x}\\) as vectors. If the angle between \\(\\mathbf{w}\\) and \\(\\mathbf{x}\\) is in the range \\([-\\frac{\\pi}{2}, \\frac{\\pi}{2}]\\) (or \\([-90^o, 90^o]\\) in degrees), then the prediction will be \\(1\\)."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#descision-boundaries-1",
+    "href": "lecture3-logistic-regression/slides.html#descision-boundaries-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Descision boundaries",
+    "text": "Descision boundaries\nThe decision boundary is the border between regions of the input space corresponding to each prediction. For a linear classification model the decision boundary is line or plane:\n\\[\\mathbf{x}^T\\mathbf{w}=0\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#sigmoid-function-1",
+    "href": "lecture3-logistic-regression/slides.html#sigmoid-function-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Sigmoid function",
+    "text": "Sigmoid function\nThe sigmoid function has some nice properties\n\\[\n\\sigma(0) = 0.5\n\\]\n\\[\n1-\\sigma(x) = \\sigma(-x)\n\\]\n\\[\n\\frac{d}{dx}\\sigma(x) = \\sigma(x)\\big(1-\\sigma(x)\\big)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-binary-classification-2",
+    "href": "lecture3-logistic-regression/slides.html#a-probabilistic-model-for-binary-classification-2",
+    "title": "Lecture 3: Logistic regression",
+    "section": "A probabilistic model for binary classification",
+    "text": "A probabilistic model for binary classification\nWe see that if we choose a probability cutoff of \\(0.5\\), our decision boundary doesn’t change!\n\\[\np(y_i=1)\\geq 0.5 \\quad \\longrightarrow \\quad \\mathbf{x}^T\\mathbf{w}\\geq 0\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions-1",
+    "href": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions-1",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Multi-class prediction functions",
+    "text": "Multi-class prediction functions\nIt’s important to note that we are not assuming that the ordering of labels is meaningful For instance if we’re classifying images of animals we might set the labels such that:\n\\[\n\\textbf{0:  Cat},\\quad\n\\textbf{1:  Dog},\\quad\n\\textbf{2:  Mouse}\n\\]\nBut this is equally valid:\n\\[\n\\textbf{0:  Dog},\\quad\n\\textbf{1:  Mouse},\\quad\n\\textbf{2:  Cat}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions-2",
+    "href": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions-2",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Multi-class prediction functions",
+    "text": "Multi-class prediction functions\nA simple prediction function for multiclass classification is:\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0...C\\}}{\\text{argmax}}\\ \\mathbf{x}^T\\mathbf{w}_c\n\\]\nAlternatively:\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0...C\\}}{\\text{argmax}}\\ (\\mathbf{x}^T\\mathbf{W})_c, \\quad \\mathbf{W} \\in \\mathbb{R}^{d\\times C}\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions-3",
+    "href": "lecture3-logistic-regression/slides.html#multi-class-prediction-functions-3",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Multi-class prediction functions",
+    "text": "Multi-class prediction functions\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0...C\\}}{\\text{argmax}}\\ (\\mathbf{x}^T\\mathbf{W})_c, \\quad \\mathbf{W} \\in \\mathbb{R}^{d\\times C}\n\\]\nThis function reduces to the same one we saw before for the case of \\(C=2\\):\n\\[\nf(\\mathbf{x}) = \\underset{c\\in\\{0,1\\}}{\\text{argmax}}\\ (\\mathbf{x}^T\\mathbf{W})_c = \\mathbb{I}(\\mathbf{x}^T\\mathbf{w}_1 - \\mathbf{x}^T\\mathbf{w}_0 \\geq 0)\n\\]\n\\[\n=\\mathbb{I}(\\mathbf{x}^T(\\mathbf{w}_1 - \\mathbf{w}_0) \\geq 0) \\quad \\longrightarrow \\quad \\mathbb{I}(\\mathbf{x}^T\\mathbf{w} \\geq 0), \\quad \\mathbf{w}=\\mathbf{w}_1-\\mathbf{w}_0\n\\]\nThis means the boundary between any two predictions is linear."
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-3",
+    "href": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-3",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\n\\[\n\\textbf{Loss}(\\mathbf{W}) =\\textbf{NLL}(\\mathbf{W}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{W})\n\\]\n\\[\n= \\sum_{i=1}^N \\log\\ \\text{softmax}(\\mathbf{x}_i^T\\mathbf{W})_{y_i} = \\sum_{i=1}^N  \\log \\frac{e^{\\mathbf{x}_i^T\\mathbf{w}_{y_i}}}{\\sum_{j=1}^Ce^{\\mathbf{x}_i^T\\mathbf{w}_{j}}}\n\\]\n\\[\n=\\sum_{i=1}^N \\bigg(\\mathbf{x}_i^T\\mathbf{w}_{y_i}- \\log\\sum_{j=1}^Ce^{\\mathbf{x}_i^T\\mathbf{w}_{j}}\\bigg)\n\\]"
+  },
+  {
+    "objectID": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-4",
+    "href": "lecture3-logistic-regression/slides.html#maximum-likelihood-estimation-4",
+    "title": "Lecture 3: Logistic regression",
+    "section": "Maximum likelihood estimation",
+    "text": "Maximum likelihood estimation\nIn this case our parameters are a matrix\n\\[\n\\nabla_{\\mathbf{W}} \\mathbf{NLL}(\\mathbf{W}, \\mathbf{X}, \\mathbf{y})= \\begin{bmatrix} \\frac{\\partial \\mathbf{NLL}}{\\partial W_{11}} & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{12}} & \\dots & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{1C}} \\\\\n\\frac{\\partial \\mathbf{NLL}}{\\partial W_{21}} & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{22}} & \\dots & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{2C}} \\\\\n\\vdots & \\vdots & \\ddots & \\vdots\\\\\n\\frac{\\partial \\mathbf{NLL}}{\\partial W_{d1}} & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{d2}} & \\dots & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{dC}}\n\\end{bmatrix}\n\\]\nWe can still perform gradient descent as before.\n\\[\n\\mathbf{W}^{(i+1)} \\leftarrow \\mathbf{W}^{(i)} - \\alpha \\nabla_{\\mathbf{W}} \\mathbf{NLL}(\\mathbf{W}^{(i)}, \\mathbf{X}, \\mathbf{y})\n\\]"
   }
 ]
