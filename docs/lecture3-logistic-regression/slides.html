@@ -28,71 +28,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css" id="theme">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -383,6 +318,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+  <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -395,171 +333,16 @@
 </div>
 
 </section>
-<section>
-<section id="vector-calculus-review" class="title-slide slide level1 center">
-<h1>Vector Calculus Review</h1>
+<section class="slide level2">
 
-</section>
-<section id="partial-derivatives" class="slide level2">
-<h2>Partial derivatives</h2>
-<p>A function does not need to be restricted to having a single input. We can specify a function with multiple inputs as follows:</p>
-<p><span class="math display">\[
-f(x, y, z) = x^2 + 3xy - \log(z)
-\]</span></p>
-<p>In code this would look like;</p>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">def</span> f(x, y, z):</span>
-<span id="cb1-2"><a href="#cb1-2"></a>    <span class="cf">return</span> x <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span> <span class="op">*</span> y <span class="op">+</span> np.log(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>A <strong>partial derivative</strong> is the derivative of a multiple-input function with respect to a single input, <em>assuming all other inputs are constant</em>. We will explore the implications of that condition later on in this course. For now, we will simply view partial derivatives as a straightforward extension of derivatives, using the modified notation <span class="math inline">\(\frac{\partial}{\partial x}\)</span>.</p>
-<p>More formally, we can define the partial derivative with respect to each input of a function as:</p>
-<p><span class="math display">\[
-\frac{\partial f}{\partial x} = \underset{\epsilon\rightarrow0}{\lim} \frac{f(x+\epsilon, y, z) - f(x,y,z)}{\epsilon}, \quad \frac{\partial f}{\partial y} = \underset{\epsilon\rightarrow0}{\lim} \frac{f(x, y+\epsilon, z) - f(x,y,z)}{\epsilon}
-\]</span></p>
-<p>These partial derivatives tell us how the output of the function changes as we change each of the inputs individually.</p>
-</section>
-<section id="partial-derivative-functions" class="slide level2">
-<h2>Partial derivative functions</h2>
-<p>We can also specify partial derivative functions in the same way as derivative functions. We’ll use subscript notation to specify which input we are differentiating with respect to.</p>
-<p><span class="math display">\[
-\frac{\partial f}{\partial x} = f_x'(x, y, z)
-\]</span></p>
-<p>We can derive partial derivative functions using the same set of derivative rules:</p>
-<p><span class="math display">\[
-f(x, y, z) = x^2 + 3xy - \log(z)
-\]</span></p>
-<p><span class="math display">\[
-f_x'(x, y, z) = 2x + 3y
-\]</span></p>
-<p><span class="math display">\[
-f_y'(x, y, z) = 3x
-\]</span></p>
-<p><span class="math display">\[
-f_z'(x, y, z) = -\frac{1}{z}
-\]</span></p>
-</section>
-<section id="functions-of-vectors" class="slide level2">
-<h2>Functions of vectors</h2>
-<p>We can also define functions that take vectors (or matrices) as inputs.</p>
-<p><span class="math display">\[
-y = f(\mathbf{x}) \quad f: \mathbb{R}^n \rightarrow \mathbb{R}
-\]</span></p>
-<p>Here <span class="math inline">\(f\)</span> is a mapping from length <span class="math inline">\(n\)</span> vectors to real numbers. As a concrete example we could define the function:</p>
-<p><span class="math display">\[
-f(\mathbf{x}) = \sum_{i=1}^n x_i^3 + 1
-\]</span></p>
-<p>Here’s the same function in numpy:</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">def</span> f(x):</span>
-<span id="cb2-2"><a href="#cb2-2"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(x <span class="op">**</span> <span class="dv">3</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a>f(np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
-<pre><code>37</code></pre>
-</div>
-</div>
-<p>Note that functions of vectors are equivalent to multiple-input functions, but with a more compact notation!</p>
-</section>
-<section id="gradients" class="slide level2">
-<h2>Gradients</h2>
-<p>The <strong>gradient</strong> of a vector-input function is a vector such that each element is the partial derivative of the function with respect to the corresponding element of the input vector. We’ll use the same notation as derivatives for gradients.</p>
-<p><span class="math display">\[
-\frac{df}{d\mathbf{x}} = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\ \frac{\partial f}{\partial x_2} \\ \frac{\partial f}{\partial x_3} \\ \vdots \end{bmatrix}
-\]</span></p>
-<p>The gradient is a vector that <em>tangent</em> to the function <span class="math inline">\(f\)</span> at the input <span class="math inline">\(\mathbf{x}\)</span>. Just as with derivatives, this means that the gradient defines a <em>linear</em> <em>approximation</em> to the function at the point <span class="math inline">\(\mathbf{x}\)</span>.</p>
-<p><span class="math display">\[
-f(\mathbf{x}+\mathbf{\epsilon}) \approx f(\mathbf{x}) + \frac{df}{d\mathbf{x}} \cdot \mathbf{\epsilon}
-\]</span></p>
-<p>Where <span class="math inline">\(\mathbf{\epsilon}\)</span> is now a small vector. Intuitively, this means that if we take a small step <em>in any direction</em> as defined by <span class="math inline">\(\mathbf{\epsilon}\)</span>, the gradient will approximate the change in the output of the function. Becuase we are now in more than 1 dimension, this approximation defines a <em>plane</em> in <span class="math inline">\(\mathbb{R}^n\)</span>.</p>
-<p>Another extremely important property of the gradient is that it points in the direction of maximum change in the function. Meaning that if we were to take an infinitesimal step <span class="math inline">\(\mathbf{\epsilon}\)</span> from <span class="math inline">\(\mathbf{x}\)</span> in any direction, stepping in the gradient direction would give use the maximum value of <span class="math inline">\(f(\mathbf{x} +\mathbf{\epsilon})\)</span>. We can see this from the approximation above: <span class="math inline">\(f(\mathbf{x} +\mathbf{\epsilon})\)</span> is maximized when <span class="math inline">\(\frac{df}{d\mathbf{x}}\)</span> and <span class="math inline">\(\mathbf{\epsilon}\)</span> are colinear.</p>
-<p>We can define the gradient in this sense this more formally as:</p>
-<p><span class="math display">\[
-\frac{df}{d\mathbf{x}}= \underset{\gamma \rightarrow 0}{\lim}\ \underset{\|\mathbf{\epsilon}\|_2 &lt; \gamma}{\max} \frac{f(\mathbf{x} + \mathbf{\epsilon}) - f(\mathbf{x})}{\|\mathbf{\epsilon}\|_2}
-\]</span></p>
-</section>
-<section id="gradient-functions" class="slide level2">
-<h2>Gradient functions</h2>
-<p>Just as with derivatives and partial derivatives, we can define a <strong>gradient function</strong> that maps an input vector <span class="math inline">\(\mathbf{x}\)</span> to the gradient of the function <span class="math inline">\(f\)</span> at <span class="math inline">\(\mathbf{x}\)</span> as:</p>
-<p><span class="math display">\[
-\frac{df}{d\mathbf{x}}=\nabla f(\mathbf{x})
-\]</span></p>
-<p>Here <span class="math inline">\(\nabla f\)</span> is the gradient function for <span class="math inline">\(f\)</span>. If the function takes multiple vectors as input, we can specify the gradient function with respect to a particular input using subscript notation:</p>
-<p><span class="math display">\[
-\frac{df}{d\mathbf{x}}= \nabla_{\mathbf{x}} f(\mathbf{x}, \mathbf{y}), \quad \frac{df}{d\mathbf{y}}= \nabla_{\mathbf{y}} f(\mathbf{x}, \mathbf{y})
-\]</span></p>
-<p>Note that the gradient function is a mapping from <span class="math inline">\(\mathbb{R}^n\rightarrow\mathbb{R}^n\)</span>, meaning that it returns a vector with the same size as the input.</p>
-</section>
-<section id="vector-notation" class="slide level2">
-<h2>Vector notation</h2>
-<p>As we’ve seen a vector is a 1-dimensional set of numbers. For example, we can write the vector <span class="math inline">\(\mathbf{x} \in \mathbb{R}^3\)</span> as:</p>
-<p><span class="math display">\[\mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix}\]</span></p>
-<p>Recall that a vector can also be seen as either an <span class="math inline">\(n \times 1\)</span> matrix (column vector) or a <span class="math inline">\(1 \times n\)</span> matrix (row vector).</p>
-<p><span class="math display">\[\text{Column vector: } \mathbf{x} = \begin{bmatrix}
-x_1 \\
-x_2 \\
-x_3
-\end{bmatrix}, \quad \text{Row vector: } \mathbf{x} = \begin{bmatrix}
-x_1 &amp; x_2 &amp; x_3
-\end{bmatrix}\]</span></p>
-<p>Note that we may use the same notation for both as they refer to the same concept (a vector).</p>
-</section>
-<section id="vector-notation-1" class="slide level2">
-<h2>Vector notation</h2>
-<p>The difference between row and column vectors becomes relevant when we consider matrix-vector multiplication. We can write matrix-vector multiplication in two ways: <span class="math display">\[\text{Matrix-vector: }\mathbf{A}\mathbf{x} = \mathbf{b}, \quad \text{Vector-matrix: }\mathbf{x}\mathbf{A}^T= \mathbf{b}\]</span> In <em>matrix-vector multiplication</em> we treat <span class="math inline">\(\textbf{x}\)</span> as a column vector (<span class="math inline">\(n \times 1\)</span> matrix), while in <em>vector-matrix multiplication</em> we treat it as a row vector (<span class="math inline">\(n \times 1\)</span> matrix). Transposing <span class="math inline">\(A\)</span> for left multiplication ensures that the two forms give the same answer.</p>
-<p>In Numpy the <code>np.dot</code> function works in this way. Given a matrix <code>A</code> and a 1-dimensional vector <code>x</code>, performing both operations will give the same result (another 1-dimensional vector):</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>A <span class="op">=</span> np.array([[ <span class="dv">1</span>,  <span class="dv">2</span>, <span class="op">-</span><span class="dv">1</span>],</span>
-<span id="cb4-2"><a href="#cb4-2"></a>              [ <span class="dv">5</span>, <span class="op">-</span><span class="dv">3</span>,  <span class="dv">2</span>],</span>
-<span id="cb4-3"><a href="#cb4-3"></a>              [<span class="op">-</span><span class="dv">2</span>,  <span class="dv">1</span>, <span class="op">-</span><span class="dv">4</span>],</span>
-<span id="cb4-4"><a href="#cb4-4"></a>             ])</span>
-<span id="cb4-5"><a href="#cb4-5"></a>x <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="op">-</span><span class="dv">2</span>, <span class="dv">1</span>])</span>
-<span id="cb4-6"><a href="#cb4-6"></a></span>
-<span id="cb4-7"><a href="#cb4-7"></a>Ax   <span class="op">=</span> np.dot(A, x)</span>
-<span id="cb4-8"><a href="#cb4-8"></a>xA_T <span class="op">=</span> np.dot(x, A.T)</span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="bu">print</span>(<span class="st">'Ax   = '</span>, Ax)</span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="bu">print</span>(<span class="st">'xA^T = '</span>, xA_T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Ax   =  [-4 13 -8]
-xA^T =  [-4 13 -8]</code></pre>
+<div class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Manim Community <span style="color: #008000; text-decoration-color: #008000">v0.17.3</span>
+
+</pre>
 </div>
 </div>
 </section>
-<section id="vector-notation-revisited" class="slide level2">
-<h2>Vector notation revisited</h2>
-<p>It often is much simpler to explicitly define vectors as being either row or column vectors. The common convention in machine learning is to assume that all vectors are column vectors (<span class="math inline">\(n \times 1\)</span> matricies) and thus a row vector ( <span class="math inline">\(1\times n\)</span> matrix) is obtained by explicit transposition:</p>
-<p><span class="math display">\[\text{Column vector: } \mathbf{x} = \begin{bmatrix}
-x_1 \\
-x_2 \\
-x_3
-\end{bmatrix}, \quad \text{Row vector: } \mathbf{x}^T = \begin{bmatrix}
-x_1 &amp; x_2 &amp; x_3
-\end{bmatrix}\]</span></p>
-<p>In this case, we would rewrite the matrix-vector and vector-matrix products we saw above as:</p>
-<p><span class="math display">\[\text{Matrix-vector: }\mathbf{A}\mathbf{x} = \mathbf{b}, \quad \text{Vector-matrix: }\mathbf{x}^T\mathbf{A}^T= \mathbf{b}^T\]</span></p>
-<p>In Numpy, we can make a vector into an explicit column or row vector by inserting a new dimension, either with the <code>np.expand_dims</code> function or with the indexing operator:</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>row_x <span class="op">=</span> np.expand_dims(x, axis<span class="op">=</span><span class="dv">0</span>) <span class="co"># Add a new leading dimension to x</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>row_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="29">
-<pre><code>array([[ 1, -2,  1]])</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>column_x <span class="op">=</span> np.expand_dims(x, axis<span class="op">=</span><span class="dv">1</span>) <span class="co"># Add a new second dimension to x</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="cf">assert</span> np.<span class="bu">all</span>(column_x.T <span class="op">==</span> row_x)</span>
-<span id="cb8-3"><a href="#cb8-3"></a>column_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
-<pre><code>array([[ 1],
-       [-2],
-       [ 1]])</code></pre>
-</div>
-</div>
-<p>Alternatively:</p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>row_x <span class="op">=</span> x[<span class="va">None</span>, :]</span>
-<span id="cb10-2"><a href="#cb10-2"></a>column_x <span class="op">=</span> x[:, <span class="va">None</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section></section>
 <section>
 <section id="classification" class="title-slide slide level1 center">
 <h1>Classification</h1>
@@ -593,7 +376,7 @@ y=f(\mathbf{x}), \quad \text{Input: } \mathbf{x} \in\mathbb{R}^n \longrightarrow
 \text{Fails to meet target } (MPG &lt; 30) \\  \end{cases}
 \]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-9-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-3-output-1.png" class="r-stretch"></section>
 <section id="visualizing-categorical-functions-1" class="slide level2">
 <h2>Visualizing categorical functions</h2>
 <p>With this new output definition our dataset will look like:</p>
@@ -610,12 +393,12 @@ y=f(\mathbf{x}), \quad \text{Input: } \mathbf{x} \in\mathbb{R}^n \longrightarrow
 <section id="visualizing-categorical-functions-2" class="slide level2">
 <h2>Visualizing categorical functions</h2>
 
-<img data-src="slides_files/figure-revealjs/cell-10-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-4-output-1.png" class="r-stretch"></section>
 <section id="making-binary-predictions" class="slide level2">
 <h2>Making binary predictions</h2>
 <p>We could fit a linear regression model to our binary data, by simply treating the labels <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> as real-valued outputs.</p>
 
-<img data-src="slides_files/figure-revealjs/cell-11-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-5-output-1.png" class="r-stretch"></section>
 <section id="making-binary-predictions-1" class="slide level2">
 <h2>Making binary predictions</h2>
 <p>A more suitable prediction function would <em>only</em> output one of our two possible labels <span class="math inline">\(\{0, 1\}\)</span>. Using a <em>cutoff</em> (typically 0), as follows:</p>
@@ -633,7 +416,7 @@ f(\mathbf{x}) = \mathbb{I}(\mathbf{x}^T\mathbf{w} \geq 0)
 <h2>Making binary predictions</h2>
 <p>This gives us a prediction function that looks like step function in 1 dimension:</p>
 
-<img data-src="slides_files/figure-revealjs/cell-12-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-6-output-1.png" class="r-stretch"></section>
 <section id="making-binary-predictions-3" class="slide level2">
 <h2>Making binary predictions</h2>
 <p>For our efficiency example, the binary prediction function can be written as:</p>
@@ -653,36 +436,31 @@ f(\mathbf{x})= \left( \begin{bmatrix} \text{Weight} \\ \text{Horsepower} \\ \tex
 <h2>Making binary predictions</h2>
 <p>This has a geometric interpretation if we think of <span class="math inline">\(\mathbf{w}\)</span> and <span class="math inline">\(\mathbf{x}\)</span> as vectors. If the angle between <span class="math inline">\(\mathbf{w}\)</span> and <span class="math inline">\(\mathbf{x}\)</span> is in the range <span class="math inline">\([-\frac{\pi}{2}, \frac{\pi}{2}]\)</span> (or <span class="math inline">\([-90^o, 90^o]\)</span> in degrees), then the prediction will be <span class="math inline">\(1\)</span>.</p>
 
-<img data-src="slides_files/figure-revealjs/cell-13-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-7-output-1.png" class="r-stretch"></section>
 <section id="descision-boundaries" class="slide level2">
 <h2>Descision boundaries</h2>
 <p>We can visualize a classification dataset as a function of two variables using color to distinguish between observations with each label. In this example we’ll look at weight and engine displacement.</p>
 
-<img data-src="slides_files/figure-revealjs/cell-14-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-8-output-1.png" class="r-stretch"></section>
 <section id="descision-boundaries-1" class="slide level2">
 <h2>Descision boundaries</h2>
 <p>The <strong>decision boundary</strong> is the border between regions of the input space corresponding to each prediction. For a linear classification model the decision boundary is line or plane:</p>
 <p><span class="math display">\[\mathbf{x}^T\mathbf{w}=0\]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-15-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-9-output-1.png" class="r-stretch"></section>
 <section id="measuring-error" class="slide level2">
 <h2>Measuring error</h2>
 <p>A natural measure for error for binary classifiers is <strong>accuracy</strong>. The <em>accuracy</em> of a prediction function is the fraction of observations where the prediction matches the true output:</p>
 <p><span class="math display">\[
 \textbf{Accuracy} = \frac{1}{N} \sum_{i=1}^N \mathbb{I}\big(f(\mathbf{x}_i) = y_i\big)
 \]</span></p>
-<div class="cell" data-execution_count="15">
+<div class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>Model accuracy: 0.8291</code></pre>
 </div>
 
 </div>
-<img data-src="slides_files/figure-revealjs/cell-16-output-2.png" class="r-stretch"></section>
-<section id="defining-a-loss-function" class="slide level2">
-<h2>Defining a loss function</h2>
-<p>In the last lecture we saw that we can find an optimal choice of parameters <span class="math inline">\(\mathbf{w}\)</span> for a linear regression model by defining a measure of <em>error</em> or <em>loss</em> for our approximation on our dataset and minimizing that error as a function of <span class="math inline">\(\mathbf{w}\)</span>, either directly or with gradient descent.</p>
-<p>We might consider using (negative) accuracy as a loss function or the same mean squared error that we used for linear regression. However, if we tried to minimize one of these losses with gradient descent, we would run into a fundamental problem: the derivative of the prediction function is <em>always</em> <span class="math inline">\(0\)</span>. We can see this if we</p>
-</section></section>
+<img data-src="slides_files/figure-revealjs/cell-10-output-2.png" class="r-stretch"></section></section>
 <section>
 <section id="logistic-regression" class="title-slide slide level1 center">
 <h1>Logistic Regression</h1>
@@ -730,7 +508,7 @@ y_i \sim \mathcal{N}(\mathbf{x}^T\mathbf{w},\ \sigma^2)
 \sigma(x) = \frac{1}{1+e^{-x}}
 \]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-17-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-11-output-1.png" class="r-stretch"></section>
 <section id="sigmoid-function-1" class="slide level2">
 <h2>Sigmoid function</h2>
 <p>The sigmoid function has some nice properties</p>
@@ -744,7 +522,7 @@ y_i \sim \mathcal{N}(\mathbf{x}^T\mathbf{w},\ \sigma^2)
 \frac{d}{dx}\sigma(x) = \sigma(x)\big(1-\sigma(x)\big)
 \]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-18-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-12-output-1.png" class="r-stretch"></section>
 <section id="a-probabilistic-model-for-binary-classification-1" class="slide level2">
 <h2>A probabilistic model for binary classification</h2>
 <p>With the sigmoid function we can define our probabilistic model</p>
@@ -755,7 +533,7 @@ y_i \sim \mathbf{Bernoulli}\big(\mathbf{ \sigma(\mathbf{x}_i^T\mathbf{w} })\big)
 p(y_i = 1) = \sigma(\mathbf{x}_i^T\mathbf{w}), \quad p(y_i=0)=1-\sigma(\mathbf{x}_i^T\mathbf{w})=\sigma(-\mathbf{x}_i^T\mathbf{w})
 \]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-19-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-13-output-1.png" class="r-stretch"></section>
 <section id="a-probabilistic-model-for-binary-classification-2" class="slide level2">
 <h2>A probabilistic model for binary classification</h2>
 <p>We see that if we choose a probability cutoff of <span class="math inline">\(0.5\)</span>, our decision boundary doesn’t change!</p>
@@ -763,7 +541,7 @@ p(y_i = 1) = \sigma(\mathbf{x}_i^T\mathbf{w}), \quad p(y_i=0)=1-\sigma(\mathbf{x
 p(y_i=1)\geq 0.5 \quad \longrightarrow \quad \mathbf{x}^T\mathbf{w}\geq 0
 \]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-20-output-1.png" class="r-stretch"></section>
+<img data-src="slides_files/figure-revealjs/cell-14-output-1.png" class="r-stretch"></section>
 <section id="maximum-likelihood-estimation" class="slide level2">
 <h2>Maximum likelihood estimation</h2>
 <p>Let’s review how to find the parameters of a model using <strong>maximum likelihood estimation</strong></p>
@@ -808,7 +586,7 @@ p(y_1,...,y_N \mid \mathbf{x}_1, ...,\mathbf{x}_N, \mathbf{w}) = \prod_{i=1}^N p
 \textbf{Let: }\ z=\mathbf{x}^T\mathbf{w}
 \]</span></p>
 
-<img data-src="slides_files/figure-revealjs/cell-21-output-1.png" class="r-stretch"></section></section>
+<img data-src="slides_files/figure-revealjs/cell-15-output-1.png" class="r-stretch"></section></section>
 <section>
 <section id="multi-class-classification" class="title-slide slide level1 center">
 <h1>Multi-class classification</h1>
@@ -908,6 +686,7 @@ y_i\sim \mathbf{Categorical}(\mathbf{q}=?)
 </section>
 <section id="a-probabilistic-model-for-multi-class-classification-1" class="slide level2">
 <h2>A probabilistic model for multi-class classification</h2>
+<p>Now we can define our probabilistic model as:</p>
 <p><span class="math display">\[
 y_i\sim \mathbf{Categorical}\big(\text{softmax}(\mathbf{x}^T\mathbf{W})\big)
 \]</span></p>
@@ -956,24 +735,24 @@ p(y_i=c) = \text{softmax}(\mathbf{x}^T\mathbf{W})_c=\frac{e^{\mathbf{x}^T\mathbf
 \mathcal{D}_{train} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_{Ntrain}, y_{Ntrain}) \},\  
 \mathcal{D}_{test} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_{Ntest}, y_{Ntest}) \}
 \]</span></p>
-<div class="cell" data-execution_count="21">
+<div class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/cell-22-output-1.png"></p>
+<p><img data-src="slides_files/figure-revealjs/cell-16-output-1.png"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="22">
+<div class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/cell-23-output-1.png"></p>
+<p><img data-src="slides_files/figure-revealjs/cell-17-output-1.png"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="23">
+<div class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/cell-24-output-1.png"></p>
+<p><img data-src="slides_files/figure-revealjs/cell-18-output-1.png"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="24">
+<div class="cell" data-execution_count="18">
 <div class="cell-output cell-output-display">
-<p><img data-src="slides_files/figure-revealjs/cell-25-output-1.png"></p>
+<p><img data-src="slides_files/figure-revealjs/cell-19-output-1.png"></p>
 </div>
 </div>
 

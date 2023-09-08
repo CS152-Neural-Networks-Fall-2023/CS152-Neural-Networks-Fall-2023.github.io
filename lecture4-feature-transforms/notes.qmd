@@ -1,0 +1,239 @@
+---
+title: "Lecture 3: Logistic regression"
+format:
+    html:
+        toc: true
+        toc-depth: 3
+---
+```{python}
+#| echo: false
+import warnings
+warnings.filterwarnings("ignore")
+from manim import *
+import autograd.numpy as np
+
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class ThreeDLectureScene(ThreeDScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+    
+
+class VectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-7.5, 7.5, 1],
+            y_range=[-5, 5, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+
+class PositiveVectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-2.5, 12.5, 1],
+            y_range=[-1, 9, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+                #axes_labels.set_color(GREY)
+        self.add(self.ax)
+
+class ComparisonVectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax1 = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=6,
+            y_length=6,
+            axis_config={"color": GREY},
+        )
+        self.ax2 = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=6,
+            y_length=6,
+            axis_config={"color": GREY},
+        )
+        axgroup = Group(self.ax1, self.ax2)
+        axgroup.arrange_in_grid(buf=2)
+        
+        #axes_labels.set_color(GREY)
+        self.add(axgroup)
+```
+
+# Evaluating models
+
+## Training and test datasets
+
+In machine learning we are typically less interested in how our model predicts the data we've already seen than we are in how well it makes predictions for *new* data. One way to estimate how well our model our model will generalize to new data is to *hold out* data while fitting our model. To do this we will split our dataset into two smaller datasets: a *training dataset* that we will use to fit our model, and a *test* or *held-out* dataset that we will only use to evaluate our model. By computing the loss on this test dataset, we can get a sense of how well our model will make prediction for new data.
+
+$$\mathcal{D} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_N, y_N) \}\quad \longrightarrow \quad
+$$
+
+$$
+\mathcal{D}_{train} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_{Ntrain}, y_{Ntrain}) \},\  
+\mathcal{D}_{test} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_{Ntest}, y_{Ntest}) \}
+$$
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
+import pandas as pd
+mpg_data = pd.read_csv('data/auto-mpg.csv')
+data = mpg_data[::10].sort_values(by=['weight'])
+
+from sklearn.linear_model import LinearRegression, LogisticRegression
+x = np.array(data[['weight', 'displacement']])
+y = (np.array(data['mpg']) > 25).astype(float)
+model = LogisticRegression().fit(x, y)
+
+class HP_MPG(Scene):
+    def construct(self):
+        self.camera.background_color = "#ffffff"
+        self.ax = Axes(
+            x_range=[1000, 5500, 500],
+            y_range=[0, 500, 100],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )        
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+        
+        
+        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
+        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
+        dots = VGroup(*all_dots)
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
+        labels.set_color(GREY)
+        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
+        self.add(dots,  labels, plot)
+
+```
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
+import pandas as pd
+mpg_data = pd.read_csv('data/auto-mpg.csv')
+data = mpg_data[1::10].sort_values(by=['weight'])
+
+from sklearn.linear_model import LinearRegression, LogisticRegression
+x = np.array(data[['weight', 'displacement']])
+y = (np.array(data['mpg']) > 25).astype(float)
+#model = LogisticRegression().fit(x, y)
+
+class HP_MPG(Scene):
+    def construct(self):
+        self.camera.background_color = "#ffffff"
+        self.ax = Axes(
+            x_range=[1000, 5500, 500],
+            y_range=[0, 500, 100],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )        
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+        
+        
+        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
+        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
+        dots = VGroup(*all_dots)
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
+        labels.set_color(GREY)
+        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
+        self.add(dots,  labels, plot)
+```
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
+import pandas as pd
+mpg_data = pd.read_csv('data/auto-mpg.csv')
+data = mpg_data[:40].sort_values(by=['weight'])
+
+from sklearn.linear_model import LinearRegression, LogisticRegression
+x = np.array(data[['weight', 'displacement']])
+y = (np.array(data['mpg']) > 25).astype(float)
+model = LogisticRegression().fit(x, y)
+
+class HP_MPG(Scene):
+    def construct(self):
+        self.camera.background_color = "#ffffff"
+        self.ax = Axes(
+            x_range=[1000, 5500, 500],
+            y_range=[0, 500, 100],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )        
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+        
+        
+        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
+        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
+        dots = VGroup(*all_dots)
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
+        labels.set_color(GREY)
+        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
+        self.add(dots,  labels, plot)
+```
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
+import pandas as pd
+mpg_data = pd.read_csv('data/auto-mpg.csv')
+data = mpg_data[1::10].sort_values(by=['weight'])
+
+from sklearn.linear_model import LinearRegression, LogisticRegression
+x = np.array(data[['weight', 'displacement']])
+y = (np.array(data['mpg']) > 25).astype(float)
+#model = LogisticRegression().fit(x, y)
+
+class HP_MPG(Scene):
+    def construct(self):
+        self.camera.background_color = "#ffffff"
+        self.ax = Axes(
+            x_range=[1000, 5500, 500],
+            y_range=[0, 500, 100],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )        
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+        
+        
+        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
+        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
+        dots = VGroup(*all_dots)
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
+        labels.set_color(GREY)
+        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
+        self.add(dots,  labels, plot)
+```

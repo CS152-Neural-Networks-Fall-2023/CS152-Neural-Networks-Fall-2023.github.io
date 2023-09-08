@@ -10,7 +10,10 @@ format:
 #| echo: false
 import warnings
 warnings.filterwarnings("ignore")
-from manim import *
+import os
+import contextlib
+with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+    from manim import *
 import autograd.numpy as np
 
 
@@ -80,200 +83,9 @@ class ComparisonVectorScene(LectureScene):
         self.add(axgroup)
 ```
 
-# Vector Calculus Review
+# Classification
 
-## Partial derivatives
-
-A function does not need to be restricted to having a single input. We can specify a function with multiple inputs as follows:
-
-$$
-f(x, y, z) = x^2 + 3xy - \log(z)
-$$
-
-In code this would look like;
-
-```{python}
-def f(x, y, z):
-    return x ** 2 + 3 * y + np.log(z)
-```
-
-A **partial derivative** is the derivative of a multiple-input function with respect to a single input, *assuming all other inputs are constant*. We will explore the implications of that condition later on in this course. For now, we will simply view partial derivatives as a straightforward extension of derivatives, using the modified notation $\frac{\partial}{\partial x}$.
-
-More formally, we can define the partial derivative with respect to each input of a function as:
-
-$$
-\frac{\partial f}{\partial x} = \underset{\epsilon\rightarrow0}{\lim} \frac{f(x+\epsilon, y, z) - f(x,y,z)}{\epsilon}, \quad \frac{\partial f}{\partial y} = \underset{\epsilon\rightarrow0}{\lim} \frac{f(x, y+\epsilon, z) - f(x,y,z)}{\epsilon}
-$$
-
-These partial derivatives tell us how the output of the function changes as we change each of the inputs individually.
-
-## Partial derivative functions
-
-We can also specify partial derivative functions in the same way as derivative functions. We'll use subscript notation to specify which input we are differentiating with respect to.
-
-$$
-\frac{\partial f}{\partial x} = f_x'(x, y, z)
-$$
-
-We can derive partial derivative functions using the same set of derivative rules:
-
-$$
-f(x, y, z) = x^2 + 3xy - \log(z)
-$$
-
-$$
-f_x'(x, y, z) = 2x + 3y
-$$
-
-$$
-f_y'(x, y, z) = 3x
-$$
-
-$$
-f_z'(x, y, z) = -\frac{1}{z}
-$$
-
-## Functions of vectors
-
-We can also define functions that take vectors (or matrices) as inputs.
-
-$$
-y = f(\mathbf{x}) \quad f: \mathbb{R}^n \rightarrow \mathbb{R}
-$$
-
-Here $f$ is a mapping from length $n$ vectors to real numbers. As a concrete example we could define the function:
-
-$$
-f(\mathbf{x}) = \sum_{i=1}^n x_i^3 + 1
-$$
-
-Here's the same function in numpy:
-
-```{python}
-def f(x):
-    return np.sum(x ** 3) + 1
-
-f(np.array([1, 2, 3]))
-```
-
-Note that functions of vectors are equivalent to multiple-input functions, but with a more compact notation!
-
-## Gradients
-
-The **gradient** of a vector-input function is a vector such that each element is the partial derivative of the function with respect to the corresponding element of the input vector. We'll use the same notation as derivatives for gradients.
-
-$$
-\frac{df}{d\mathbf{x}} = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\ \frac{\partial f}{\partial x_2} \\ \frac{\partial f}{\partial x_3} \\ \vdots \end{bmatrix}
-$$
-
-The gradient is a vector that *tangent* to the function $f$ at the input $\mathbf{x}$. Just as with derivatives, this means that the gradient defines a *linear* *approximation* to the function at the point $\mathbf{x}$.
-
-$$
-f(\mathbf{x}+\mathbf{\epsilon}) \approx f(\mathbf{x}) + \frac{df}{d\mathbf{x}} \cdot \mathbf{\epsilon}
-$$
-
-Where $\mathbf{\epsilon}$ is now a small vector. Intuitively, this means that if we take a small step *in any direction* as defined by $\mathbf{\epsilon}$, the gradient will approximate the change in the output of the function. Becuase we are now in more than 1 dimension, this approximation defines a *plane* in $\mathbb{R}^n$.
-
-Another extremely important property of the gradient is that it points in the direction of maximum change in the function. Meaning that if we were to take an infinitesimal step $\mathbf{\epsilon}$ from $\mathbf{x}$ in any direction, stepping in the gradient direction would give use the maximum value of $f(\mathbf{x} +\mathbf{\epsilon})$. We can see this from the approximation above: $f(\mathbf{x} +\mathbf{\epsilon})$ is maximized when $\frac{df}{d\mathbf{x}}$ and $\mathbf{\epsilon}$ are colinear.
-
-We can define the gradient in this sense this more formally as:
-
-$$
-\frac{df}{d\mathbf{x}}= \underset{\gamma \rightarrow 0}{\lim}\ \underset{\|\mathbf{\epsilon}\|_2 < \gamma}{\max} \frac{f(\mathbf{x} + \mathbf{\epsilon}) - f(\mathbf{x})}{\|\mathbf{\epsilon}\|_2}
-$$
-
-## Gradient functions
-
-Just as with derivatives and partial derivatives, we can define a **gradient function** that maps an input vector $\mathbf{x}$ to the gradient of the function $f$ at $\mathbf{x}$ as:
-
-$$
-\frac{df}{d\mathbf{x}}=\nabla f(\mathbf{x})
-$$
-
-Here $\nabla f$ is the gradient function for $f$. If the function takes multiple vectors as input, we can specify the gradient function with respect to a particular input using subscript notation:
-
-$$
-\frac{df}{d\mathbf{x}}= \nabla_{\mathbf{x}} f(\mathbf{x}, \mathbf{y}), \quad \frac{df}{d\mathbf{y}}= \nabla_{\mathbf{y}} f(\mathbf{x}, \mathbf{y})
-$$
-
-Note that the gradient function is a mapping from $\mathbb{R}^n\rightarrow\mathbb{R}^n$, meaning that it returns a vector with the same size as the input.
-
-## Vector notation
-
-As we've seen a vector is a 1-dimensional set of numbers. For example, we can write the vector $\mathbf{x} \in \mathbb{R}^3$ as:
-
-$$\mathbf{x} = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix}$$
-
-Recall that a vector can also be seen as either an $n \times 1$ matrix (column vector) or a $1 \times n$ matrix (row vector).
-
-$$\text{Column vector: } \mathbf{x} = \begin{bmatrix}
-x_1 \\
-x_2 \\
-x_3
-\end{bmatrix}, \quad \text{Row vector: } \mathbf{x} = \begin{bmatrix}
-x_1 & x_2 & x_3
-\end{bmatrix}$$
-
-Note that we may use the same notation for both as they refer to the same concept (a vector).
-
-## Vector notation
-
-The difference between row and column vectors becomes relevant when we consider matrix-vector multiplication. We can write matrix-vector multiplication in two ways: $$\text{Matrix-vector: }\mathbf{A}\mathbf{x} = \mathbf{b}, \quad \text{Vector-matrix: }\mathbf{x}\mathbf{A}^T= \mathbf{b}$$ In *matrix-vector multiplication* we treat $\textbf{x}$ as a column vector ($n \times 1$ matrix), while in *vector-matrix multiplication* we treat it as a row vector ($n \times 1$ matrix). Transposing $A$ for left multiplication ensures that the two forms give the same answer.
-
-In Numpy the `np.dot` function works in this way. Given a matrix `A` and a 1-dimensional vector `x`, performing both operations will give the same result (another 1-dimensional vector):
-
-```{python}
-A = np.array([[ 1,  2, -1],
-              [ 5, -3,  2],
-              [-2,  1, -4],
-             ])
-x = np.array([1, -2, 1])
-
-Ax   = np.dot(A, x)
-xA_T = np.dot(x, A.T)
-print('Ax   = ', Ax)
-print('xA^T = ', xA_T)
-```
-
-## Vector notation revisited
-
-It often is much simpler to explicitly define vectors as being either row or column vectors. The common convention in machine learning is to assume that all vectors are column vectors ($n \times 1$ matricies) and thus a row vector ( $1\times n$ matrix) is obtained by explicit transposition:
-
-$$\text{Column vector: } \mathbf{x} = \begin{bmatrix}
-x_1 \\
-x_2 \\
-x_3
-\end{bmatrix}, \quad \text{Row vector: } \mathbf{x}^T = \begin{bmatrix}
-x_1 & x_2 & x_3
-\end{bmatrix}$$
-
-In this case, we would rewrite the matrix-vector and vector-matrix products we saw above as:
-
-$$\text{Matrix-vector: }\mathbf{A}\mathbf{x} = \mathbf{b}, \quad \text{Vector-matrix: }\mathbf{x}^T\mathbf{A}^T= \mathbf{b}^T$$
-
-In Numpy, we can make a vector into an explicit column or row vector by inserting a new dimension, either with the `np.expand_dims` function or with the indexing operator:
-
-```{python}
-row_x = np.expand_dims(x, axis=0) # Add a new leading dimension to x
-row_x
-```
-
-```{python}
-column_x = np.expand_dims(x, axis=1) # Add a new second dimension to x
-assert np.all(column_x.T == row_x)
-column_x
-```
-
-Alternatively:
-
-```{python}
-row_x = x[None, :]
-column_x = x[:, None]
-```
-
-# Logistic Regression
-
-## Binary outputs
+## Functions with categorical outputs
 
 In the last lecture we considered approximating functions of the form:
 
@@ -283,13 +95,21 @@ $$
 
 In that setup our function takes in a vector and produces a real number as an output (for example a miles per gallon rating).
 
-In many real-world problems, the output we want to model is not a continuous value, but a *categorical* value, meaning the function produces one a fixed set of known possible outputs. In the simplest *binary* case our function produces one of two possible outputs.
+In many real-world problems, the output we want to model is not a continuous value, but a *categorical* value, meaning the function produces one choice from an unordered of possible outputs. A well-studied example of this kind of prediction is labeling; we might want to assign a label to an image based on the image's content.
+
+![](pictures/catdogmouse.png)
+
+We call the prediction of categorical outputs **classification**. The output is often also called the *class* of the obserc
+
+## Binary outputs
+
+In the simplest *binary* case our function produces one of two possible outputs.
 
 For example: consider the problem of labeling images as containing either cats or dogs. Conceptually we would like a function that maps images to either a cat label or a dog label:
 
 ![](pictures/catdog.png){fig-align="center"}
 
-For convenience and generality, we will typically use the set $\{0, 1\}$ to denote the possible outputs for a binary categorical function. Therefore in general we are considering functions of the form:
+For convenience and generality, we will typically use the set $\{0, 1\}$ to denote the possible outputs for a binary classification function. Therefore in general we are considering functions of the form:
 
 $$
 y=f(\mathbf{x}), \quad \text{Input: } \mathbf{x} \in\mathbb{R}^n \longrightarrow \text{ Output: }y \in \{0, 1\}
@@ -297,9 +117,7 @@ $$
 
 We can assign these outputs to correspond to our actual target labels. For instance we might say that $0 = \textbf{"cat"}$ and $1=\textbf{"dog"}$.
 
-We call prediction of a categorical output **classification**.
-
-## Visualizing categorical functions
+## Visualizing categorical outputs
 
 As a simpler example, let's again consider the fuel efficiency example from the previous lecture. Perhaps our company has set a target fuel efficiency of 30 miles per gallon for our new model and we want to predict whether our design will meet that target. In this case our inputs will be the same as before, but our output will become a binary label:
 
@@ -417,7 +235,7 @@ class HP_MPG_LR(Scene):
             y_length=8,
             axis_config={"color": GREY},
         )
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="MPG")
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Meets\ target")
         labels.set_color(GREY)
         self.add(self.ax, labels)
         
@@ -437,7 +255,9 @@ class HP_MPG_LR(Scene):
 
 ```
 
-However, this doesn't really address our problem. How do we interpret a prediction of $-1$ or $10$ or $0.5$? A more suitable prediction function would *only* output one of our two possible labels $\{0, 1\}$. Fortunately, we can simply adapt our linear regression function in this way by defining a *cutoff* (typically 0), as follows:
+However, this doesn't really address our problem. How do we interpret a prediction of $-1$ or $10$ or $0.5$?
+
+A more suitable prediction function would *only* output one of our two possible labels $\{0, 1\}$. Fortunately, we can adapt our linear regression function in this way by defining a *cutoff* (typically 0), as follows:
 
 $$
 f(\mathbf{x})=\mathbf{x}^T\mathbf{w} \quad \longrightarrow \quad f(\mathbf{x})=\begin{cases} 1\ \text{   if   }\ \mathbf{x}^T\mathbf{w} \geq 0 \\
@@ -450,7 +270,7 @@ $$
 f(\mathbf{x}) = \mathbb{I}(\mathbf{x}^T\mathbf{w} \geq 0)
 $$
 
-Where $\mathbb{I}$ is an *indicator function* that is simply $1$ if the boolean expression is true and $0$ otherwise.
+Where $\mathbb{I}$ is an *indicator function* that is $1$ if the boolean expression is true and $0$ otherwise.
 
 This gives us a prediction function that looks like step function in 1 dimension:
 
@@ -473,7 +293,7 @@ class HP_MPG_LR(Scene):
             y_length=8,
             axis_config={"color": GREY},
         )
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="MPG")
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Meets\ target")
         labels.set_color(GREY)
         self.add(self.ax, labels)
         
@@ -491,6 +311,8 @@ class HP_MPG_LR(Scene):
         eq = Tex(r'$f(x)=wx+b$', color=BLACK).to_corner(UR)
         self.add(eq)
 ```
+
+## Interpreting parameters
 
 For our efficiency example, the binary prediction function can be written as:
 
@@ -510,7 +332,15 @@ $$
 
 In this form we can see that the *sign* of each weight parameter determines whether the corresponding feature is more predictive of label $1$ or $0$ and to what extent. For instance, large positive weights indicate features that are very predictive of $1$.
 
-This has a geometric interpretation if we think of $\mathbf{w}$ and $\mathbf{x}$ as vectors. If the angle between $\mathbf{w}$ and $\mathbf{x}$ is in the range $[-\frac{\pi}{2}, \frac{\pi}{2}]$ (or $[-90^o, 90^o]$ in degrees), then the prediction will be $1$.
+## Geometric interpretation of predictions
+
+Our binary prediction function also has a geometric interpretation if we think of $\mathbf{w}$ and $\mathbf{x}$ as vectors. Reall that the dot product between the vectors $\mathbf{x}$ and $\mathbf{w}$ can be written as:
+
+$$
+\mathbf{x}^T\mathbf{w} = ||\mathbf{x}||_2 ||\mathbf{w}||_2 \cos \theta
+$$
+
+Where $\theta$ is the angle between the two vectors. If the angle between $\mathbf{w}$ and $\mathbf{x}$ is in the range $[-\frac{\pi}{2}, \frac{\pi}{2}]$ (or $[-90^o, 90^o]$ in degrees), then the prediction will be $1$, otherwise it will be 0.
 
 ```{python}
 #| echo: false
@@ -557,7 +387,15 @@ class VectorAddition(Scene):
         self.add(eq, eq2)
 ```
 
-## Descision boundaries
+The blue line in the figure above is the set of points such that:
+
+$$
+\mathbf{x}^T \mathbf{w} = 0
+$$
+
+thus it represents the boundary between the regions where $1$ and $0$ predictions are made. By definition, it is *perpendicular* to the direction of $\mathbf{w}$.
+
+## Decision boundaries
 
 We can visualize a classification dataset as a function of two variables using color to distinguish between observations with each label. In this example we'll look at weight and engine displacement.
 
@@ -592,11 +430,11 @@ class HP_MPG(Scene):
         self.add(dots,  labels)
 ```
 
-For a binary classification model the **decision boundary** is the border between regions of the input space corresponding to each prediction. For a linear classification model the decision boundary is line or plane:
+For a binary classification model the **decision boundary** is the border between regions of the input space corresponding to each prediction that we saw in the previous section. For a linear classification model the decision boundary is line or plane:
 
 $$\mathbf{x}^T\mathbf{w}=0$$
 
-We can similarly plot the predictions made by a linear model using colors.
+Here we'll plot the decision boundary in the input space and color code observations by the *predicted* label.
 
 ```{python}
 #| echo: false
@@ -609,7 +447,6 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 x = np.array(mpg_data[['weight', 'displacement']])
 y = (np.array(mpg_data['mpg']) > 25).astype(float)
 model = LogisticRegression().fit(x, y)
-print('Model accuracy: %.4f' % model.score(x, y))
 
 class HP_MPG(Scene):
     def construct(self):
@@ -642,8 +479,16 @@ class HP_MPG(Scene):
 A natural measure for error for binary classifiers is **accuracy**. The *accuracy* of a prediction function is the fraction of observations where the prediction matches the true output:
 
 $$
+\textbf{Accuracy: }\quad \frac{\text{\# of correct predictions}}{\text{Total predictions}}
+$$
+
+We can write this in terms of our prediction function as:
+
+$$
 \textbf{Accuracy} = \frac{1}{N} \sum_{i=1}^N \mathbb{I}\big(f(\mathbf{x}_i) = y_i\big)
 $$
+
+Below we can plot the decision boundary compared to the *true* outputs and calculate the accuracy of our predictions.
 
 ```{python}
 
@@ -657,6 +502,7 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 x = np.array(mpg_data[['weight', 'displacement']])
 y = (np.array(mpg_data['mpg']) > 25).astype(float)
 model = LogisticRegression().fit(x, y)
+print('Accuracy: %.4f' % model.score(x, y))
 
 class HP_MPG(Scene):
     def construct(self):
@@ -689,11 +535,31 @@ class HP_MPG(Scene):
 
 In the last lecture we saw that we can find an optimal choice of parameters $\mathbf{w}$ for a linear regression model by defining a measure of *error* or *loss* for our approximation on our dataset and minimizing that error as a function of $\mathbf{w}$, either directly or with gradient descent.
 
-We might consider using (negative) accuracy as a loss function or the same mean squared error that we used for linear regression. However, if we tried to minimize one of these losses with gradient descent, we would run into a fundamental problem: the derivative of the prediction function is *always* $0$. We can see this if we
+$$
+\mathbf{w}^* = \underset{\mathbf{w}}{\text{argmin}} \ \mathbf{Loss}(\mathbf{w})
+$$
+
+Gradient descent update:
+
+$$
+\mathbf{w}^{(k+1)} \quad \longleftarrow \quad \mathbf{w}^{(k)} - \alpha \nabla_{\mathbf{w}} \mathbf{Loss}(\mathbf{w})
+$$
+
+We might consider using (negative) accuracy as a loss function or the same mean squared error that we used for linear regression. However, if we tried to minimize one of these losses with gradient descent, we would run into a fundamental problem: the derivative of the indicator function is always $0$, meaning gradient descent will never update our model.
+
+To get around this problem, we need to turn back to our *maximum likelihood estimation* approach.
 
 # Logistic Regression
 
 ## The Bernoulli distribution
+
+The **Bernoulli** distribution is a probability distribution over two possible outcomes. It is often thought of as the distribution of a coin flip, where the probability of heads is defined by a *parameter* $q$ in the range $[0,1]$.
+
+$$
+\text{Probability of }\textbf{heads: } \ \ q, \quad \text{Probability of }\textbf{tails: } 1-q
+$$
+
+Again we typically use $0$ and $1$ to denote the two possible outcomes, so we can write the *probability mass function* (or *likelihood*) of the Bernoulli distribution as:
 
 $$
 p(y)=\begin{cases} q\quad\ \ \ \ \ \ \  \text{if }\ y=1\\
@@ -701,11 +567,13 @@ p(y)=\begin{cases} q\quad\ \ \ \ \ \ \  \text{if }\ y=1\\
  \end{cases}\quad q\in[0,1],\ y\in\{0, 1\}
 $$
 
-or
+Using the fact that $y$ can only be $0$ or $1$, we can write this more compactly as:
 
 $$
 p(y) = q^y(1-q)^{1-y}
 $$
+
+Recall that the probability mass function tells us the probability of any outcome under our distribution. We can write the log probability mass function as:
 
 $$
 \log p(y) = y\log q + (1-y)\log(1-q)
@@ -713,16 +581,22 @@ $$
 
 ## A probabilistic model for binary classification
 
+In the previous lecture we saw that we could define a *probabilistic model* for outcomes given inputs by making an strong assumption about how the observed outputs were generated. In particular, we assumed that each $y_i$ was sampled from a Normal distribution where the mean was a linear function of the input $\mathbf{x}_i$.
+
 $$
-y_i \sim \mathcal{N}(\mathbf{x}^T\mathbf{w},\ \sigma^2)
+y_i \sim \mathcal{N}(\mathbf{x}_i^T\mathbf{w},\ \sigma^2)
 $$
+
+Given everything we've seen, we might want to do the same for binary outputs by defining a probabilistic model where each binary label \$y\$\_i\$ is drawn from a Bernoulli where $q$ is a linear function of $\mathbf{x}_i$. Unfortunately $q$ needs to be restricted to the interval $[0,1]$ and a linear function can make no such guarantee about its output.
 
 $$
 \mathbf{x}^T\mathbf{w}\notin [0, 1] \quad \longrightarrow \quad y_i \sim \mathbf{Bernoulli}(\mathbf{ q=? })\quad 
 $$
 
+However, if we had a way to map the outputs of our linear function into the range $[0,1]$, we could define such a model. This means we need a *function* of the form:
+
 $$
-\textbf{Need }\ f(x):\ \mathbb{R} \longrightarrow [0,1]
+\textbf{Need }\ g(x):\ \mathbb{R} \longrightarrow [0,1]
 $$
 
 $$
@@ -730,6 +604,8 @@ $$
 $$
 
 ## Sigmoid function
+
+The **sigmoid** (or **logistic**) function is exactly such a function.
 
 $$
 \sigma(x) = \frac{1}{1+e^{-x}}
@@ -761,13 +637,50 @@ class VectorAddition(Scene):
         self.add(eq)
 ```
 
+This "S"-shaped function *squashes* any real number into the range $[0,1]$. The sigmoid function has a number of other nice properties. It is *smooth*, *monotonic* and *differentiable*. It's derivative has a convenient form that can be written in terms of the sigmoid function itself.
+
 $$
 \frac{d}{dx}\sigma(x) = \sigma(x)\big(1-\sigma(x)\big)
 $$
 
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none VectorAddition
+
+class VectorAddition(Scene):
+    def construct(self):
+        self.camera.background_color = "#ffffff"
+        axes = Axes(
+            x_range=[-8, 8, 1],
+            y_range=[-2, 2, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+        
+        axes_labels = axes.get_axis_labels()
+        #axes_labels.set_color(GREY)
+        self.add(axes, axes_labels)
+
+        def sig(x):
+            return 1/ (1+ np.exp(-x))
+
+        plot = axes.plot(lambda x: sig(x), color=BLUE)
+        plot2 = axes.plot(lambda x:sig(x) * (1-sig(x)), color=RED)
+        self.add(plot, plot2)
+        
+        eq = Tex(r'$\sigma(x)=\frac{1}{1+e^{-x}}$', color=BLUE).to_corner(UR)
+        eq2 = Tex(r'$\frac{d}{dx}\sigma(x)$', color=RED).next_to(eq, DOWN)
+        self.add(eq, eq2)
+```
+
+It's particularly useful for modeling probabilities because:
+
 $$
 \sigma(0) = 0.5
 $$
+
+and
 
 $$
 1-\sigma(x) = \sigma(-x)
@@ -775,13 +688,19 @@ $$
 
 ## A probabilistic model for binary classification
 
+With the sigmoid as our mapping function, we can now define our linear probabilistic model for binary classification as:
+
 $$
 y_i \sim \mathbf{Bernoulli}\big(\mathbf{ \sigma(\mathbf{x}_i^T\mathbf{w} })\big)
 $$
 
+Using this definition, we can easily write out the probability of each output given the input $(\mathbf{x}_i)$ and model parameters $(\mathbf{w})$.
+
 $$
-p(y_i = 1) = \sigma(\mathbf{x}_i^T\mathbf{w}), \quad p(y_i=0)=1-\sigma(\mathbf{x}_i^T\mathbf{w})=\sigma(-\mathbf{x}_i^T\mathbf{w})
+p(y_i = 1\mid \mathbf{x}_i, \mathbf{w}) = \sigma(\mathbf{x}_i^T\mathbf{w}), \quad p(y_i=0\mid \mathbf{x}_i, \mathbf{w})=1-\sigma(\mathbf{x}_i^T\mathbf{w})=\sigma(-\mathbf{x}_i^T\mathbf{w})
 $$
+
+For our fuel efficiency example, we can plot the predicted probability that our target is met, $p(y=1\mid \mathbf{x}, \mathbf{w})$ under our model as a function of the input (in this case `weight`). We see that the result is again an s-curve.
 
 ```{python}
 #| echo: false
@@ -802,7 +721,7 @@ class HP_MPG_LR(Scene):
             y_length=8,
             axis_config={"color": GREY},
         )
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="MPG")
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Meets\ target")
         labels.set_color(GREY)
         self.add(self.ax, labels)
         
@@ -817,22 +736,102 @@ class HP_MPG_LR(Scene):
         plot = self.ax.plot(lambda x: float(model.predict_proba(np.atleast_2d(x))[:,1].item()), x_range=[0000, 6500], color=BLUE)
         self.add(plot)
 
-        eq = Tex(r'$f(x)=\sigma(wx+b)$', color=BLACK).to_corner(UR)
+        eq = Tex(r'$p(y=1\mid x, w, b) = \sigma(wx+b)$', color=BLACK).to_corner(UR)
         self.add(eq)
 ```
+
+We call this probabilistic model for binary outputs: **logistic regression**.
+
+## Logistic regression decision boundary
+
+When we're making predictions we typically don't want to sample an output, we want to make a definite prediction. In this case either $0$ or $1$. A reasonable way to do this is to simply predict the output that is most likely under our model:
+
+$$
+\textbf{Prediction function: } f(\mathbf{x}) = \begin{cases}1 \ \text{if } p(y=1\mid\mathbf{x}, \mathbf{w}) \geq p(y=0\mid\mathbf{x}, \mathbf{w}) \\
+0 \text{ otherwise} \end{cases}
+$$
+
+Since there's only two possible outcomes, this is equivalent to checking if the probability of class $1$ is greater than 50%. $$p(y=1\mid \mathbf{x}, \mathbf{w}) =\sigma(\mathbf{x}^T\mathbf{w})\geq 0.5$$
+
+Since $\sigma(0) =0.5$, we see that this is equivalent to the decision rule for classification we defined earlier!
 
 $$
 p(y_i=1)\geq 0.5 \quad \longrightarrow \quad \mathbf{x}^T\mathbf{w}\geq 0
 $$
 
-## Maximum likelihood estimation
+## Maximum likelihood estimation review
 
-(conditional probability) of all of the outputs in our dataset:
+Now that we've setup our model, we can look at how to find the optimal $\mathbf{w}$ using the principle of *maximum likelihood estimation*.
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none HP_MPG_LR
+from sklearn.linear_model import LogisticRegression
+x = np.array(mpg_data['weight'])[:, np.newaxis]
+y = (np.array(mpg_data['mpg']) > 25).astype(float)
+model = LogisticRegression().fit(x, y)
+
+
+class HP_MPG_LR(Scene):
+    def construct(self):
+        self.camera.background_color = "#ffffff"
+        self.ax = Axes(
+            x_range=[0000, 6500, 500],
+            y_range=[-1, 2, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Meets\ target")
+        labels.set_color(GREY)
+        self.add(self.ax, labels)
+        
+
+        # Add data
+        coords = [[c1, float(c2 > 25)] for (c1, c2) in zip(data['weight'], data['mpg'])]
+        all_dots = [Dot(color=(BLACK if coord[1] == 1 else RED)).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
+        dots = VGroup(*all_dots)
+        self.add(dots)
+
+        # Add Regression line
+        plot = self.ax.plot(lambda x: float(model.predict_proba(np.atleast_2d(x))[:,1].item()), x_range=[0000, 6500], color=BLUE)
+        self.add(plot)
+
+
+        model.coef_ *= 1.2
+        model.intercept_ -= model.intercept_ * 0.1
+        plot = self.ax.plot(lambda x: float(model.predict_proba(np.atleast_2d(x))[:,1].item()), x_range=[0000, 6500], color=ORANGE)
+        self.add(plot)
+
+        model.coef_ *= 2
+        model.intercept_ += model.intercept_ * 2.5
+        plot = self.ax.plot(lambda x: float(model.predict_proba(np.atleast_2d(x))[:,1].item()), x_range=[0000, 6500], color=GREEN)
+        self.add(plot)
+
+        model.coef_ /= 5
+        model.intercept_ -= model.intercept_ * .8
+        plot = self.ax.plot(lambda x: float(model.predict_proba(np.atleast_2d(x))[:,1].item()), x_range=[0000, 6500], color=PURPLE)
+        self.add(plot)
+
+        model.coef_ *= 8
+        model.intercept_ += model.intercept_ * 10
+        plot = self.ax.plot(lambda x: float(model.predict_proba(np.atleast_2d(x))[:,1].item()), x_range=[0000, 6500], color=LIGHT_PINK)
+        self.add(plot)
+        
+        
+
+        eq = Tex(r'$p(y=1\mid x, w, b) = \sigma(wx+b)$', color=BLACK).to_corner(UR)
+        self.add(eq)
+```
+
+## 
+
+Recall that the *maximum likelihood estimate* of our parameter $\mathbf{w}$ is the choice of $\mathbf{w}$ that maximizes the (conditional) probability of the data we observed under our model
 
 $$
 \mathbf{w}^* = \underset{\mathbf{w}}{\text{argmax}} \ p(\mathbf{y} \mid \mathbf{X}, \mathbf{w}) =\underset{\mathbf{w}}{\text{argmax}} \ p(y_1,...,y_N \mid \mathbf{x}_1, ...,\mathbf{x}_N, \mathbf{w}) $$
 
-Generally our model also assumes *conditional independence* across observations so:
+Again, our model also assumes *conditional independence* across observations so:
 
 $$
 p(y_1,...,y_N \mid \mathbf{x}_1, ...,\mathbf{x}_N, \mathbf{w}) = \prod_{i=1}^N p(y_i\mid \mathbf{x}_i, \mathbf{w})
@@ -844,36 +843,54 @@ $$
 \underset{\mathbf{w}}{\text{argmax}} \prod_{i=1}^N p(y_i\mid \mathbf{x}_i, \mathbf{w}) = \underset{\mathbf{w}}{\text{argmin}} - \sum_{i=1}^N \log p(y_i \mid \mathbf{x}_i, \mathbf{w}) = \textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y})
 $$
 
-We see that the negative log-likelihood is a natural *loss function* to optimize to find $\mathbf{w}^*$.
+Thus, the negative log-likelihood is a natural *loss function* to optimize to find $\mathbf{w}^*$.
 
 $$
 \textbf{Loss}(\mathbf{w}) =\textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y})=- \sum_{i=1}^N \log p(y_i \mid \mathbf{x}_i, \mathbf{w}) 
 $$
 
-We can w
+## Maximum likelihood for logistic regression
+
+We can now write out the negative log-likelihood for our logistic regression model using the Bernoulli PMF we defined above
 
 $$
-\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N y_i\log \sigma(\mathbf{x}^T\mathbf{w}) + (1-y_i)\log(1-\sigma(\mathbf{x}^T\mathbf{w}))
+\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \bigg[ y_i\log \sigma(\mathbf{x}_i^T\mathbf{w}) + (1-y_i)\log(1-\sigma(\mathbf{x}_i^T\mathbf{w})) \bigg]
+$$
+
+Using our knowledge of the sigmoid function, we can write this even more compactly:
+
+$$
+\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) =-\sum_{i=1}^N \bigg[ y_i\log \sigma(\mathbf{x}_i^T\mathbf{w}) + (1-y_i)\log \sigma(-\mathbf{x}_i^T\mathbf{w}) \bigg] 
 $$
 
 $$
-=-\sum_{i=1}^N y_i\log \sigma(\mathbf{x}^T\mathbf{w}) + (1-y_i)\log \sigma(-\mathbf{x}^T\mathbf{w})
+= -\sum_{i=1}^N \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
 $$
 
-$$
-\textbf{Ideally: }\ p(y_i\mid \mathbf{x}_i, \mathbf{w})=1,\ \forall (\mathbf{x}_i, y_i)\in \mathcal{D}
-$$
+Note that $2y_i-1$ is $1$ if $y_i=1$ and is $-1$ if $y_i=0$.
+
+For our logistic regression model, maximum likelihood is intuitive. In the ideal case our model would always predict the correct class with probability 1.
 
 $$
-\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\mathbf{y}^T\log \sigma(\mathbf{X}\mathbf{w})
+\textbf{Best case scenerio: } p(y_i\mid \mathbf{x}_i, \mathbf{w})=1, \quad \forall i \in \{1,...,N\} 
 $$
+
+This is generally not possible though due to the constraints of our linear function.
+
+We can also write the negative log-likelihood compactly using matrix-vector notation.
+
+$$
+\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\mathbf{y}^T\log \sigma(\mathbf{X}\mathbf{w}) - (1-\mathbf{y})^T\log \sigma(-\mathbf{X}\mathbf{w})
+$$
+
+It's worth noting that in neural network literature, this loss is often called the **binary cross-entropy loss**.
 
 ## Comparing loss functions
 
-Loss for $y=0$ as a function of $z=\mathbf{x}^T\mathbf{w}$
+Let's look at how this loss function compares to the mean squared error loss we derived for logistic regression. One way to do this is to visualize the loss for a single observation as a function of the output of $\mathbf{x}^T\mathbf{w}$. Here we'll look at the loss for different models trying to predict an output of $y=0$:
 
 $$
-\textbf{Let: }\ z=\mathbf{x}^T\mathbf{w}
+\textbf{Let: }\ y=0, \quad z=\mathbf{x}^T\mathbf{w}
 $$
 
 ```{python}
@@ -896,8 +913,8 @@ class VectorAddition(Scene):
         self.add(axes, axes_labels)
 
         plot = axes.plot(lambda x: x ** 2, color=BLUE)
-        plot2 = axes.plot(lambda x: -np.log(1 / (1 + np.exp(-x))), color=RED)
-        plot3 = axes.plot_line_graph([-10, -0.0001,0.0001, 10], (np.array([-10, -0.0001,0.0001, 10]) < 0).astype(float), line_color=BLACK, add_vertex_dots=False)
+        plot2 = axes.plot(lambda x: -np.log(1 / (1 + np.exp(x))), color=RED)
+        plot3 = axes.plot_line_graph([-10, -0.0001,0.0001, 10], (np.array([-10, -0.0001,0.0001, 10]) > 0).astype(float), line_color=BLACK, add_vertex_dots=False)
         self.add(plot, plot2, plot3)
 
         eq0 = Tex(r'$\mathbb{I}(z \geq 0) =0 $', color=BLACK).to_corner(UR)
@@ -906,71 +923,105 @@ class VectorAddition(Scene):
         self.add(eq, eq2, eq0)
 ```
 
-# Multi-class classification
+We see that the squared error loss is best when the output is exactly 0, while the logistic regression NLL wants the output of $\mathbf{x}^T\mathbf{w}$ to be a negative as possible so that $p(y=0\mid \mathbf{x}, \mathbf{w}) \longrightarrow 1$. Meanwhile the "accuracy" loss has no slope, making it impossible to optimize with gradient descent.
 
-## Multi-class prediction functions
+# Multinomial logistic regression
 
-We will typically use a set of integers $\{0,1, 2,...,C\}$ to denote the possible outputs for a general categorical function.
+## Multi-class classification
+
+We've now seen a useful model for binary classification, but in many cases we want to predict between many different classes.
 
 ![](pictures/catdogmouse.png){fig-align="center"}
 
-Therefore in general we are considering functions of the form:
+We will typically use a set of integers $\{1, 2,...,C\}$ to denote the possible outputs for a general categorical function. Therefore we are considering functions of the form:
 
 $$
-y=f(\mathbf{x}), \quad \text{Input: } \mathbf{x} \in\mathbb{R}^n \longrightarrow \text{ Output: }y \in \{0, 1, 2, ...,C\}
+y=f(\mathbf{x}), \quad \text{Input: } \mathbf{x} \in\mathbb{R}^n \longrightarrow \text{ Output: }y \in \{1, 2, ...,C\}
 $$
 
-It's important to note that we are *not* assuming that the *ordering* of labels is meaningful For instance if we're classifying images of animals we might set the labels such that:
+It's important to note that we do *not* want to assume that the *ordering* of labels is meaningful. For instance if we're classifying images of animals we might set the labels such that:
 
 $$
-\textbf{0:  Cat},\quad
+\textbf{1:  Cat},\quad
+\textbf{2:  Dog},\quad
+\textbf{3:  Mouse}
+$$
+
+But this shouldn't lead to different results to the case where we assign the labels as:
+
+$$
 \textbf{1:  Dog},\quad
-\textbf{2:  Mouse}
+\textbf{2:  Mouse},\quad
+\textbf{3:  Cat}
 $$
 
-But
+We call prediction of a categorical output with more than two possibilities **multi-class** **classification**.
+
+## Multi-class prediction functions
+
+A symmetric approach to defining a prediction function for multi-class classification is to define a *separate* linear function for each class and choose the class whose function gives the largest output.
+
+If $C$ is the number of possible classes, we will therefore have $C$ different parameter vectors $\mathbf{w}_1,…,\mathbf{w}_C$ and our prediction function will be defined as:
 
 $$
-\textbf{0:  Dog},\quad
-\textbf{1:  Mouse},\quad
-\textbf{2:  Cat}
+f(\mathbf{x}) = \underset{c\in\{1...C\}}{\text{argmax}}\ \mathbf{x}^T\mathbf{w}_c
 $$
 
-$$
-f(\mathbf{x}) = \underset{c\in\{0...C\}}{\text{argmax}}\ \mathbf{x}^T\mathbf{w}_c
-$$
-
-Alternatively:
+For convenience, we can also define a matrix that contains all $C$ parameter vectors:
 
 $$
-f(\mathbf{x}) = \underset{c\in\{0...C\}}{\text{argmax}}\ (\mathbf{x}^T\mathbf{W})_c, \quad \mathbf{W} \in \mathbb{R}^{d\times C}
+\mathbf{W} = \begin{bmatrix} \mathbf{w}_1^T \\ \mathbf{w}_2^T \\ \vdots \\ \mathbf{w}_C^T\end{bmatrix} = \begin{bmatrix} W_{11} & W_{12} & \dots & W_{1d} \\ 
+W_{21} & W_{22} & \dots & W_{2d} \\ 
+\vdots & \vdots & \ddots & \vdots\\ 
+W_{C1} & W_{C2} & \dots & W_{Cd}
+\end{bmatrix}
 $$
 
-if $C=2$:
+With this notation, our prediction function becomes:
 
 $$
-f(\mathbf{x}) = \underset{c\in\{0,1\}}{\text{argmax}}\ (\mathbf{x}^T\mathbf{W})_c = \mathbb{I}(\mathbf{x}^T\mathbf{w}_1 - \mathbf{x}^T\mathbf{w}_0 \geq 0)
+f(\mathbf{x}) = \underset{c\in\{1...C\}}{\text{argmax}}\ (\mathbf{x}^T\mathbf{W}^T)_c, \quad \mathbf{W} \in \mathbb{R}^{C\times d}
 $$
+
+## Multi-class decision boundaries
+
+If we only have two classes $0$ and $1$, so $C=2$, then this multi-class prediction function reduces to the same as our binary prediction function. We can see this by noting that $x > y \equiv x-y>0$:
+
+$$
+f(\mathbf{x}) = \underset{c\in\{0,1\}}{\text{argmax}}\ (\mathbf{x}^T\mathbf{W}^T)_c = \mathbb{I}(\mathbf{x}^T\mathbf{w}_1 - \mathbf{x}^T\mathbf{w}_0 \geq 0)
+$$
+
+If we factor out $\mathbf{x}$ we see that we can simply define a new parameter vector in order to get the same decision rule.
 
 $$
 =\mathbb{I}(\mathbf{x}^T(\mathbf{w}_1 - \mathbf{w}_0) \geq 0) \quad \longrightarrow \quad \mathbb{I}(\mathbf{x}^T\mathbf{w} \geq 0), \quad \mathbf{w}=\mathbf{w}_1-\mathbf{w}_0
 $$
 
-We call prediction of a categorical output **classification**.
+It follows that the decision boundary between any two classes is also linear! We can see this by plotting a prediction function. In this case for the *Iris* dataset we saw in the homework.
 
 ## Categorical distribution
+
+As a first step towards finding the optimal $\mathbf{W}$ for a multi-class model, let's look at a distribution over multiple discrete outcomes: the **Categorical** distribution.
+
+A categorical distribution needs to define a probability for each possible output. We'll use $q_c$ to denote the probability of output $c$.
 
 $$
 p(y=c) = q_c, \quad y\in \{1...C\}
 $$
 
+We can then denote the vector of all $C$ probabilities as $\mathbf{q}$. Note that in order for this to be valid, every probability needs to be in the range $[0,1]$ and the total probability of all outcomes needs to be $1$, so:
+
 $$
 \mathbf{q} \in \mathbb{R}^C\quad q_c \geq 0\ \forall c\in \{1...C\}\quad \sum_{c=1}^C q_c=1
 $$
 
+As with the Bernoulli distribution, we can write this in a more compact form. Here we see that the probability of a given outcome is simply the corresponding entry in $\mathbf{q}$
+
 $$
-p(y)=\prod q_c^{\mathbb{I}(y=c)}
+p(y)=\prod q_c^{\mathbb{I}(y=c)} = q_y
 $$
+
+Thus the log-probability is simply:
 
 $$
 \log p(y) = \sum_{c=1}^C \mathbb{I}(y=c)\log q_c = \log q_y
@@ -978,17 +1029,19 @@ $$
 
 ## A probabilistic model for multi-class classification
 
-$$
-y_i\sim \mathbf{Categorical}(\mathbf{q}=?)
-$$
+With the Categorical distribution defined, we can now ask if we can use it to define a linear probabilistic model for multi-class categorical outputs. As with our other models we'll consider making the distribution parameter a linear function of our input.
 
 $$
-\mathbf{q}=\mathbf{x}^T\mathbf{W}?
+y_i\sim \mathbf{Categorical}(\mathbf{q}=?), \quad \mathbf{q}=\mathbf{x}_i^T\mathbf{W}^T?
 $$
 
+However, we once again run into the issue that the output of our linear function likely won't satisfy the conditions we need for the parameter of a categorical distribution. In particular, the output is not guaranteed to be positive or to sum to $1$.
+
 $$
-\mathbf{x}^T\mathbf{W}\in \mathbb{R}^C,\quad  q_c \ngeq 0\ \forall c\in \{1...C\}, \quad \sum_{c=1}^C q_c\neq1
+\mathbf{x}^T\mathbf{W}^T\in \mathbb{R}^C,\quad  q_c \ngeq 0\ \forall c\in \{1...C\}, \quad \sum_{c=1}^C q_c\neq1
 $$
+
+In this case we need a way to map arbitrary vectors to vectors that satisfy these conditions:
 
 $$
 \textbf{Need }\ f(\mathbf{x}):\ \mathbb{R}^C \longrightarrow [0,\infty)^C,\ \sum_{i=1}^Cf(\mathbf{x})_c = 1
@@ -996,39 +1049,69 @@ $$
 
 ## Softmax function
 
+Such a mapping exists in the **softmax** function. This function maps vectors to positive vectors such that the entries sum to $1$. Entry $c$ of $\text{softmax}(\mathbf{x})$ can be written as:
+
 $$
 \text{softmax}(\mathbf{x})_c = \frac{e^{x_c}}{\sum_{j=1}^Ce^{x_j}}
 $$
 
-if $C=2$
+We can also define the softmax function using vector notation as:
 
-## A probabilistic model for multi-class classification
+$$
+\text{softmax}(\mathbf{x}) = \begin{bmatrix}\frac{e^{x_1}}{\sum_{j=1}^Ce^{x_j}} \\ \frac{e^{x_2}}{\sum_{j=1}^Ce^{x_j}} \\ \vdots \\ \frac{e^{x_C}}{\sum_{j=1}^Ce^{x_j}} \end{bmatrix}
+$$
+
+Intuitively, $e^x$ is positive for any $x$, while dividing by the sum ensure the entries sum to 1 as:
+
+$$
+\sum_{i=1}^C \frac{e^{x_i}}{\sum_{j=1}^Ce^{x_j}} = \frac{\sum_{i=1}^C e^{x_i}}{\sum_{j=1}^Ce^{x_j}} = 1
+$$
+
+The softmax function also has the nice property that
+
+$$
+\underset{c\in\{1,...,C\}}{\text{argmax}}\ \mathbf{x}_c = \underset{c\in\{1,...,C\}}{\text{argmax}}\ \text{softmax}(\mathbf{x})_c
+$$
+
+## Multonomial logistic regression
+
+With the softmax function we can now define our probabilistic model for categorical labels as:
 
 $$
 y_i\sim \mathbf{Categorical}\big(\text{softmax}(\mathbf{x}^T\mathbf{W})\big)
 $$
 
+We see that under this assumption, the probability of a particular output $(c)$ is:
+
 $$
-p(y_i=c) = \text{softmax}(\mathbf{x}^T\mathbf{W})_c=\frac{e^{\mathbf{x}^T\mathbf{w}_c}}{\sum_{j=1}^Ce^{\mathbf{x}^T\mathbf{w}_j}}
+p(y_i=c \mid \mathbf{x}, \mathbf{W}) = \text{softmax}(\mathbf{x}^T\mathbf{W})_c=\frac{e^{\mathbf{x}^T\mathbf{w}_c}}{\sum_{j=1}^Ce^{\mathbf{x}^T\mathbf{w}_j}}
 $$
 
-## Maximum likelihood estimation
+We call this particular probabilistic model: **multinomial logistic regression**
+
+## Maximum likelihood estimation for multinomial logistic regression
+
+We now have everything we need to define our negative log-likelihood loss for the multi-class classification model. Once again our loss is the negative sum of the log-probability of each observed output:
 
 $$
 \textbf{Loss}(\mathbf{W}) =\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})=- \sum_{i=1}^N \log p(y_i \mid \mathbf{x}_i, \mathbf{W}) 
 $$
 
-$$
-= \sum_{i=1}^N \log\ \text{softmax}(\mathbf{x}_i^T\mathbf{W})_{y_i} = \sum_{i=1}^N  \log \frac{e^{\mathbf{x}_i^T\mathbf{w}_{y_i}}}{\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}}
-$$
+Using the log-probability of the multinomial logistic regression model we get:
 
 $$
-=\sum_{i=1}^N \bigg(\mathbf{x}_i^T\mathbf{w}_{y_i}- \log\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}\bigg)
+\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})= -\sum_{i=1}^N \log\ \text{softmax}(\mathbf{x}_i^T\mathbf{W}^T)_{y_i} = -\sum_{i=1}^N  \log \frac{e^{\mathbf{x}_i^T\mathbf{w}_{y_i}}}{\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}}
 $$
 
-## Maximum likelihood estimation
+We can simplify this further to:
 
-In this case our parameters are a matrix
+$$
+\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})=\sum_{i=1}^N \bigg(\mathbf{x}_i^T\mathbf{w}_{y_i}- \log\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}\bigg)
+$$
+
+## Gradient descent
+
+In this case our parameters are a matrix $\mathbf{W}$. The concept of a gradient, extends naturally to a matrix; we simply define the gradient matrix such that each element is the partial derivative with respect to the corresponding element of the input. For the multinomial logistic regression loss, the gradient this looks like:
 
 $$
 \nabla_{\mathbf{W}} \mathbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})= \begin{bmatrix} \frac{\partial \mathbf{NLL}}{\partial W_{11}} & \frac{\partial \mathbf{NLL}}{\partial W_{12}} & \dots & \frac{\partial \mathbf{NLL}}{\partial W_{1C}} \\ 
@@ -1038,165 +1121,8 @@ $$
  \end{bmatrix}
 $$
 
+We can still apply the same gradient descent updates in this case!
+
 $$
 \mathbf{W}^{(i+1)} \leftarrow \mathbf{W}^{(i)} - \alpha \nabla_{\mathbf{W}} \mathbf{NLL}(\mathbf{W}^{(i)}, \mathbf{X}, \mathbf{y})
 $$
-
-# Evaluating models
-
-## Training and test datasets
-
-In machine learning we are typically less interested in how our model predicts the data we've already seen than we are in how well it makes predictions for *new* data. One way to estimate how well our model our model will generalize to new data is to *hold out* data while fitting our model. To do this we will split our dataset into two smaller datasets: a *training dataset* that we will use to fit our model, and a *test* or *held-out* dataset that we will only use to evaluate our model. By computing the loss on this test dataset, we can get a sense of how well our model will make prediction for new data.
-
-$$\mathcal{D} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_N, y_N) \}\quad \longrightarrow \quad
-$$
-
-$$
-\mathcal{D}_{train} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_{Ntrain}, y_{Ntrain}) \},\  
-\mathcal{D}_{test} = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ... \,(\mathbf{x}_{Ntest}, y_{Ntest}) \}
-$$
-
-```{python}
-#| echo: false
-%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
-import pandas as pd
-mpg_data = pd.read_csv('data/auto-mpg.csv')
-data = mpg_data[::10].sort_values(by=['weight'])
-
-from sklearn.linear_model import LinearRegression, LogisticRegression
-x = np.array(data[['weight', 'displacement']])
-y = (np.array(data['mpg']) > 25).astype(float)
-model = LogisticRegression().fit(x, y)
-
-class HP_MPG(Scene):
-    def construct(self):
-        self.camera.background_color = "#ffffff"
-        self.ax = Axes(
-            x_range=[1000, 5500, 500],
-            y_range=[0, 500, 100],
-            x_length=12,
-            y_length=8,
-            axis_config={"color": GREY},
-        )        
-        
-        #axes_labels.set_color(GREY)
-        self.add(self.ax)
-        
-        
-        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
-        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
-        dots = VGroup(*all_dots)
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
-        labels.set_color(GREY)
-        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
-        self.add(dots,  labels, plot)
-
-```
-
-```{python}
-#| echo: false
-%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
-import pandas as pd
-mpg_data = pd.read_csv('data/auto-mpg.csv')
-data = mpg_data[1::10].sort_values(by=['weight'])
-
-from sklearn.linear_model import LinearRegression, LogisticRegression
-x = np.array(data[['weight', 'displacement']])
-y = (np.array(data['mpg']) > 25).astype(float)
-#model = LogisticRegression().fit(x, y)
-
-class HP_MPG(Scene):
-    def construct(self):
-        self.camera.background_color = "#ffffff"
-        self.ax = Axes(
-            x_range=[1000, 5500, 500],
-            y_range=[0, 500, 100],
-            x_length=12,
-            y_length=8,
-            axis_config={"color": GREY},
-        )        
-        
-        #axes_labels.set_color(GREY)
-        self.add(self.ax)
-        
-        
-        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
-        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
-        dots = VGroup(*all_dots)
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
-        labels.set_color(GREY)
-        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
-        self.add(dots,  labels, plot)
-```
-
-```{python}
-#| echo: false
-%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
-import pandas as pd
-mpg_data = pd.read_csv('data/auto-mpg.csv')
-data = mpg_data[:40].sort_values(by=['weight'])
-
-from sklearn.linear_model import LinearRegression, LogisticRegression
-x = np.array(data[['weight', 'displacement']])
-y = (np.array(data['mpg']) > 25).astype(float)
-model = LogisticRegression().fit(x, y)
-
-class HP_MPG(Scene):
-    def construct(self):
-        self.camera.background_color = "#ffffff"
-        self.ax = Axes(
-            x_range=[1000, 5500, 500],
-            y_range=[0, 500, 100],
-            x_length=12,
-            y_length=8,
-            axis_config={"color": GREY},
-        )        
-        
-        #axes_labels.set_color(GREY)
-        self.add(self.ax)
-        
-        
-        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
-        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
-        dots = VGroup(*all_dots)
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
-        labels.set_color(GREY)
-        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
-        self.add(dots,  labels, plot)
-```
-
-```{python}
-#| echo: false
-%%manim -sqh -v CRITICAL --progress_bar none HP_MPG
-import pandas as pd
-mpg_data = pd.read_csv('data/auto-mpg.csv')
-data = mpg_data[1::10].sort_values(by=['weight'])
-
-from sklearn.linear_model import LinearRegression, LogisticRegression
-x = np.array(data[['weight', 'displacement']])
-y = (np.array(data['mpg']) > 25).astype(float)
-#model = LogisticRegression().fit(x, y)
-
-class HP_MPG(Scene):
-    def construct(self):
-        self.camera.background_color = "#ffffff"
-        self.ax = Axes(
-            x_range=[1000, 5500, 500],
-            y_range=[0, 500, 100],
-            x_length=12,
-            y_length=8,
-            axis_config={"color": GREY},
-        )        
-        
-        #axes_labels.set_color(GREY)
-        self.add(self.ax)
-        
-        
-        coords = [[c1, c2, c3] for (c1, c2, c3) in zip(data['weight'], data['displacement'], data['mpg'])]
-        all_dots = [Dot(color=((BLACK if coord[2] > 25 else RED))).move_to(self.ax.c2p(coord[0],coord[1])) for coord in coords]
-        dots = VGroup(*all_dots)
-        labels = self.ax.get_axis_labels(x_label="Weight\ (lbs)", y_label="Displacement")
-        labels.set_color(GREY)
-        plot = self.ax.plot(lambda x: (-model.coef_[0, 0] * x - model.intercept_[0]) / model.coef_[0, 1], color=BLUE)
-        self.add(dots,  labels, plot)
-```

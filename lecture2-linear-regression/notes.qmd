@@ -10,7 +10,10 @@ format:
 #| echo: false
 import warnings
 warnings.filterwarnings("ignore")
-from manim import *
+import os
+import contextlib
+with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+    from manim import *
 import autograd.numpy as np
 
 
