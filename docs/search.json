@@ -2126,5 +2126,40 @@
     "title": "Lecture 3: Logistic regression",
     "section": "Gradient descent",
     "text": "Gradient descent\nIn this case our parameters are a matrix \\(\\mathbf{W}\\). The concept of a gradient, extends naturally to a matrix; we simply define the gradient matrix such that each element is the partial derivative with respect to the corresponding element of the input. For the multinomial logistic regression loss, the gradient this looks like:\n\\[\n\\nabla_{\\mathbf{W}} \\mathbf{NLL}(\\mathbf{W}, \\mathbf{X}, \\mathbf{y})= \\begin{bmatrix} \\frac{\\partial \\mathbf{NLL}}{\\partial W_{11}} & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{12}} & \\dots & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{1C}} \\\\\n\\frac{\\partial \\mathbf{NLL}}{\\partial W_{21}} & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{22}} & \\dots & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{2C}} \\\\\n\\vdots & \\vdots & \\ddots & \\vdots\\\\\n\\frac{\\partial \\mathbf{NLL}}{\\partial W_{d1}} & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{d2}} & \\dots & \\frac{\\partial \\mathbf{NLL}}{\\partial W_{dC}}\n\\end{bmatrix}\n\\]\nWe can still apply the same gradient descent updates in this case!\n\\[\n\\mathbf{W}^{(i+1)} \\leftarrow \\mathbf{W}^{(i)} - \\alpha \\nabla_{\\mathbf{W}} \\mathbf{NLL}(\\mathbf{W}^{(i)}, \\mathbf{X}, \\mathbf{y})\n\\]"
+  },
+  {
+    "objectID": "misc/hw2-hint.html",
+    "href": "misc/hw2-hint.html",
+    "title": "Hints for homework 2",
+    "section": "",
+    "text": "import numpy as np\nimport matplotlib.pyplot as plt"
+  },
+  {
+    "objectID": "misc/hw2-hint.html#question-2",
+    "href": "misc/hw2-hint.html#question-2",
+    "title": "Hints for homework 2",
+    "section": "Question 2",
+    "text": "Question 2\nIn order to plot a function with MatPlotLib, we need to provide the np.plot function with a set of inputs and outputs. For example, let’s say we want to plot the function \\[f(x) = \\sin(x)\\] for inputs between \\(0\\) and \\(10\\) (we say we want to plot \\(\\sin(x)\\) on the range \\([0,10]\\)). We first need a set of inputs between \\(0\\) and \\(10\\). The np.linspace(a, b, n) function will give us n equally-spaced values between a and b. We can use this to define the inputs to our function.\n\nx = np.linspace(0, 10, 100)\n\nThen, we can compute the corresponding set of outputs:\n\ny = np.sin(x)\n\nFinally we can plot these values to np.plot, which will “connect-the-dots” to make a smooth plot.\n\nplt.plot(x, y)\n\n\n\n\nWe can see more clearly what np.plot is doing if we lower the number of inputs that we use to plot our function and add markers at each point:\n\nx = np.linspace(0, 10, 10)\ny = np.sin(x)\nplt.plot(x, y, marker='o')\n\n\n\n\nThe prediction function for linear regression takes in vectors and outputs scalars: \\[f(\\mathbf{x})=\\mathbf{x}^T\\mathbf{w}\\] We saw that we can rewrite the prediction function to make predictions for an entire set of inputs: \\[f(\\mathbf{X})=\\mathbf{X}\\mathbf{w}\\] Where \\[\n\\mathbf{X} =\n\\begin{bmatrix} X_{11} & X_{12} & \\dots  & X_{1d} & 1 \\\\\n                X_{21} & X_{22} & \\dots  & X_{2d} & 1 \\\\\n                \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n                X_{N1} & X_{N2} & \\dots  & X_{Nd} & 1 \\\\  \n                \\end{bmatrix} = \\begin{bmatrix} \\mathbf{x}_1^T \\\\ \\mathbf{x}_2^T \\\\ \\vdots \\\\ \\mathbf{x}_N^T \\end{bmatrix}\\] If our data only has a single feature (as in the Q2 ), then this becomes: \\[\nf(\\mathbf{X}) =\\mathbf{X}\\mathbf{w}=\n\\begin{bmatrix} X_{11} &  1 \\\\\n                X_{21} &  1 \\\\\n                \\vdots & \\vdots  \\\\\n                X_{N1} &  1 \\\\  \n                \\end{bmatrix} \\cdot \\begin{bmatrix} w_{1} \\\\\n                b\n                \\end{bmatrix} \\]\nIn numpy, consider converting a range of inputs into a data matrix like the one above:\n\nx = np.linspace(0, 5, 6) # Get range of inputs\nX = x[:, None]             # Convert vector into an Nx1 matrix\n# Add a column of 1s\nXaug = np.pad(X, [(0,0), (0,1)], constant_values=1.)\nprint(Xaug)\n\n[[0. 1.]\n [1. 1.]\n [2. 1.]\n [3. 1.]\n [4. 1.]\n [5. 1.]]\n\n\nThis gives us something we can pass into our prediction function."
+  },
+  {
+    "objectID": "misc/hw2-hint.html#question-1-2",
+    "href": "misc/hw2-hint.html#question-1-2",
+    "title": "Hints for homework 2",
+    "section": "Question 1 & 2",
+    "text": "Question 1 & 2\nThere are multiple ways to add a column of ones to a matrix in numpy. \\[\\mathbf{X} =\n\\begin{bmatrix} X_{11} & X_{12} & \\dots  & X_{1d} \\\\\n                X_{21} & X_{22} & \\dots  & X_{2d}  \\\\\n                \\vdots & \\vdots & \\ddots  & \\vdots \\\\\n                X_{N1} & X_{N2} & \\dots  & X_{Nd} \\\\  \n                \\end{bmatrix} \\longrightarrow \\begin{bmatrix} X_{11} & X_{12} & \\dots  & X_{1d} & 1 \\\\\n                X_{21} & X_{22} & \\dots  & X_{2d} & 1 \\\\\n                \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n                X_{N1} & X_{N2} & \\dots  & X_{Nd} & 1 \\\\  \n                \\end{bmatrix}\\]\n\n## Example 4x4 matrix\nX = np.zeros((4,4))\nX\n\narray([[0., 0., 0., 0.],\n       [0., 0., 0., 0.],\n       [0., 0., 0., 0.],\n       [0., 0., 0., 0.]])\n\n\n\n## Using np.concatenate\nones = np.ones((X.shape[0], 1))\nXaug = np.concatenate([X, ones], axis=1)\nXaug\n\narray([[0., 0., 0., 0., 1.],\n       [0., 0., 0., 0., 1.],\n       [0., 0., 0., 0., 1.],\n       [0., 0., 0., 0., 1.]])\n\n\n\n## Using np.pad\nXaug = np.pad(X, [(0,0), (0,1)], constant_values=1.)\nXaug\n\narray([[0., 0., 0., 0., 1.],\n       [0., 0., 0., 0., 1.],\n       [0., 0., 0., 0., 1.],\n       [0., 0., 0., 0., 1.]])\n\n\nWe could also use pad to add a 1 to a one-dimensional vector:\n\n## Example vector\nx = np.zeros((4,))\nxaug = np.pad(x, [(0,1)], constant_values=1.)\nprint(x)\nprint(xaug)\n\n[0. 0. 0. 0.]\n[0. 0. 0. 0. 1.]"
+  },
+  {
+    "objectID": "misc/hw2-hint.html#using-np.concatenate",
+    "href": "misc/hw2-hint.html#using-np.concatenate",
+    "title": "Hints for homework 2",
+    "section": "Using np.concatenate",
+    "text": "Using np.concatenate\nones = np.ones((X.shape[0], 1)) Xaug = np.concatenate([X, ones], axis=1) Xaug"
+  },
+  {
+    "objectID": "misc/hw2-hint.html#question-8",
+    "href": "misc/hw2-hint.html#question-8",
+    "title": "Hints for homework 2",
+    "section": "Question 8",
+    "text": "Question 8\nIf we want to split a matrix by its rows in numpy as follow:\n\\[\n\\mathbf{X} =\n\\begin{bmatrix} X_{11} & X_{12} \\\\\nX_{21} & X_{22} \\\\\nX_{31} & X_{32} \\\\\nX_{41} & X_{42} \\\\\nX_{51} & X_{52} \\\\\n                \\end{bmatrix}\\longrightarrow \\begin{bmatrix} X_{11} & X_{12} \\\\\nX_{21} & X_{22} \\\\\nX_{31} & X_{32} \\\\\n\\end{bmatrix}, \\quad\n\\begin{bmatrix}\nX_{41} & X_{42} \\\\\nX_{51} & X_{52} \\\\\n                \\end{bmatrix}\\]\nWe can use the index operator [] as follows:\n\nX = np.random.randint(10, size=(5,2))\nprint(X)\n\n[[6 3]\n [0 0]\n [4 8]\n [8 6]\n [0 0]]\n\n\n\nprint(X[:3]) # Get first 3 rows\n\n[[6 3]\n [0 0]\n [4 8]]\n\n\n\nprint(X[3:]) # Get the rest of the rows\n\n[[8 6]\n [0 0]]"
   }
 ]
