@@ -85,7 +85,6 @@ class ComparisonVectorScene(LectureScene):
         self.add(axgroup)
 ```
 
-
 # Classification
 
 ## Categorical outputs
