@@ -2293,7 +2293,7 @@
     "href": "lecture4-feature-transforms/slides.html#non-linear-data",
     "title": "Lecture 4: Feature transforms",
     "section": "Non-linear data",
-    "text": "Non-linear data\nUnfortunately, in the real world the relationship between inputs and outputs is not always linear.\n\nviewof form_quadratic = Inputs.form(\n  [\n    Inputs.range([-10, 10], {step: 0.01, label: \"b\", value: 2.89}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w\", value: 2.0165}),\n  ]\n)\n\n\n\n\n\n\n\n\n\n\n\n\nregressionPlot(quadratic_data, form_quadratic, [\"0\"], \"1\", 0, se)\n\n\n\n\n\n\nWe see that there is no straight line that is a good fit to our data. ## Non-linear data We see this with our real-world fuel efficiency dataset as well.\n\nviewof form_mpg_linear = Inputs.form(\n  [\n    Inputs.range([-10, 100], {step: 0.01, label: \"b\", value: 45.32}),\n    Inputs.range([-0.03, 0.03], {step: 0.0001, label: \"w\", value: -0.0077}),\n  ]\n)\n\n\n\n\n\n\n\nregressionPlot(data, form_mpg_linear, [\"weight\"], \"mpg\", 0, se)"
+    "text": "Non-linear data\nUnfortunately, in the real world the relationship between inputs and outputs is not always linear.\n\nviewof form_quadratic = Inputs.form(\n  [\n    Inputs.range([-10, 10], {step: 0.01, label: \"b\", value: 2.89}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w\", value: 2.0165}),\n  ]\n)\n\n\n\n\n\n\n\n\n\n\n\n\nregressionPlot(quadratic_data, form_quadratic, [\"0\"], \"1\", 0, se)\n\n\n\n\n\n\nWe see that there is no straight line that is a good fit to our data."
   },
   {
     "objectID": "lecture4-feature-transforms/slides.html#polynomial-functions",
@@ -2412,7 +2412,7 @@
     "href": "lecture4-feature-transforms/slides.html#fitting-quadratic-regression-1",
     "title": "Lecture 4: Feature transforms",
     "section": "Fitting quadratic regression",
-    "text": "Fitting quadratic regression\n\\[\ny_i \\sim N\\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w}, \\sigma^2\\big)\n\\] The corresponding negative log-likelihood loss becomes\n\\[\n\\textbf{Loss}(\\mathbf{w})=\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\n\\[\n= \\frac{1}{2\\sigma^2} \\sum_{i=1}^N\\big(y_i - \\phi(\\mathbf{x}_i)^T\\mathbf{w}\\big)^2 + N \\log \\sigma \\sqrt{2 \\pi}\n\\] ## Fitting quadratic regression \\[\ny_i \\sim N\\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w}, \\sigma^2\\big)\n\\]\nWe can now find the optimal \\(\\mathbf{w}\\) by once again minimizing this loss!\n\\[\n\\mathbf{w}^* = \\underset{\\mathbf{w}}{\\text{argmin}} \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\] ## Fitting quadratic regression \\[\n\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=y_i \\sim N\\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w}, \\sigma^2\\big)\n\\] We see that the gradient doesn’t change, it simply involves \\(\\phi(\\mathbf{x}_i)\\) instead of \\(\\mathbf{x}_i\\).\n\\[\n\\nabla_{\\mathbf{w}}\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n= \\frac{1}{2\\sigma^2}\\sum_{i=1}^N \\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w} - y_i\\big)\\phi(\\mathbf{x}_i)\n\\] This is because we are only taking the gradient with respect to \\(\\mathbf{w}\\). From the perspective of \\(\\mathbf{w}\\), the prediction funciton is still linear."
+    "text": "Fitting quadratic regression\n\\[\ny_i \\sim N\\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w}, \\sigma^2\\big)\n\\] The corresponding negative log-likelihood loss becomes\n\\[\n\\textbf{Loss}(\\mathbf{w})=\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=- \\sum_{i=1}^N \\log p(y_i \\mid \\mathbf{x}_i, \\mathbf{w})\n\\]\n\\[\n= \\frac{1}{2\\sigma^2} \\sum_{i=1}^N\\big(y_i - \\phi(\\mathbf{x}_i)^T\\mathbf{w}\\big)^2 + N \\log \\sigma \\sqrt{2 \\pi}\n\\]"
   },
   {
     "objectID": "lecture4-feature-transforms/slides.html#quadratic-logistic-regression-1",
@@ -2469,5 +2469,26 @@
     "title": "Lecture 4: Feature transforms",
     "section": "General feature transforms",
     "text": "General feature transforms\nIn numpy we can write this as:\n\nsin_X = np.sin(X)               # sin(x)\nsquared_X = X ** 2              # x^2\nexp_X = np.exp(X)               # e^x\nones = np.ones((X.shape[0], 1)) # Column of 1s\n\ntransformedX = np.concatenate([X, squared_X, sin_X, exp_X, ones], axis=1)"
+  },
+  {
+    "objectID": "lecture4-feature-transforms/slides.html#non-linear-data-1",
+    "href": "lecture4-feature-transforms/slides.html#non-linear-data-1",
+    "title": "Lecture 4: Feature transforms",
+    "section": "Non-linear data",
+    "text": "Non-linear data\nWe see this with our real-world fuel efficiency dataset as well.\n\nviewof form_mpg_linear = Inputs.form(\n  [\n    Inputs.range([-10, 100], {step: 0.01, label: \"b\", value: 45.32}),\n    Inputs.range([-0.03, 0.03], {step: 0.0001, label: \"w\", value: -0.0077}),\n  ]\n)\n\n\n\n\n\n\n\nregressionPlot(data, form_mpg_linear, [\"weight\"], \"mpg\", 0, se)"
+  },
+  {
+    "objectID": "lecture4-feature-transforms/slides.html#fitting-quadratic-regression-2",
+    "href": "lecture4-feature-transforms/slides.html#fitting-quadratic-regression-2",
+    "title": "Lecture 4: Feature transforms",
+    "section": "Fitting quadratic regression",
+    "text": "Fitting quadratic regression\n\\[\ny_i \\sim N\\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w}, \\sigma^2\\big)\n\\]\nWe can now find the optimal \\(\\mathbf{w}\\) by once again minimizing this loss!\n\\[\n\\mathbf{w}^* = \\underset{\\mathbf{w}}{\\text{argmin}} \\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n\\]"
+  },
+  {
+    "objectID": "lecture4-feature-transforms/slides.html#fitting-quadratic-regression-3",
+    "href": "lecture4-feature-transforms/slides.html#fitting-quadratic-regression-3",
+    "title": "Lecture 4: Feature transforms",
+    "section": "Fitting quadratic regression",
+    "text": "Fitting quadratic regression\n\\[\n\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})=y_i \\sim N\\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w}, \\sigma^2\\big)\n\\] We see that the gradient doesn’t change, it simply involves \\(\\phi(\\mathbf{x}_i)\\) instead of \\(\\mathbf{x}_i\\).\n\\[\n\\nabla_{\\mathbf{w}}\\textbf{NLL}(\\mathbf{w}, \\mathbf{X}, \\mathbf{y})\n= \\frac{1}{2\\sigma^2}\\sum_{i=1}^N \\big(\\phi(\\mathbf{x}_i)^T\\mathbf{w} - y_i\\big)\\phi(\\mathbf{x}_i)\n\\] This is because we are only taking the gradient with respect to \\(\\mathbf{w}\\). From the perspective of \\(\\mathbf{w}\\), the prediction funciton is still linear."
   }
 ]

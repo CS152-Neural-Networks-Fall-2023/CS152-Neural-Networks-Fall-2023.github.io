@@ -272,6 +272,7 @@ regressionPlot(quadratic_data, form_quadratic, ["0"], "1", 0, se)
 ```
 
 We see that there is no straight line that is a good fit to our data.
+
 ## Non-linear data
  We see this with our real-world fuel efficiency dataset as well.
 
@@ -480,6 +481,7 @@ $$
 $$
  = \frac{1}{2\sigma^2} \sum_{i=1}^N\big(y_i - \phi(\mathbf{x}_i)^T\mathbf{w}\big)^2 + N \log \sigma \sqrt{2 \pi}
 $$
+
 ## Fitting quadratic regression
 $$
 y_i \sim N\big(\phi(\mathbf{x}_i)^T\mathbf{w}, \sigma^2\big)
@@ -490,6 +492,7 @@ We can now find the optimal $\mathbf{w}$ by once again minimizing this loss!
 $$
 \mathbf{w}^* = \underset{\mathbf{w}}{\text{argmin}} \textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y})
 $$
+
 ## Fitting quadratic regression
 $$
 \textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y})=y_i \sim N\big(\phi(\mathbf{x}_i)^T\mathbf{w}, \sigma^2\big)
