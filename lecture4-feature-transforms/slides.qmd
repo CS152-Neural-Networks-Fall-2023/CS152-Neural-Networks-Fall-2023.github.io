@@ -204,6 +204,8 @@ In numpy we can accomplish this splitting by creating a random order of observat
 ```{python}
 #| eval: false
 order = np.arange(X.shape[0])    # Get an array of indices (1...N)
+np.random.shuffle(order)         # Permute the data
+
 numTrain = int(X.shape[0] * 0.7) # Get the number of training obs. (70%)
 trainInds = order[:numTrain]     # Get the indices of training obs. (70%)
 testInds = order[numTrain:]      # Get the indices of test obs. (30%)
