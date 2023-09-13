@@ -377,7 +377,9 @@ $$
 \mathbf{x} \cdot \mathbf{y} = \sum_{i=1}^n x_i y_i
 $$
 
-The result is a scalar whose value is equal to $\|\mathbf{x}\|_2\|\mathbf{y}\|_2 \cos\theta$, where $\theta$ is the *angle* between them. If$\theta=\frac{\pi}{2}$, the vectors are *orthogonal* and the dot product with be $0$. If $\theta>\frac{\pi}{2}$ or $\theta < -\frac{\pi}{2}$ , the dot product will be negative.
+More commonly in this class we will write the dot-product between the vectors $\mathbf{x}$ and $\mathbf{y}$ as: $$\mathbf{x}^T \mathbf{y} = \sum_{i=1}^n x_i y_i$$\$
+
+The result of a dot product is a scalar whose value is equal to $\|\mathbf{x}\|_2\|\mathbf{y}\|_2 \cos\theta$, where $\theta$ is the *angle* between them. If$\theta=\frac{\pi}{2}$, the vectors are *orthogonal* and the dot product with be $0$. If $\theta>\frac{\pi}{2}$ or $\theta < -\frac{\pi}{2}$ , the dot product will be negative.
 
 If $\theta=0$ then $\cos(\theta)=1$. In this case we say the vectors are *colinear*. This formulation implies that given two vectors of fixed length, the dot product is maximized with they are colinear ( $\theta=0$ ).
 

@@ -469,7 +469,8 @@ Other useful aggregation functions
 <p><span class="math display">\[
 \mathbf{x} \cdot \mathbf{y} = \sum_{i=1}^n x_i y_i
 \]</span></p>
-<p>The result is a scalar whose value is equal to <span class="math inline">\(\|\mathbf{x}\|_2\|\mathbf{y}\|_2 \cos\theta\)</span>, where <span class="math inline">\(\theta\)</span> is the <em>angle</em> between them. If<span class="math inline">\(\theta=\frac{\pi}{2}\)</span>, the vectors are <em>orthogonal</em> and the dot product with be <span class="math inline">\(0\)</span>. If <span class="math inline">\(\theta&gt;\frac{\pi}{2}\)</span> or <span class="math inline">\(\theta &lt; -\frac{\pi}{2}\)</span> , the dot product will be negative.</p>
+<p>More commonly in this class we will write the dot-product between the vectors <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span> as: <span class="math display">\[\mathbf{x}^T \mathbf{y} = \sum_{i=1}^n x_i y_i\]</span>$</p>
+<p>The result of a dot product is a scalar whose value is equal to <span class="math inline">\(\|\mathbf{x}\|_2\|\mathbf{y}\|_2 \cos\theta\)</span>, where <span class="math inline">\(\theta\)</span> is the <em>angle</em> between them. If<span class="math inline">\(\theta=\frac{\pi}{2}\)</span>, the vectors are <em>orthogonal</em> and the dot product with be <span class="math inline">\(0\)</span>. If <span class="math inline">\(\theta&gt;\frac{\pi}{2}\)</span> or <span class="math inline">\(\theta &lt; -\frac{\pi}{2}\)</span> , the dot product will be negative.</p>
 <p>If <span class="math inline">\(\theta=0\)</span> then <span class="math inline">\(\cos(\theta)=1\)</span>. In this case we say the vectors are <em>colinear</em>. This formulation implies that given two vectors of fixed length, the dot product is maximized with they are colinear ( <span class="math inline">\(\theta=0\)</span> ).</p>
 <p>We can compute dot products in numpy using the <code>np.dot</code> function</p>
 <div class="cell" data-execution_count="20">
@@ -1300,7 +1301,7 @@ f(\mathbf{x}+\mathbf{\epsilon}) \approx f(\mathbf{x}) + \frac{df}{d\mathbf{x}} \
 <span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>y_values <span class="op">=</span> np.random.randn(<span class="dv">1</span>,<span class="dv">10</span>)  <span class="co"># Gaussian distribution</span></span>
 <span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>plt.plot(x_values, y_values, <span class="st">'ko'</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="notes_files/figure-html/cell-62-output-1.png" width="595" height="411"></p>
+<p><img src="notes_files/figure-html/cell-62-output-1.png" width="582" height="411"></p>
 </div>
 </div>
 <p>The string determines the plot appearance -- in this case, black circles. You can use color strings (‘r’, ‘g’, ‘b’, ‘m’, ‘c’, ‘y’, ...) or use the “Color” keyword to specify an RGB color. Marker appearance (‘o’,‘s’,‘v’,‘.’, ...) controls how the points look.</p>

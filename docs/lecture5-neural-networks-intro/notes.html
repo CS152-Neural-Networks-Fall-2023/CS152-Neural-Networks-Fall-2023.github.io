@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.319">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>CS 152: Neural Networks - Lecture 5: Introduction to Neural Networks</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">CS 152: Neural Networks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../calendar/calendar.html" rel="" target="">
+ <span class="menu-text">Calendar</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories" rel="" target="">
+ <span class="menu-text">Homeworks</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://harveymuddcollege.instructure.com/courses/615/" rel="" target="">
+ <span class="menu-text">Canvas</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/" rel="" target="">
+ <span class="menu-text">Github</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-story-so-far" id="toc-the-story-so-far" class="nav-link active" data-scroll-target="#the-story-so-far">The story so far</a>
+  <ul class="collapse">
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+  <li><a href="#linear-predictions" id="toc-linear-predictions" class="nav-link" data-scroll-target="#linear-predictions">Linear predictions</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks">Neural networks</a>
+  <ul class="collapse">
+  <li><a href="#feature-transforms-revisited" id="toc-feature-transforms-revisited" class="nav-link" data-scroll-target="#feature-transforms-revisited">Feature transforms revisited</a></li>
+  <li><a href="#learned-feature-transforms" id="toc-learned-feature-transforms" class="nav-link" data-scroll-target="#learned-feature-transforms">Learned feature transforms</a></li>
+  <li><a href="#neural-networks-1" id="toc-neural-networks-1" class="nav-link" data-scroll-target="#neural-networks-1">Neural networks</a></li>
+  <li><a href="#linear-transforms" id="toc-linear-transforms" class="nav-link" data-scroll-target="#linear-transforms">Linear transforms</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lecture 5: Introduction to Neural Networks</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="411" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 410;"><span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>Plot <span class="op">=</span> <span class="im">import</span>(<span class="st">"https://esm.sh/@observablehq/plot"</span>) </span>
+<span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="pp">require</span>(<span class="st">"d3@7"</span>)</span>
+<span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a>topojson <span class="op">=</span> <span class="pp">require</span>(<span class="st">"topojson"</span>)</span>
+<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>MathJax <span class="op">=</span> <span class="pp">require</span>(<span class="st">"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"</span>)<span class="op">.</span><span class="fu">catch</span>(() <span class="kw">=&gt;</span> <span class="bu">window</span><span class="op">.</span><span class="at">MathJax</span>)</span>
+<span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a>tf <span class="op">=</span> <span class="pp">require</span>(<span class="st">"https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"</span>)<span class="op">.</span><span class="fu">catch</span>(() <span class="kw">=&gt;</span> <span class="bu">window</span><span class="op">.</span><span class="at">tf</span>)</span>
+<span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-417"><a href="#cb1-417" aria-hidden="true" tabindex="-1"></a>THREE <span class="op">=</span> {</span>
+<span id="cb1-418"><a href="#cb1-418" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> THREE <span class="op">=</span> <span class="bu">window</span><span class="op">.</span><span class="at">THREE</span> <span class="op">=</span> <span class="cf">await</span> <span class="pp">require</span>(<span class="st">"three@0.130.0/build/three.min.js"</span>)<span class="op">;</span></span>
+<span id="cb1-419"><a href="#cb1-419" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> <span class="pp">require</span>(<span class="st">"three@0.130.0/examples/js/controls/OrbitControls.js"</span>)<span class="op">.</span><span class="fu">catch</span>(() <span class="kw">=&gt;</span> {})<span class="op">;</span></span>
+<span id="cb1-420"><a href="#cb1-420" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> <span class="pp">require</span>(<span class="st">"three@0.130.0/examples/js/loaders/SVGLoader.js"</span>)<span class="op">.</span><span class="fu">catch</span>(() <span class="kw">=&gt;</span> {})<span class="op">;</span></span>
+<span id="cb1-421"><a href="#cb1-421" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> THREE<span class="op">;</span></span>
+<span id="cb1-422"><a href="#cb1-422" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-423"><a href="#cb1-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-424"><a href="#cb1-424" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sample</span>(f<span class="op">,</span> start<span class="op">,</span> end<span class="op">,</span> nsamples<span class="op">=</span><span class="dv">100</span>) {</span>
+<span id="cb1-425"><a href="#cb1-425" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> arr <span class="op">=</span> [<span class="op">...</span><span class="bu">Array</span>(nsamples)<span class="op">.</span><span class="fu">keys</span>()]</span>
+<span id="cb1-426"><a href="#cb1-426" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> dist <span class="op">=</span> end <span class="op">-</span> start</span>
+<span id="cb1-427"><a href="#cb1-427" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">arrmap</span>(ind) {</span>
+<span id="cb1-428"><a href="#cb1-428" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> x <span class="op">=</span> (ind <span class="op">*</span> dist) <span class="op">/</span> nsamples <span class="op">+</span> start<span class="op">;</span></span>
+<span id="cb1-429"><a href="#cb1-429" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [x<span class="op">,</span> <span class="fu">f</span>(x)]<span class="op">;</span></span>
+<span id="cb1-430"><a href="#cb1-430" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-431"><a href="#cb1-431" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> arr<span class="op">.</span><span class="fu">map</span>(arrmap)</span>
+<span id="cb1-432"><a href="#cb1-432" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-433"><a href="#cb1-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-434"><a href="#cb1-434" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sigmoid</span>(x){</span>
+<span id="cb1-435"><a href="#cb1-435" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">exp</span>(<span class="op">-</span>x))<span class="op">;</span></span>
+<span id="cb1-436"><a href="#cb1-436" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-437"><a href="#cb1-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-438"><a href="#cb1-438" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum</span>(x) {</span>
+<span id="cb1-439"><a href="#cb1-439" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> s <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-440"><a href="#cb1-440" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> x<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span> ) {</span>
+<span id="cb1-441"><a href="#cb1-441" aria-hidden="true" tabindex="-1"></a>    s <span class="op">+=</span> x[i]<span class="op">;</span></span>
+<span id="cb1-442"><a href="#cb1-442" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-443"><a href="#cb1-443" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> s<span class="op">;</span></span>
+<span id="cb1-444"><a href="#cb1-444" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-445"><a href="#cb1-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-446"><a href="#cb1-446" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mean</span>(x) {</span>
+<span id="cb1-447"><a href="#cb1-447" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> s <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-448"><a href="#cb1-448" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> x<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span> ) {</span>
+<span id="cb1-449"><a href="#cb1-449" aria-hidden="true" tabindex="-1"></a>    s <span class="op">+=</span> x[i]<span class="op">;</span></span>
+<span id="cb1-450"><a href="#cb1-450" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-451"><a href="#cb1-451" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> s <span class="op">/</span> x<span class="op">.</span><span class="at">length</span><span class="op">;</span></span>
+<span id="cb1-452"><a href="#cb1-452" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-453"><a href="#cb1-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-454"><a href="#cb1-454" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">cross_ent</span>(x<span class="op">,</span> y) {</span>
+<span id="cb1-455"><a href="#cb1-455" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> y <span class="op">?</span> <span class="op">-</span><span class="bu">Math</span><span class="op">.</span><span class="fu">log</span>(<span class="fu">sigmoid</span>(x)) <span class="op">:</span> <span class="op">-</span><span class="bu">Math</span><span class="op">.</span><span class="fu">log</span>(<span class="fu">sigmoid</span>(<span class="op">-</span>x))<span class="op">;</span></span>
+<span id="cb1-456"><a href="#cb1-456" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-457"><a href="#cb1-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-458"><a href="#cb1-458" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">se</span>(x<span class="op">,</span> y) {</span>
+<span id="cb1-459"><a href="#cb1-459" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (x <span class="op">-</span> y) <span class="op">*</span> (x <span class="op">-</span> y)<span class="op">;</span></span>
+<span id="cb1-460"><a href="#cb1-460" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-461"><a href="#cb1-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-462"><a href="#cb1-462" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">shuffle</span>(array) {</span>
+<span id="cb1-463"><a href="#cb1-463" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> currentIndex <span class="op">=</span> array<span class="op">.</span><span class="at">length</span><span class="op">,</span>  randomIndex<span class="op">;</span></span>
+<span id="cb1-464"><a href="#cb1-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-465"><a href="#cb1-465" aria-hidden="true" tabindex="-1"></a>  <span class="co">// While there remain elements to shuffle.</span></span>
+<span id="cb1-466"><a href="#cb1-466" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (currentIndex <span class="op">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-467"><a href="#cb1-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-468"><a href="#cb1-468" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Pick a remaining element.</span></span>
+<span id="cb1-469"><a href="#cb1-469" aria-hidden="true" tabindex="-1"></a>    randomIndex <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span>(<span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>() <span class="op">*</span> currentIndex)<span class="op">;</span></span>
+<span id="cb1-470"><a href="#cb1-470" aria-hidden="true" tabindex="-1"></a>    currentIndex<span class="op">--;</span></span>
+<span id="cb1-471"><a href="#cb1-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-472"><a href="#cb1-472" aria-hidden="true" tabindex="-1"></a>    <span class="co">// And swap it with the current element.</span></span>
+<span id="cb1-473"><a href="#cb1-473" aria-hidden="true" tabindex="-1"></a>    [array[currentIndex]<span class="op">,</span> array[randomIndex]] <span class="op">=</span> [</span>
+<span id="cb1-474"><a href="#cb1-474" aria-hidden="true" tabindex="-1"></a>      array[randomIndex]<span class="op">,</span> array[currentIndex]]<span class="op">;</span></span>
+<span id="cb1-475"><a href="#cb1-475" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-476"><a href="#cb1-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-477"><a href="#cb1-477" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> array<span class="op">;</span></span>
+<span id="cb1-478"><a href="#cb1-478" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-479"><a href="#cb1-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-480"><a href="#cb1-480" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">acc</span>(x<span class="op">,</span> y) {</span>
+<span id="cb1-481"><a href="#cb1-481" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="bu">Number</span>(y <span class="op">==</span> (x  <span class="op">&gt;</span> <span class="dv">0</span>))<span class="op">;</span></span>
+<span id="cb1-482"><a href="#cb1-482" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-483"><a href="#cb1-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-484"><a href="#cb1-484" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">grid_func</span>(f<span class="op">,</span> width<span class="op">,</span> height<span class="op">,</span> x1<span class="op">,</span> y1<span class="op">,</span> x2<span class="op">,</span> y2) {</span>
+<span id="cb1-485"><a href="#cb1-485" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> values <span class="op">=</span> <span class="kw">new</span> <span class="bu">Array</span>(width <span class="op">*</span> height)<span class="op">;</span></span>
+<span id="cb1-486"><a href="#cb1-486" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> xstride <span class="op">=</span> (x2 <span class="op">-</span> x1) <span class="op">/</span> width<span class="op">;</span></span>
+<span id="cb1-487"><a href="#cb1-487" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ystride <span class="op">=</span> (y2 <span class="op">-</span> y1) <span class="op">/</span> height<span class="op">;</span></span>
+<span id="cb1-488"><a href="#cb1-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-489"><a href="#cb1-489" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-490"><a href="#cb1-490" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> y <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-491"><a href="#cb1-491" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> x <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-492"><a href="#cb1-492" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> ind <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-493"><a href="#cb1-493" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> height<span class="op">;</span> i<span class="op">++</span> ) {</span>
+<span id="cb1-494"><a href="#cb1-494" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> j <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> j <span class="op">&lt;</span> width<span class="op">;</span> j<span class="op">++,</span> ind<span class="op">++</span>) {</span>
+<span id="cb1-495"><a href="#cb1-495" aria-hidden="true" tabindex="-1"></a>      x <span class="op">=</span> x1 <span class="op">+</span> j <span class="op">*</span> xstride<span class="op">;</span></span>
+<span id="cb1-496"><a href="#cb1-496" aria-hidden="true" tabindex="-1"></a>      y <span class="op">=</span> y1 <span class="op">+</span> i <span class="op">*</span> ystride<span class="op">;</span></span>
+<span id="cb1-497"><a href="#cb1-497" aria-hidden="true" tabindex="-1"></a>      values[ind] <span class="op">=</span> <span class="fu">f</span>(x<span class="op">,</span> y)<span class="op">;</span></span>
+<span id="cb1-498"><a href="#cb1-498" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-499"><a href="#cb1-499" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-500"><a href="#cb1-500" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {<span class="dt">width</span><span class="op">:</span> width<span class="op">,</span> <span class="dt">height</span><span class="op">:</span> height<span class="op">,</span> <span class="dt">x1</span><span class="op">:</span> x1<span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> y1<span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> x2<span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> y2<span class="op">,</span> <span class="dt">values</span><span class="op">:</span> values}<span class="op">;</span></span>
+<span id="cb1-501"><a href="#cb1-501" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-502"><a href="#cb1-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-503"><a href="#cb1-503" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">get_accessors</span>(keys<span class="op">,</span> byindex<span class="op">=</span><span class="kw">false</span>) {</span>
+<span id="cb1-504"><a href="#cb1-504" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb1-505"><a href="#cb1-505" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-506"><a href="#cb1-506" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> index <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-507"><a href="#cb1-507" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> indexmap <span class="op">=</span> {}<span class="op">;</span></span>
+<span id="cb1-508"><a href="#cb1-508" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessors <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb1-509"><a href="#cb1-509" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> keys<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span>){</span>
+<span id="cb1-510"><a href="#cb1-510" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> k <span class="op">=</span> keys[i]<span class="op">;</span></span>
+<span id="cb1-511"><a href="#cb1-511" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="bu">Array</span><span class="op">.</span><span class="fu">isArray</span>(k)) {</span>
+<span id="cb1-512"><a href="#cb1-512" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> access <span class="op">=</span> <span class="fu">isString</span>(k[<span class="dv">0</span>]) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[k[<span class="dv">0</span>]]) <span class="op">:</span> k[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb1-513"><a href="#cb1-513" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb1-514"><a href="#cb1-514" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (byindex) {</span>
+<span id="cb1-515"><a href="#cb1-515" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">isString</span>(k[<span class="dv">0</span>]) <span class="op">&amp;&amp;</span> <span class="op">!</span>(k[<span class="dv">0</span>] <span class="kw">in</span> indexmap)) {</span>
+<span id="cb1-516"><a href="#cb1-516" aria-hidden="true" tabindex="-1"></a>          indexmap[k[<span class="dv">0</span>]] <span class="op">=</span> index<span class="op">;</span></span>
+<span id="cb1-517"><a href="#cb1-517" aria-hidden="true" tabindex="-1"></a>          index<span class="op">++;</span></span>
+<span id="cb1-518"><a href="#cb1-518" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb1-519"><a href="#cb1-519" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> accessindex <span class="op">=</span> indexmap[k[<span class="dv">0</span>]]<span class="op">;</span></span>
+<span id="cb1-520"><a href="#cb1-520" aria-hidden="true" tabindex="-1"></a>        access <span class="op">=</span> x <span class="kw">=&gt;</span> x[accessindex]<span class="op">;</span></span>
+<span id="cb1-521"><a href="#cb1-521" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="bu">process</span> <span class="op">=</span> k[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb1-522"><a href="#cb1-522" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> final_access <span class="op">=</span> x <span class="kw">=&gt;</span> <span class="bu">process</span>(<span class="fu">access</span>(x))<span class="op">;</span></span>
+<span id="cb1-523"><a href="#cb1-523" aria-hidden="true" tabindex="-1"></a>        accessors<span class="op">.</span><span class="fu">push</span>(final_access)<span class="op">;</span></span>
+<span id="cb1-524"><a href="#cb1-524" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-525"><a href="#cb1-525" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> {</span>
+<span id="cb1-526"><a href="#cb1-526" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> <span class="bu">process</span> <span class="op">=</span> k[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb1-527"><a href="#cb1-527" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> final_access <span class="op">=</span> x <span class="kw">=&gt;</span> <span class="bu">process</span>(<span class="fu">access</span>(x))<span class="op">;</span></span>
+<span id="cb1-528"><a href="#cb1-528" aria-hidden="true" tabindex="-1"></a>        accessors<span class="op">.</span><span class="fu">push</span>(final_access)<span class="op">;</span></span>
+<span id="cb1-529"><a href="#cb1-529" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-530"><a href="#cb1-530" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb1-531"><a href="#cb1-531" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-532"><a href="#cb1-532" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
+<span id="cb1-533"><a href="#cb1-533" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> access <span class="op">=</span> <span class="fu">isString</span>(k) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[k]) <span class="op">:</span> k<span class="op">;</span></span>
+<span id="cb1-534"><a href="#cb1-534" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (byindex) { </span>
+<span id="cb1-535"><a href="#cb1-535" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">isString</span>(k) <span class="op">&amp;&amp;</span> <span class="op">!</span>(k <span class="kw">in</span> indexmap)) {</span>
+<span id="cb1-536"><a href="#cb1-536" aria-hidden="true" tabindex="-1"></a>          indexmap[k] <span class="op">=</span> index<span class="op">;</span></span>
+<span id="cb1-537"><a href="#cb1-537" aria-hidden="true" tabindex="-1"></a>          index<span class="op">++;</span></span>
+<span id="cb1-538"><a href="#cb1-538" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb1-539"><a href="#cb1-539" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> accessindex <span class="op">=</span> indexmap[k]<span class="op">;</span></span>
+<span id="cb1-540"><a href="#cb1-540" aria-hidden="true" tabindex="-1"></a>        access <span class="op">=</span> x <span class="kw">=&gt;</span> x[accessindex]<span class="op">;</span></span>
+<span id="cb1-541"><a href="#cb1-541" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-542"><a href="#cb1-542" aria-hidden="true" tabindex="-1"></a>      accessors<span class="op">.</span><span class="fu">push</span>(access)<span class="op">;</span> </span>
+<span id="cb1-543"><a href="#cb1-543" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-544"><a href="#cb1-544" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-545"><a href="#cb1-545" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> accessors<span class="op">;</span></span>
+<span id="cb1-546"><a href="#cb1-546" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-547"><a href="#cb1-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-548"><a href="#cb1-548" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">predict</span>(obs<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">=</span>[<span class="st">"0"</span><span class="op">,</span> <span class="st">"1"</span><span class="op">,</span> <span class="st">"2"</span><span class="op">,</span> <span class="st">"3"</span>]<span class="op">,</span> byindex<span class="op">=</span><span class="kw">false</span>) {</span>
+<span id="cb1-549"><a href="#cb1-549" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb1-550"><a href="#cb1-550" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys<span class="op">,</span> byindex)<span class="op">;</span></span>
+<span id="cb1-551"><a href="#cb1-551" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-552"><a href="#cb1-552" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> output <span class="op">=</span> weights[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb1-553"><a href="#cb1-553" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> wi <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-554"><a href="#cb1-554" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> (i <span class="op">&lt;</span> keys<span class="op">.</span><span class="at">length</span>) <span class="op">&amp;&amp;</span> (wi <span class="op">&lt;</span> weights<span class="op">.</span><span class="at">length</span>)<span class="op">;</span> i<span class="op">++,</span> wi<span class="op">++</span>){</span>
+<span id="cb1-555"><a href="#cb1-555" aria-hidden="true" tabindex="-1"></a>    output <span class="op">+=</span> weights[wi] <span class="op">*</span> accessors[i](obs)<span class="op">;</span></span>
+<span id="cb1-556"><a href="#cb1-556" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-557"><a href="#cb1-557" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> output<span class="op">;</span></span>
+<span id="cb1-558"><a href="#cb1-558" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-559"><a href="#cb1-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-560"><a href="#cb1-560" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mean_loss</span>(f<span class="op">,</span> data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2<span class="op">=</span><span class="dv">0</span>) {</span>
+<span id="cb1-561"><a href="#cb1-561" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> reg <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-562"><a href="#cb1-562" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (l2 <span class="op">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb1-563"><a href="#cb1-563" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> weights<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb1-564"><a href="#cb1-564" aria-hidden="true" tabindex="-1"></a>      reg <span class="op">+=</span> weights[i] <span class="op">*</span> weights[i]<span class="op">;</span></span>
+<span id="cb1-565"><a href="#cb1-565" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-566"><a href="#cb1-566" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-567"><a href="#cb1-567" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-568"><a href="#cb1-568" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb1-569"><a href="#cb1-569" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> get_label <span class="op">=</span> <span class="fu">isString</span>(label) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[label]) <span class="op">:</span> label<span class="op">;</span></span>
+<span id="cb1-570"><a href="#cb1-570" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">mean</span>(data<span class="op">.</span><span class="fu">map</span>(x <span class="kw">=&gt;</span> <span class="fu">f</span>(<span class="fu">predict</span>(x<span class="op">,</span> weights<span class="op">,</span> keys)<span class="op">,</span> <span class="fu">get_label</span>(x)))) <span class="op">+</span> l2 <span class="op">*</span> reg<span class="op">;</span></span>
+<span id="cb1-571"><a href="#cb1-571" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-572"><a href="#cb1-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-573"><a href="#cb1-573" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">get_domains</span>(data<span class="op">,</span> accessors<span class="op">,</span> margin<span class="op">=</span><span class="fl">0.1</span>) {</span>
+<span id="cb1-574"><a href="#cb1-574" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> domains <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb1-575"><a href="#cb1-575" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> accessors<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span>){</span>
+<span id="cb1-576"><a href="#cb1-576" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> xdomain <span class="op">=</span> d3<span class="op">.</span><span class="fu">extent</span>(data<span class="op">,</span> accessors[i])<span class="op">;</span></span>
+<span id="cb1-577"><a href="#cb1-577" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> xdsize <span class="op">=</span> (xdomain[<span class="dv">1</span>] <span class="op">-</span> xdomain[<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb1-578"><a href="#cb1-578" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> xmin <span class="op">=</span> xdomain[<span class="dv">0</span>] <span class="op">-</span> xdsize <span class="op">*</span> margin<span class="op">;</span></span>
+<span id="cb1-579"><a href="#cb1-579" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> xmax <span class="op">=</span> xdomain[<span class="dv">1</span>] <span class="op">+</span> xdsize <span class="op">*</span> margin<span class="op">;</span></span>
+<span id="cb1-580"><a href="#cb1-580" aria-hidden="true" tabindex="-1"></a>    domains<span class="op">.</span><span class="fu">push</span>([xmin<span class="op">,</span> xmax])<span class="op">;</span></span>
+<span id="cb1-581"><a href="#cb1-581" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-582"><a href="#cb1-582" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> domains<span class="op">;</span></span>
+<span id="cb1-583"><a href="#cb1-583" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-584"><a href="#cb1-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-585"><a href="#cb1-585" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">logisticPlot2d</span>(data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> interval<span class="op">=</span><span class="fl">0.05</span>) {</span>
+<span id="cb1-586"><a href="#cb1-586" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> accuracy <span class="op">=</span> <span class="fu">mean_loss</span>(acc<span class="op">,</span> data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label)<span class="op">;</span></span>
+<span id="cb1-587"><a href="#cb1-587" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-588"><a href="#cb1-588" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb1-589"><a href="#cb1-589" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys)<span class="op">;</span></span>
+<span id="cb1-590"><a href="#cb1-590" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> index_accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys<span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb1-591"><a href="#cb1-591" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> domains <span class="op">=</span> <span class="fu">get_domains</span>(data<span class="op">,</span> accessors)<span class="op">;</span></span>
+<span id="cb1-592"><a href="#cb1-592" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> get_label <span class="op">=</span> <span class="fu">isString</span>(label) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[label]) <span class="op">:</span> label<span class="op">;</span></span>
+<span id="cb1-593"><a href="#cb1-593" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-594"><a href="#cb1-594" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-595"><a href="#cb1-595" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">80</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x"</span>}<span class="op">,</span></span>
+<span id="cb1-596"><a href="#cb1-596" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">80</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"y"</span>}<span class="op">,</span></span>
+<span id="cb1-597"><a href="#cb1-597" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Accuracy: "</span> <span class="op">+</span> accuracy<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">3</span>)<span class="op">,</span></span>
+<span id="cb1-598"><a href="#cb1-598" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="dt">type</span><span class="op">:</span> <span class="st">"linear"</span><span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">scheme</span><span class="op">:</span> <span class="st">"BuRd"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="op">-</span><span class="fl">0.5</span><span class="op">,</span> <span class="fl">1.5</span>]}<span class="op">,</span></span>
+<span id="cb1-599"><a href="#cb1-599" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-600"><a href="#cb1-600" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
+<span id="cb1-601"><a href="#cb1-601" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (x<span class="op">,</span> y) <span class="kw">=&gt;</span> <span class="fu">sigmoid</span>(<span class="fu">predict</span>([x<span class="op">,</span> y]<span class="op">,</span> weights<span class="op">,</span> index_accessors))<span class="op">,</span></span>
+<span id="cb1-602"><a href="#cb1-602" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> domains[<span class="dv">0</span>][<span class="dv">0</span>]<span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> domains[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> domains[<span class="dv">0</span>][<span class="dv">1</span>]<span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> domains[<span class="dv">1</span>][<span class="dv">1</span>]<span class="op">,</span> <span class="dt">interval</span><span class="op">:</span> interval<span class="op">,</span></span>
+<span id="cb1-603"><a href="#cb1-603" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb1-604"><a href="#cb1-604" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> accessors[<span class="dv">0</span>]<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> accessors[<span class="dv">1</span>]<span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> x<span class="kw">=&gt;</span> (<span class="fu">get_label</span>(x) <span class="op">?</span> <span class="fl">1.35</span> <span class="op">:</span> <span class="op">-</span><span class="fl">0.35</span>)})</span>
+<span id="cb1-605"><a href="#cb1-605" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-606"><a href="#cb1-606" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-607"><a href="#cb1-607" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-608"><a href="#cb1-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-609"><a href="#cb1-609" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">logisticLossPlot2d</span>(data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label) {</span>
+<span id="cb1-610"><a href="#cb1-610" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> loss <span class="op">=</span> <span class="fu">mean_loss</span>(cross_ent<span class="op">,</span> data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label)<span class="op">;</span></span>
+<span id="cb1-611"><a href="#cb1-611" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-612"><a href="#cb1-612" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb1-613"><a href="#cb1-613" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys)<span class="op">;</span></span>
+<span id="cb1-614"><a href="#cb1-614" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> index_accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys<span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb1-615"><a href="#cb1-615" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> domains <span class="op">=</span> <span class="fu">get_domains</span>(data<span class="op">,</span> accessors)<span class="op">;</span></span>
+<span id="cb1-616"><a href="#cb1-616" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> get_label <span class="op">=</span> <span class="fu">isString</span>(label) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[label]) <span class="op">:</span> label<span class="op">;</span></span>
+<span id="cb1-617"><a href="#cb1-617" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-618"><a href="#cb1-618" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-619"><a href="#cb1-619" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">80</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x"</span>}<span class="op">,</span></span>
+<span id="cb1-620"><a href="#cb1-620" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">tickSpacing</span><span class="op">:</span> <span class="dv">80</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"y"</span>}<span class="op">,</span></span>
+<span id="cb1-621"><a href="#cb1-621" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Loss: "</span> <span class="op">+</span> loss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">3</span>)<span class="op">,</span></span>
+<span id="cb1-622"><a href="#cb1-622" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="dt">type</span><span class="op">:</span> <span class="st">"linear"</span><span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">scheme</span><span class="op">:</span> <span class="st">"BuRd"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">5</span>]}<span class="op">,</span></span>
+<span id="cb1-623"><a href="#cb1-623" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-624"><a href="#cb1-624" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">contour</span>({</span>
+<span id="cb1-625"><a href="#cb1-625" aria-hidden="true" tabindex="-1"></a>        <span class="dt">value</span><span class="op">:</span> (x<span class="op">,</span> y) <span class="kw">=&gt;</span> <span class="fu">predict</span>([x<span class="op">,</span> y]<span class="op">,</span> weights<span class="op">,</span> index_accessors)<span class="op">,</span></span>
+<span id="cb1-626"><a href="#cb1-626" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.2</span><span class="op">,</span></span>
+<span id="cb1-627"><a href="#cb1-627" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">x1</span><span class="op">:</span> domains[<span class="dv">0</span>][<span class="dv">0</span>]<span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> domains[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> domains[<span class="dv">0</span>][<span class="dv">1</span>]<span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> domains[<span class="dv">1</span>][<span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb1-628"><a href="#cb1-628" aria-hidden="true" tabindex="-1"></a>        <span class="dt">thresholds</span><span class="op">:</span> [<span class="op">-</span><span class="fl">1e6</span><span class="op">,</span>  <span class="dv">0</span><span class="op">,</span> <span class="fl">0.00001</span>]</span>
+<span id="cb1-629"><a href="#cb1-629" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb1-630"><a href="#cb1-630" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> accessors[<span class="dv">0</span>]<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> accessors[<span class="dv">1</span>]<span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> x<span class="kw">=&gt;</span> <span class="fu">cross_ent</span>(<span class="fu">predict</span>(x<span class="op">,</span> weights<span class="op">,</span> keys)<span class="op">,</span> <span class="fu">get_label</span>(x))<span class="op">,</span> </span>
+<span id="cb1-631"><a href="#cb1-631" aria-hidden="true" tabindex="-1"></a>                      <span class="dt">strokeOpacity</span><span class="op">:</span> <span class="fl">0.5</span> })</span>
+<span id="cb1-632"><a href="#cb1-632" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-633"><a href="#cb1-633" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-634"><a href="#cb1-634" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-635"><a href="#cb1-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-636"><a href="#cb1-636" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">lossPlot2d</span>(f<span class="op">,</span> data<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2<span class="op">=</span><span class="dv">0</span><span class="op">,</span> res<span class="op">=</span><span class="dv">100</span><span class="op">,</span> x1<span class="op">=-</span><span class="dv">40</span><span class="op">,</span> y1<span class="op">=-</span><span class="fl">0.015</span><span class="op">,</span> x2<span class="op">=</span><span class="dv">40</span><span class="op">,</span>  y2<span class="op">=</span><span class="fl">0.015</span><span class="op">,</span> vmax<span class="op">=</span><span class="dv">50</span><span class="op">,</span> nlines<span class="op">=</span><span class="dv">25</span><span class="op">,</span> ctype<span class="op">=</span><span class="st">"sqrt"</span><span class="op">,</span> scale<span class="op">=</span>(x <span class="kw">=&gt;</span> x)) {</span>
+<span id="cb1-637"><a href="#cb1-637" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> grid <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-638"><a href="#cb1-638" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">lossFunc</span>(w<span class="op">,</span> b) {</span>
+<span id="cb1-639"><a href="#cb1-639" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">scale</span>(<span class="fu">mean_loss</span>(f<span class="op">,</span> data<span class="op">,</span> [w<span class="op">,</span> b]<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2))<span class="op">;</span></span>
+<span id="cb1-640"><a href="#cb1-640" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-641"><a href="#cb1-641" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-642"><a href="#cb1-642" aria-hidden="true" tabindex="-1"></a>  grid <span class="op">=</span> <span class="fu">grid_func</span>(lossFunc<span class="op">,</span></span>
+<span id="cb1-643"><a href="#cb1-643" aria-hidden="true" tabindex="-1"></a>                 res<span class="op">,</span> res<span class="op">,</span> x1<span class="op">,</span> y1<span class="op">,</span> x2<span class="op">,</span> y2</span>
+<span id="cb1-644"><a href="#cb1-644" aria-hidden="true" tabindex="-1"></a>                )<span class="op">;</span></span>
+<span id="cb1-645"><a href="#cb1-645" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-646"><a href="#cb1-646" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">plot2d</span>(weights) {</span>
+<span id="cb1-647"><a href="#cb1-647" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> w <span class="op">=</span> weights<span class="op">;</span></span>
+<span id="cb1-648"><a href="#cb1-648" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>(<span class="bu">Array</span><span class="op">.</span><span class="fu">isArray</span>(w[<span class="dv">0</span>]))){</span>
+<span id="cb1-649"><a href="#cb1-649" aria-hidden="true" tabindex="-1"></a>      w <span class="op">=</span> [w]<span class="op">;</span></span>
+<span id="cb1-650"><a href="#cb1-650" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-651"><a href="#cb1-651" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-652"><a href="#cb1-652" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> arrows <span class="op">=</span> w<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> w<span class="op">.</span><span class="at">length</span> <span class="op">-</span> <span class="dv">1</span>)<span class="op">.</span><span class="fu">map</span>(<span class="kw">function</span>(e<span class="op">,</span> i) {</span>
+<span id="cb1-653"><a href="#cb1-653" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> e<span class="op">.</span><span class="fu">concat</span>(w[i<span class="op">+</span><span class="dv">1</span>])<span class="op">;</span></span>
+<span id="cb1-654"><a href="#cb1-654" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb1-655"><a href="#cb1-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-656"><a href="#cb1-656" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> interval<span class="op">=</span> vmax <span class="op">/</span> nlines<span class="op">;</span> </span>
+<span id="cb1-657"><a href="#cb1-657" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> thresholds <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb1-658"><a href="#cb1-658" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> nlines<span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb1-659"><a href="#cb1-659" aria-hidden="true" tabindex="-1"></a>      thresholds<span class="op">.</span><span class="fu">push</span>(i <span class="op">*</span> interval)<span class="op">;</span></span>
+<span id="cb1-660"><a href="#cb1-660" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-661"><a href="#cb1-661" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> loss <span class="op">=</span> <span class="fu">mean_loss</span>(f<span class="op">,</span> data<span class="op">,</span> w[w<span class="op">.</span><span class="at">length</span> <span class="op">-</span> <span class="dv">1</span>]<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2)</span>
+<span id="cb1-662"><a href="#cb1-662" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-663"><a href="#cb1-663" aria-hidden="true" tabindex="-1"></a>      <span class="dt">title</span><span class="op">:</span> <span class="st">"Loss: "</span> <span class="op">+</span> loss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">3</span>)<span class="op">,</span></span>
+<span id="cb1-664"><a href="#cb1-664" aria-hidden="true" tabindex="-1"></a>      <span class="dt">color</span><span class="op">:</span> {<span class="dt">type</span><span class="op">:</span> <span class="st">"linear"</span><span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Loss"</span><span class="op">,</span> <span class="dt">scheme</span><span class="op">:</span> <span class="st">"BuRd"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> vmax]<span class="op">,</span> <span class="dt">type</span><span class="op">:</span> ctype}<span class="op">,</span></span>
+<span id="cb1-665"><a href="#cb1-665" aria-hidden="true" tabindex="-1"></a>      <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-666"><a href="#cb1-666" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">contour</span>(grid<span class="op">.</span><span class="at">values</span><span class="op">,</span> {<span class="dt">width</span><span class="op">:</span> grid<span class="op">.</span><span class="at">width</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> grid<span class="op">.</span><span class="at">height</span><span class="op">,</span> <span class="dt">x1</span><span class="op">:</span> grid<span class="op">.</span><span class="at">x1</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span>grid<span class="op">.</span><span class="at">x2</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> grid<span class="op">.</span><span class="at">y1</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> grid<span class="op">.</span><span class="at">y2</span><span class="op">,</span></span>
+<span id="cb1-667"><a href="#cb1-667" aria-hidden="true" tabindex="-1"></a>          <span class="dt">stroke</span><span class="op">:</span> Plot<span class="op">.</span><span class="at">identity</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> thresholds})<span class="op">,</span></span>
+<span id="cb1-668"><a href="#cb1-668" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">dot</span>(w)<span class="op">,</span></span>
+<span id="cb1-669"><a href="#cb1-669" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">arrow</span>(arrows<span class="op">,</span> {<span class="dt">x1</span><span class="op">:</span> <span class="st">"0"</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> <span class="st">"1"</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> <span class="st">"2"</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> <span class="st">"3"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span>})</span>
+<span id="cb1-670"><a href="#cb1-670" aria-hidden="true" tabindex="-1"></a>      ]</span>
+<span id="cb1-671"><a href="#cb1-671" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb1-672"><a href="#cb1-672" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-673"><a href="#cb1-673" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> plot2d<span class="op">;</span></span>
+<span id="cb1-674"><a href="#cb1-674" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-675"><a href="#cb1-675" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-676"><a href="#cb1-676" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-677"><a href="#cb1-677" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-678"><a href="#cb1-678" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">regressionPlot</span>(data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2<span class="op">,</span> f<span class="op">=</span>se<span class="op">,</span> stroke<span class="op">=</span><span class="st">""</span>) {</span>
+<span id="cb1-679"><a href="#cb1-679" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> loss <span class="op">=</span> <span class="fu">mean_loss</span>(f<span class="op">,</span> data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2)<span class="op">;</span></span>
+<span id="cb1-680"><a href="#cb1-680" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb1-681"><a href="#cb1-681" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-682"><a href="#cb1-682" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys)<span class="op">;</span></span>
+<span id="cb1-683"><a href="#cb1-683" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> index_accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys<span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb1-684"><a href="#cb1-684" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> domains <span class="op">=</span> <span class="fu">get_domains</span>(data<span class="op">,</span> <span class="fu">get_accessors</span>([label]<span class="op">.</span><span class="fu">concat</span>(keys)))<span class="op">;</span></span>
+<span id="cb1-685"><a href="#cb1-685" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> get_label <span class="op">=</span> <span class="fu">isString</span>(label) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[label]) <span class="op">:</span> label<span class="op">;</span></span>
+<span id="cb1-686"><a href="#cb1-686" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-687"><a href="#cb1-687" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> stroke_shade <span class="op">=</span> stroke<span class="op">;</span></span>
+<span id="cb1-688"><a href="#cb1-688" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (stroke <span class="op">==</span> <span class="st">""</span>) {</span>
+<span id="cb1-689"><a href="#cb1-689" aria-hidden="true" tabindex="-1"></a>    stroke_shade <span class="op">=</span> (x <span class="kw">=&gt;</span> <span class="fu">f</span>(<span class="fu">predict</span>(x<span class="op">,</span> weights<span class="op">,</span> keys)<span class="op">,</span> <span class="fu">get_label</span>(x)))</span>
+<span id="cb1-690"><a href="#cb1-690" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-691"><a href="#cb1-691" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-692"><a href="#cb1-692" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-693"><a href="#cb1-693" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">domain</span><span class="op">:</span> domains[<span class="dv">0</span>]}<span class="op">,</span></span>
+<span id="cb1-694"><a href="#cb1-694" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Loss: "</span> <span class="op">+</span> loss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">3</span>)<span class="op">,</span></span>
+<span id="cb1-695"><a href="#cb1-695" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="dt">type</span><span class="op">:</span> <span class="st">"linear"</span><span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Loss"</span><span class="op">,</span> <span class="dt">scheme</span><span class="op">:</span> <span class="st">"BuRd"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">100</span>]}<span class="op">,</span></span>
+<span id="cb1-696"><a href="#cb1-696" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-697"><a href="#cb1-697" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">sample</span>((x) <span class="kw">=&gt;</span> <span class="fu">predict</span>([x]<span class="op">,</span> weights<span class="op">,</span> index_accessors)<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">1</span>])<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">'black'</span>})<span class="op">,</span></span>
+<span id="cb1-698"><a href="#cb1-698" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> accessors[<span class="dv">0</span>]<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> get_label<span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> stroke_shade })</span>
+<span id="cb1-699"><a href="#cb1-699" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-700"><a href="#cb1-700" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb1-701"><a href="#cb1-701" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-11" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-12" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-13" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-14" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-15" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-16" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-17" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-18" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-19" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-20" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-21" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-22" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-23" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Manim Community <span style="color: #008000; text-decoration-color: #008000">v0.17.3</span>
+
+</pre>
+</div>
+</div>
+<section id="the-story-so-far" class="level1">
+<h1>The story so far</h1>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p><span class="math display">\[
+\text{Honda Accord: } \begin{bmatrix} \text{Weight:} &amp; \text{2500 lbs} \\ \text{Horsepower:} &amp; \text{ 123 HP} \\ \text{Displacement:} &amp; \text{ 2.4 L} \\ \text{0-60mph:} &amp; \text{ 7.8 Sec} \end{bmatrix} \longrightarrow \text{   MPG: ?}
+\]</span></p>
+<p><span class="math display">\[
+\text{Dodge Aspen: } \begin{bmatrix} \text{Weight:} &amp; \text{3800 lbs} \\ \text{Horsepower:} &amp; \text{ 155 HP} \\ \text{Displacement:} &amp; \text{ 3.2 L} \\ \text{0-60mph:} &amp; \text{ 6.8 Sec} \end{bmatrix} \longrightarrow \text{   MPG: ?}
+\]</span></p>
+<p><span class="math display">\[
+\vdots \quad \vdots
+\]</span></p>
+<p><span class="math display">\[
+\mathcal{D}  = \{ (\mathbf{x}_1, y_1),\ (\mathbf{x}_2, y_2),\ ...\ (\mathbf{x}_N, y_N)\} = \big(\mathbf{X}, \mathbf{y}\big)
+\]</span></p>
+<div class="columns">
+<div class="column" style="width:60%;">
+<section id="inputs" class="level4">
+<h4 class="anchored" data-anchor-id="inputs">Inputs</h4>
+<div style="zoom: 0.5;">
+<div class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">weight</th>
+<th data-quarto-table-cell-role="th">horsepower</th>
+<th data-quarto-table-cell-role="th">displacement</th>
+<th data-quarto-table-cell-role="th">acceleration</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">car name</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td>3504</td>
+<td>130.0</td>
+<td>307.0</td>
+<td>12.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">buick skylark 320</td>
+<td>3693</td>
+<td>165.0</td>
+<td>350.0</td>
+<td>11.5</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">plymouth satellite</td>
+<td>3436</td>
+<td>150.0</td>
+<td>318.0</td>
+<td>11.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">amc rebel sst</td>
+<td>3433</td>
+<td>150.0</td>
+<td>304.0</td>
+<td>12.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ford torino</td>
+<td>3449</td>
+<td>140.0</td>
+<td>302.0</td>
+<td>10.5</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ford mustang gl</td>
+<td>2790</td>
+<td>86.0</td>
+<td>140.0</td>
+<td>15.6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">vw pickup</td>
+<td>2130</td>
+<td>52.0</td>
+<td>97.0</td>
+<td>24.6</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">dodge rampage</td>
+<td>2295</td>
+<td>84.0</td>
+<td>135.0</td>
+<td>11.6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">ford ranger</td>
+<td>2625</td>
+<td>79.0</td>
+<td>120.0</td>
+<td>18.6</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">chevy s-10</td>
+<td>2720</td>
+<td>82.0</td>
+<td>119.0</td>
+<td>19.4</td>
+</tr>
+</tbody>
+</table>
+
+<p>305 rows × 4 columns</p>
+</div>
+</div>
+</div>
+<p><span class="math display">\[ \mathbf{X} =
+\begin{bmatrix}
+                X_{11} &amp; X_{12} &amp; X_{13} &amp; X_{14} \\
+                X_{21} &amp; X_{22} &amp; X_{23} &amp; X_{24} \\
+                X_{31} &amp; X_{32} &amp; X_{33} &amp; X_{34} \\
+                \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+                X_{N1} &amp; X_{N2} &amp; X_{N3} &amp; X_{N4} \\
+                                 \end{bmatrix} \underset{\text{Car data}}{\longrightarrow}
+\begin{bmatrix}
+                3504 &amp; 130 &amp; 307.0 &amp; 12.0 \\
+                3693 &amp; 165 &amp; 350.0 &amp; 11.5 \\
+                3493 &amp; 150 &amp; 318.0 &amp; 11.0 \\
+                \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+                2720 &amp; 82 &amp; 119.0 &amp; 19.4 \\
+                                 \end{bmatrix}\]</span></p>
+<p><span class="math display">\[\mathbf{X}:\ N \times d \ \text{matrix} , \quad (\mathbf{X} \in \mathbb{R}^{N\times d})\]</span> <span class="math display">\[ N: \text{number of observations}, \quad d: \text{number of features}\]</span></p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[3504.   130.   307.    12. ]
+ [3693.   165.   350.    11.5]
+ [3436.   150.   318.    11. ]
+ ...
+ [2295.    84.   135.    11.6]
+ [2625.    79.   120.    18.6]
+ [2720.    82.   119.    19.4]]</code></pre>
+</div>
+</div>
+</div>
+</section>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:30%;">
+<section id="outputs" class="level4">
+<h4 class="anchored" data-anchor-id="outputs">Outputs</h4>
+<div style="zoom: 0.5;">
+<div class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mpg</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">car name</th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td>18.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">buick skylark 320</td>
+<td>15.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">plymouth satellite</td>
+<td>18.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">amc rebel sst</td>
+<td>16.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ford torino</td>
+<td>17.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ford mustang gl</td>
+<td>27.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">vw pickup</td>
+<td>44.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">dodge rampage</td>
+<td>32.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">ford ranger</td>
+<td>28.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">chevy s-10</td>
+<td>31.0</td>
+</tr>
+</tbody>
+</table>
+
+<p>305 rows × 1 columns</p>
+</div>
+</div>
+</div>
+<p><span class="math display">\[ \mathbf{y} =
+\begin{bmatrix}
+                y_{1} \\
+                y_{2} \\
+                y_{3} \\
+                \vdots \\
+                y_{N} \\
+                                 \end{bmatrix} \underset{\text{Car data}}{\longrightarrow}
+\begin{bmatrix}
+                18.0  \\
+                15.0  \\
+                16.0  \\
+                \vdots \\
+                31.0 \\
+                                 \end{bmatrix}\]</span></p>
+<p><span class="math display">\[\mathbf{y}:\ N \ \text{vector}, \quad (\mathbf{y} \in \mathbb{R}^N)\]</span> <span class="math display">\[ N: \text{number of observations}\]</span></p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[18. 15. 18. ... 32. 28. 31.]</code></pre>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:60%;">
+<section id="inputs-1" class="level4">
+<h4 class="anchored">Inputs</h4>
+<div style="zoom: 0.5;">
+<div class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="7">
+<style type="text/css">
+#T_3cb28_row0_col0, #T_3cb28_row0_col1, #T_3cb28_row0_col2, #T_3cb28_row0_col3, #T_3cb28_row1_col0, #T_3cb28_row1_col1, #T_3cb28_row1_col2, #T_3cb28_row1_col3, #T_3cb28_row2_col0, #T_3cb28_row2_col1, #T_3cb28_row2_col2, #T_3cb28_row2_col3, #T_3cb28_row4_col0, #T_3cb28_row4_col1, #T_3cb28_row4_col2, #T_3cb28_row4_col3 {
+  background-color: white;
+}
+#T_3cb28_row3_col0, #T_3cb28_row3_col1, #T_3cb28_row3_col2, #T_3cb28_row3_col3 {
+  background-color: gold;
+}
+</style>
+
+<table id="T_3cb28" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_3cb28_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">weight</th>
+<th id="T_3cb28_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">horsepower</th>
+<th id="T_3cb28_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">displacement</th>
+<th id="T_3cb28_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">acceleration</th>
+</tr>
+<tr class="odd">
+<th class="index_name level0" data-quarto-table-cell-role="th">car name</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col1" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col2" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col3" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_3cb28_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td id="T_3cb28_row0_col0" class="data row0 col0">3504</td>
+<td id="T_3cb28_row0_col1" class="data row0 col1">130.000000</td>
+<td id="T_3cb28_row0_col2" class="data row0 col2">307.000000</td>
+<td id="T_3cb28_row0_col3" class="data row0 col3">12.000000</td>
+</tr>
+<tr class="even">
+<td id="T_3cb28_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">buick skylark 320</td>
+<td id="T_3cb28_row1_col0" class="data row1 col0">3693</td>
+<td id="T_3cb28_row1_col1" class="data row1 col1">165.000000</td>
+<td id="T_3cb28_row1_col2" class="data row1 col2">350.000000</td>
+<td id="T_3cb28_row1_col3" class="data row1 col3">11.500000</td>
+</tr>
+<tr class="odd">
+<td id="T_3cb28_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">plymouth satellite</td>
+<td id="T_3cb28_row2_col0" class="data row2 col0">3436</td>
+<td id="T_3cb28_row2_col1" class="data row2 col1">150.000000</td>
+<td id="T_3cb28_row2_col2" class="data row2 col2">318.000000</td>
+<td id="T_3cb28_row2_col3" class="data row2 col3">11.000000</td>
+</tr>
+<tr class="even">
+<td id="T_3cb28_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">amc rebel sst</td>
+<td id="T_3cb28_row3_col0" class="data row3 col0">3433</td>
+<td id="T_3cb28_row3_col1" class="data row3 col1">150.000000</td>
+<td id="T_3cb28_row3_col2" class="data row3 col2">304.000000</td>
+<td id="T_3cb28_row3_col3" class="data row3 col3">12.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_3cb28_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">ford torino</td>
+<td id="T_3cb28_row4_col0" class="data row4 col0">3449</td>
+<td id="T_3cb28_row4_col1" class="data row4 col1">140.000000</td>
+<td id="T_3cb28_row4_col2" class="data row4 col2">302.000000</td>
+<td id="T_3cb28_row4_col3" class="data row4 col3">10.500000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><span class="math display">\[\mathbf{x}_3 = \begin{bmatrix} 3433 \\ 150 \\ 304 \\ 12 \end{bmatrix}, \quad (d \text{ vector})\]</span></p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X[<span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[3433.  150.  304.   12.]</code></pre>
+</div>
+</div>
+<section id="as-a-column-vector" class="level3">
+<h3 class="anchored" data-anchor-id="as-a-column-vector">As a column vector</h3>
+<p><span class="math display">\[\mathbf{x}_3 = \begin{bmatrix} 3433 \\ 150 \\ 304 \\ 12 \end{bmatrix}, \quad (d \text{ vector})\quad \underset{\text{same notation!}}{\longleftrightarrow} \quad \mathbf{x}_3 = \begin{bmatrix} 3433 \\ 150 \\ 304 \\ 12 \end{bmatrix}, \quad (d \times 1 \text{ matrix}) \]</span></p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X[<span class="dv">3</span>].reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[3433.]
+ [ 150.]
+ [ 304.]
+ [  12.]]</code></pre>
+</div>
+</div>
+</section>
+<section id="as-a-row-vector" class="level3">
+<h3 class="anchored" data-anchor-id="as-a-row-vector">As a row vector</h3>
+<p><span class="math display">\[\mathbf{x}_3^T = \begin{bmatrix} 3433 &amp; 150 &amp; 304 &amp; 12 \end{bmatrix}, \quad (d \times 1 \text{ matrix}) \]</span></p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X[<span class="dv">3</span>].reshape((<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[3433.  150.  304.   12.]]</code></pre>
+</div>
+</div>
+<p><span class="math display">\[\mathbf{X} = \begin{bmatrix} \mathbf{x}_1^T \\ \mathbf{x}_2^T \\ \vdots \\ \mathbf{x}_N^ T \end{bmatrix}\]</span></p>
+</section>
+</div>
+</section>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:30%;">
+<section id="outputs-1" class="level4">
+<h4 class="anchored" data-anchor-id="outputs-1">Outputs</h4>
+<div style="zoom: 0.5;">
+<div class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="11">
+<style type="text/css">
+#T_d2181_row0_col0, #T_d2181_row1_col0, #T_d2181_row2_col0, #T_d2181_row4_col0 {
+  background-color: white;
+}
+#T_d2181_row3_col0 {
+  background-color: gold;
+}
+</style>
+
+<table id="T_d2181" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_d2181_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">mpg</th>
+</tr>
+<tr class="odd">
+<th class="index_name level0" data-quarto-table-cell-role="th">car name</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_d2181_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td id="T_d2181_row0_col0" class="data row0 col0">18.000000</td>
+</tr>
+<tr class="even">
+<td id="T_d2181_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">buick skylark 320</td>
+<td id="T_d2181_row1_col0" class="data row1 col0">15.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_d2181_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">plymouth satellite</td>
+<td id="T_d2181_row2_col0" class="data row2 col0">18.000000</td>
+</tr>
+<tr class="even">
+<td id="T_d2181_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">amc rebel sst</td>
+<td id="T_d2181_row3_col0" class="data row3 col0">16.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_d2181_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">ford torino</td>
+<td id="T_d2181_row4_col0" class="data row4 col0">17.000000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><span class="math display">\[y_3 = 16, \quad (\text{scalar})\]</span></p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y[<span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>16.0</code></pre>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:60%;">
+<section id="inputs-2" class="level4">
+<h4 class="anchored" data-anchor-id="inputs-2">Inputs</h4>
+<div style="zoom: 0.5;">
+<div class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="13">
+<style type="text/css">
+#T_a4d78_row0_col0, #T_a4d78_row1_col0, #T_a4d78_row2_col0, #T_a4d78_row3_col0, #T_a4d78_row4_col0 {
+  background-color: gold;
+}
+#T_a4d78_row0_col1, #T_a4d78_row0_col2, #T_a4d78_row0_col3, #T_a4d78_row1_col1, #T_a4d78_row1_col2, #T_a4d78_row1_col3, #T_a4d78_row2_col1, #T_a4d78_row2_col2, #T_a4d78_row2_col3, #T_a4d78_row3_col1, #T_a4d78_row3_col2, #T_a4d78_row3_col3, #T_a4d78_row4_col1, #T_a4d78_row4_col2, #T_a4d78_row4_col3 {
+  background-color: white;
+}
+</style>
+
+<table id="T_a4d78" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_a4d78_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">weight</th>
+<th id="T_a4d78_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">horsepower</th>
+<th id="T_a4d78_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">displacement</th>
+<th id="T_a4d78_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">acceleration</th>
+</tr>
+<tr class="odd">
+<th class="index_name level0" data-quarto-table-cell-role="th">car name</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col1" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col2" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col3" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_a4d78_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td id="T_a4d78_row0_col0" class="data row0 col0">3504</td>
+<td id="T_a4d78_row0_col1" class="data row0 col1">130.000000</td>
+<td id="T_a4d78_row0_col2" class="data row0 col2">307.000000</td>
+<td id="T_a4d78_row0_col3" class="data row0 col3">12.000000</td>
+</tr>
+<tr class="even">
+<td id="T_a4d78_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">buick skylark 320</td>
+<td id="T_a4d78_row1_col0" class="data row1 col0">3693</td>
+<td id="T_a4d78_row1_col1" class="data row1 col1">165.000000</td>
+<td id="T_a4d78_row1_col2" class="data row1 col2">350.000000</td>
+<td id="T_a4d78_row1_col3" class="data row1 col3">11.500000</td>
+</tr>
+<tr class="odd">
+<td id="T_a4d78_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">plymouth satellite</td>
+<td id="T_a4d78_row2_col0" class="data row2 col0">3436</td>
+<td id="T_a4d78_row2_col1" class="data row2 col1">150.000000</td>
+<td id="T_a4d78_row2_col2" class="data row2 col2">318.000000</td>
+<td id="T_a4d78_row2_col3" class="data row2 col3">11.000000</td>
+</tr>
+<tr class="even">
+<td id="T_a4d78_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">amc rebel sst</td>
+<td id="T_a4d78_row3_col0" class="data row3 col0">3433</td>
+<td id="T_a4d78_row3_col1" class="data row3 col1">150.000000</td>
+<td id="T_a4d78_row3_col2" class="data row3 col2">304.000000</td>
+<td id="T_a4d78_row3_col3" class="data row3 col3">12.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_a4d78_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">ford torino</td>
+<td id="T_a4d78_row4_col0" class="data row4 col0">3449</td>
+<td id="T_a4d78_row4_col1" class="data row4 col1">140.000000</td>
+<td id="T_a4d78_row4_col2" class="data row4 col2">302.000000</td>
+<td id="T_a4d78_row4_col3" class="data row4 col3">10.500000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>weight <span class="op">=</span> X[:, <span class="dv">0</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(weight[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[3504. 3693. 3436. 3433. 3449.]</code></pre>
+</div>
+</div>
+</div>
+</section>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:30%;">
+<section id="outputs-2" class="level4">
+<h4 class="anchored" data-anchor-id="outputs-2">Outputs</h4>
+<div style="zoom: 0.5;">
+<div class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="15">
+<style type="text/css">
+#T_c2d09_row0_col0, #T_c2d09_row1_col0, #T_c2d09_row2_col0, #T_c2d09_row3_col0, #T_c2d09_row4_col0 {
+  background-color: gold;
+}
+</style>
+
+<table id="T_c2d09" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_c2d09_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">mpg</th>
+</tr>
+<tr class="odd">
+<th class="index_name level0" data-quarto-table-cell-role="th">car name</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_c2d09_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td id="T_c2d09_row0_col0" class="data row0 col0">18.000000</td>
+</tr>
+<tr class="even">
+<td id="T_c2d09_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">buick skylark 320</td>
+<td id="T_c2d09_row1_col0" class="data row1 col0">15.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_c2d09_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">plymouth satellite</td>
+<td id="T_c2d09_row2_col0" class="data row2 col0">18.000000</td>
+</tr>
+<tr class="even">
+<td id="T_c2d09_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">amc rebel sst</td>
+<td id="T_c2d09_row3_col0" class="data row3 col0">16.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_c2d09_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">ford torino</td>
+<td id="T_c2d09_row4_col0" class="data row4 col0">17.000000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[18.]
+ [15.]
+ [18.]
+ [16.]
+ [17.]]</code></pre>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> plt.scatter(weight, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-18-output-1.png" width="566" height="411"></p>
+</div>
+</div>
+<section id="linear-predictions" class="level3">
+<h3 class="anchored" data-anchor-id="linear-predictions">Linear predictions</h3>
+<p>Find simple function that predicts output <span class="math display">\[f(\mathbf{X}) = \mathbf{x}^T \mathbf{w}\]</span> <span class="math display">\[\mathbf{x}: \text{input} (d \text{ vector}), \quad\mathbf{w}: \text{weights or parameters} (d \text{ vector})\]</span></p>
+<div class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="18">
+<style type="text/css">
+#T_310f0_row0_col0, #T_310f0_row0_col1, #T_310f0_row0_col2, #T_310f0_row0_col3, #T_310f0_row1_col0, #T_310f0_row1_col1, #T_310f0_row1_col2, #T_310f0_row1_col3, #T_310f0_row2_col0, #T_310f0_row2_col1, #T_310f0_row2_col2, #T_310f0_row2_col3, #T_310f0_row4_col0, #T_310f0_row4_col1, #T_310f0_row4_col2, #T_310f0_row4_col3 {
+  background-color: white;
+}
+#T_310f0_row3_col0, #T_310f0_row3_col1, #T_310f0_row3_col2, #T_310f0_row3_col3 {
+  background-color: gold;
+}
+</style>
+
+<table id="T_310f0" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_310f0_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">weight</th>
+<th id="T_310f0_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">horsepower</th>
+<th id="T_310f0_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">displacement</th>
+<th id="T_310f0_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">acceleration</th>
+</tr>
+<tr class="odd">
+<th class="index_name level0" data-quarto-table-cell-role="th">car name</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col1" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col2" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col3" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_310f0_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td id="T_310f0_row0_col0" class="data row0 col0">3504</td>
+<td id="T_310f0_row0_col1" class="data row0 col1">130.000000</td>
+<td id="T_310f0_row0_col2" class="data row0 col2">307.000000</td>
+<td id="T_310f0_row0_col3" class="data row0 col3">12.000000</td>
+</tr>
+<tr class="even">
+<td id="T_310f0_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">buick skylark 320</td>
+<td id="T_310f0_row1_col0" class="data row1 col0">3693</td>
+<td id="T_310f0_row1_col1" class="data row1 col1">165.000000</td>
+<td id="T_310f0_row1_col2" class="data row1 col2">350.000000</td>
+<td id="T_310f0_row1_col3" class="data row1 col3">11.500000</td>
+</tr>
+<tr class="odd">
+<td id="T_310f0_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">plymouth satellite</td>
+<td id="T_310f0_row2_col0" class="data row2 col0">3436</td>
+<td id="T_310f0_row2_col1" class="data row2 col1">150.000000</td>
+<td id="T_310f0_row2_col2" class="data row2 col2">318.000000</td>
+<td id="T_310f0_row2_col3" class="data row2 col3">11.000000</td>
+</tr>
+<tr class="even">
+<td id="T_310f0_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">amc rebel sst</td>
+<td id="T_310f0_row3_col0" class="data row3 col0">3433</td>
+<td id="T_310f0_row3_col1" class="data row3 col1">150.000000</td>
+<td id="T_310f0_row3_col2" class="data row3 col2">304.000000</td>
+<td id="T_310f0_row3_col3" class="data row3 col3">12.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_310f0_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">ford torino</td>
+<td id="T_310f0_row4_col0" class="data row4 col0">3449</td>
+<td id="T_310f0_row4_col1" class="data row4 col1">140.000000</td>
+<td id="T_310f0_row4_col2" class="data row4 col2">302.000000</td>
+<td id="T_310f0_row4_col3" class="data row4 col3">10.500000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><span class="math display">\[f(\mathbf{x}_4) = \mathbf{x}_4^T \mathbf{w} =  \begin{bmatrix} 3433 \\ 150 \\ 304 \\ 12 \end{bmatrix}^T \begin{bmatrix} w_1 \\ w_2 \\ w_3 \\ w_4 \end{bmatrix} = 3433 w_1  +  150 w_2 + 304  w_3 + 12w_4 \]</span></p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> np.array([<span class="fl">0.02</span>, <span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fl">1.5</span>])</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, w):</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Transpose not needed because x and w are 1-dimensional vectors</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (Not column/row vectors!)</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.dot(x, w)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(f(X[<span class="dv">3</span>], w))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>50.25999999999999</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make everything explicit column vectors</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> w.reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>x3 <span class="op">=</span> X[<span class="dv">3</span>].reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Works!</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, w):</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.dot(x.T, w)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>f(X[<span class="dv">3</span>], w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>array([50.26])</code></pre>
+</div>
+</div>
+<p>Find simple function that predicts output <span class="math display">\[f(\mathbf{X}) = \mathbf{X} \mathbf{w}\]</span> <span class="math display">\[\mathbf{x}: \text{all inputs} (N\times d \text{ matrix}), \quad\mathbf{w}: \text{weights or parameters} (d \text{ vector})\]</span></p>
+<div class="cell" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="21">
+<style type="text/css">
+#T_5521b_row0_col0, #T_5521b_row0_col1, #T_5521b_row0_col2, #T_5521b_row0_col3, #T_5521b_row1_col0, #T_5521b_row1_col1, #T_5521b_row1_col2, #T_5521b_row1_col3, #T_5521b_row2_col0, #T_5521b_row2_col1, #T_5521b_row2_col2, #T_5521b_row2_col3, #T_5521b_row3_col0, #T_5521b_row3_col1, #T_5521b_row3_col2, #T_5521b_row3_col3, #T_5521b_row4_col0, #T_5521b_row4_col1, #T_5521b_row4_col2, #T_5521b_row4_col3 {
+  background-color: gold;
+}
+</style>
+
+<table id="T_5521b" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_5521b_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">weight</th>
+<th id="T_5521b_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">horsepower</th>
+<th id="T_5521b_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">displacement</th>
+<th id="T_5521b_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">acceleration</th>
+</tr>
+<tr class="odd">
+<th class="index_name level0" data-quarto-table-cell-role="th">car name</th>
+<th class="blank col0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col1" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col2" data-quarto-table-cell-role="th">&nbsp;</th>
+<th class="blank col3" data-quarto-table-cell-role="th">&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_5521b_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">chevrolet chevelle malibu</td>
+<td id="T_5521b_row0_col0" class="data row0 col0">3504</td>
+<td id="T_5521b_row0_col1" class="data row0 col1">130.000000</td>
+<td id="T_5521b_row0_col2" class="data row0 col2">307.000000</td>
+<td id="T_5521b_row0_col3" class="data row0 col3">12.000000</td>
+</tr>
+<tr class="even">
+<td id="T_5521b_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">buick skylark 320</td>
+<td id="T_5521b_row1_col0" class="data row1 col0">3693</td>
+<td id="T_5521b_row1_col1" class="data row1 col1">165.000000</td>
+<td id="T_5521b_row1_col2" class="data row1 col2">350.000000</td>
+<td id="T_5521b_row1_col3" class="data row1 col3">11.500000</td>
+</tr>
+<tr class="odd">
+<td id="T_5521b_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">plymouth satellite</td>
+<td id="T_5521b_row2_col0" class="data row2 col0">3436</td>
+<td id="T_5521b_row2_col1" class="data row2 col1">150.000000</td>
+<td id="T_5521b_row2_col2" class="data row2 col2">318.000000</td>
+<td id="T_5521b_row2_col3" class="data row2 col3">11.000000</td>
+</tr>
+<tr class="even">
+<td id="T_5521b_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">amc rebel sst</td>
+<td id="T_5521b_row3_col0" class="data row3 col0">3433</td>
+<td id="T_5521b_row3_col1" class="data row3 col1">150.000000</td>
+<td id="T_5521b_row3_col2" class="data row3 col2">304.000000</td>
+<td id="T_5521b_row3_col3" class="data row3 col3">12.000000</td>
+</tr>
+<tr class="odd">
+<td id="T_5521b_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">ford torino</td>
+<td id="T_5521b_row4_col0" class="data row4 col0">3449</td>
+<td id="T_5521b_row4_col1" class="data row4 col1">140.000000</td>
+<td id="T_5521b_row4_col2" class="data row4 col2">302.000000</td>
+<td id="T_5521b_row4_col3" class="data row4 col3">10.500000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><span class="math display">\[f(\mathbf{X}) = \mathbf{X} \mathbf{w} =  \begin{bmatrix} 3504 &amp; 130 &amp; 307 &amp; 12 \\
+3693 &amp; 165 &amp; 350 &amp; 11.5 \\
+3436 &amp; 150 &amp; 318 &amp; 11 \\
+3433 &amp; 150 &amp; 304 &amp; 12 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+\end{bmatrix} \begin{bmatrix} w_1 \\ w_2 \\ w_3 \\ w_4 \end{bmatrix}  \]</span></p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> np.array([<span class="fl">0.02</span>, <span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fl">1.5</span>])</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, w):</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.dot(x, w)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(f(X, w) [:<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[47.38 54.61 50.42 50.26]</code></pre>
+</div>
+</div>
+<p>Find x</p>
+</section>
+</section>
+</section>
+<section id="neural-networks" class="level1">
+<h1>Neural networks</h1>
+<section id="feature-transforms-revisited" class="level2">
+<h2 class="anchored" data-anchor-id="feature-transforms-revisited">Feature transforms revisited</h2>
+<p>In the last lecture we saw that we can define more complex and expressive functions by transforming the inputs in various ways. For example, we can define a function as:</p>
+<p><span class="math display">\[
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w} = w_4 e^{x_1} + w_3 \sin(x_1) + w_2x_1^2 + w_1 x_1 + b ,\quad \phi(\mathbf{x}) = \begin{bmatrix}  x_1 \\ x_1^2 \\ \sin(x_1) \\ e^{x_1}  \\ 1 \end{bmatrix}
+\]</span></p>
+<div class="cell" data-execution_count="23">
+<div class="cell-output cell-output-display">
+<script type="ojs-define">{"contents": [{"name": "quadratic_data", "value": [[0.4461231074258212, 0.110243986443313], [2.199791562151657, 5.233566788460595], [-2.6308755958995436, 7.55311713183656], [0.8595861287324258, 0.05588940661656516], [0.6870131157513217, 0.9383165320400884], [-1.0372378616283509, 1.2201782149320886], [-0.8868466125791752, 0.15331910206515065], [-2.8002794611973534, 6.739801528965613], [2.504853867984637, 6.503173827016682], [2.4380137712676895, 6.32425566286715], [-2.8021375949421907, 7.919286223707449], [-2.277757474481601, 4.9013714813653495], [0.9918454944283885, 0.1980935100176665], [0.04713263569662285, -0.4929197613844346], [2.122882945292064, 4.012863430422035], [-0.579480747031635, 0.45180922992581257], [1.4001395415009341, 1.627213356493695], [1.8221532339221937, 3.345889200030735], [1.3269181755264592, 1.4736235229574657], [0.5851733205699032, 0.4479212982357308], [2.6164344172828535, 7.01043441454428], [-1.402016189194228, 1.3442990831691835], [1.1688454423836534, 1.6533823887077959], [0.9283601726072677, 0.9279331638493785], [-2.641115360998744, 6.6384883619716355], [2.9011975688659213, 8.914791895131316], [2.0851606596939654, 4.622965266743329], [1.9841002638663587, 3.6594793410177013], [1.9468657383282082, 3.830894931670734], [0.9938002375123647, 1.2053826103077412], [-2.5884909330315677, 6.37775469633876], [2.3910265506893627, 5.867533400290152], [2.415489785133304, 6.16567038887405], [2.984722772870299, 8.983916813740596], [-2.4045173741008763, 6.076126890313736], [-2.698038617131868, 7.367625272890312], [1.1728944262619185, 2.2528618748472713], [0.017940778890965348, 0.5330333092802146], [1.011497486673619, 0.9035779381163567], [1.5781923632464157, 2.156461680014561], [-1.4826637687898139, 2.795861249515121], [-1.4812381013889433, 1.7517853151788936], [-1.6518056484750323, 2.3848874582378077], [0.38331805321243895, -0.011817352835886974], [-1.7794956063869858, 3.2157460340542623], [-1.9230030002248253, 4.081719504700171], [-0.6161779640574006, -0.3034336011872766], [1.5472942916091723, 2.462644438637163], [0.9368691015434489, 0.7834739729105759], [0.27688191719480626, -0.40337731847743546], [-1.516648382572384, 2.5715487928590743], [2.3344705167273645, 5.260359876962489], [0.6097138270724285, 0.18554462751469078], [-1.0662252365821545, 1.0944530123749716], [-1.7071889240067313, 2.900915669661547], [-1.0591241379989915, -0.018948210423461953], [0.7026823005257015, 0.3302949867757403], [-1.0375486194669314, 0.6627546471794994], [1.7717155014105028, 3.2161600240212502], [-0.11278292239583543, -0.2736523838898904], [1.302762931870812, 2.019019038716742], [-2.5772460870642933, 5.606276776483279], [0.5314840765558282, 0.4561036879828707], [1.0759790789551307, 0.7431445561626329], [-1.3468078929434504, 2.1210057218677076], [1.5292856565898134, 2.2683989845659873], [1.435909485015742, 2.8653989230756904], [-0.3899538899540662, -0.6561083020949158], [0.15643782136224216, -0.375125578757474], [-0.297771564307145, -0.20819135134466313], [1.123452426552137, 2.139184236671288], [1.2947611932023548, 1.2906232201401744], [0.8550557903290477, 1.8007751409311474], [-1.7151467378817171, 2.44551362793329], [2.0361112148049916, 4.122899204305247], [0.8974372251841647, 1.8713063753783312], [1.7433307501364155, 2.546184547368902], [-0.1141830080982098, 0.3034646525139427], [1.3651321847826576, 1.2455372019729043], [1.2792746567667894, 1.9418950065027043], [-0.17516679850386208, -0.614479247693183], [-1.9809257016275765, 4.13655113654366], [-2.1982271363572017, 5.325997867025035], [0.3428339821461046, 0.4623201738436491], [2.749443802307492, 7.9790764801644665], [0.6444178007774086, -0.7850074341809035], [-1.4751612473008824, 3.096899522840398], [0.16287730468808093, -0.14511495067768124], [1.228662406873049, 2.7564339418965873], [1.1223493841798113, 1.989558544104687], [2.9338506562566424, 8.491678246665867], [-2.808226644455286, 7.738164439271178], [-1.9605600451253917, 3.4508492013461116], [0.7311590635839411, 0.5898441280167839], [-1.1439172180900443, 0.8881084742810454], [-0.38373932285108125, 0.5750239137842399], [-1.1912517849895106, 1.9273192961220964], [2.2433680796158812, 4.976891051127729], [1.1996239997000249, 0.13847372321118012], [1.0351877338967377, 1.3788574290961724]]}]}</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb25" data-startfrom="423" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 422;"><span id="cb25-423"><a href="#cb25-423" aria-hidden="true" tabindex="-1"></a>viewof form_mpg_4 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>(</span>
+<span id="cb25-424"><a href="#cb25-424" aria-hidden="true" tabindex="-1"></a>  [</span>
+<span id="cb25-425"><a href="#cb25-425" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">1</span>})<span class="op">,</span></span>
+<span id="cb25-426"><a href="#cb25-426" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_1"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">0.0077</span>})<span class="op">,</span></span>
+<span id="cb25-427"><a href="#cb25-427" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_2"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span>})<span class="op">,</span></span>
+<span id="cb25-428"><a href="#cb25-428" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_3"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span>})<span class="op">,</span></span>
+<span id="cb25-429"><a href="#cb25-429" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="fl">0.5</span><span class="op">,</span> <span class="fl">0.5</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_4"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span>})<span class="op">,</span></span>
+<span id="cb25-430"><a href="#cb25-430" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb25-431"><a href="#cb25-431" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb26" data-startfrom="467" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 466;"><span id="cb26-467"><a href="#cb26-467" aria-hidden="true" tabindex="-1"></a><span class="fu">regressionPlot</span>(quadratic_data<span class="op">,</span> form_mpg_4<span class="op">,</span> [<span class="st">"0"</span><span class="op">,</span> [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> (x) <span class="op">*</span> (x)]<span class="op">,</span> [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span>(x)]<span class="op">,</span> [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">exp</span>(x)]]<span class="op">,</span> <span class="st">"1"</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sin_X <span class="op">=</span> np.sin(X)               <span class="co"># sin(x)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>squared_X <span class="op">=</span> X <span class="op">**</span> <span class="dv">2</span>              <span class="co"># x^2</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>exp_X <span class="op">=</span> np.exp(X)               <span class="co"># e^x</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>ones <span class="op">=</span> np.ones((X.shape[<span class="dv">0</span>], <span class="dv">1</span>)) <span class="co"># Column of 1s</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>transformedX <span class="op">=</span> np.concatenate([X, squared_X, sin_X, exp_X, ones], axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We see that by varying the weights <span class="math inline">\(w_1...w_4\)</span>, we can get a variety of complex, non-linear functions of our input <span class="math inline">\(\mathbf{x}\)</span>!</p>
+<p>This approach raises a big question though: how do we actually choose what transforms of our inputs to use?</p>
+</section>
+<section id="learned-feature-transforms" class="level2">
+<h2 class="anchored" data-anchor-id="learned-feature-transforms">Learned feature transforms</h2>
+<p>We’ve already seen that we can <em>learn</em> a function by defining our function in terms of a set of <em>parameters</em> <span class="math inline">\(\mathbf{w}\)</span>: <span class="math display">\[f(\mathbf{x}) = \mathbf{x}^T\mathbf{w}\]</span> and then minimizing a <em>loss</em> as a function of <span class="math inline">\(\mathbf{w}\)</span> <span class="math display">\[\mathbf{w}^* = \underset{\mathbf{w}}{\text{argmin}}\ \mathbf{Loss}(\mathbf{w})\]</span> Which we can do with gradient descent: <span class="math display">\[\mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \nabla_{\mathbf{w}} \mathbf{Loss}(\mathbf{w})\]</span></p>
+<p>So we didn’t choose <span class="math inline">\(\mathbf{w}\)</span> explicitly, we let our algorithm find the optimal values. Ideally, we could do the same thing for our feature transforms: let our algorithm choose the optimal functions to use. This raises the question:</p>
+<p><strong>Can we <em>learn</em> the functions in our feature transform?</strong> The answer is yes! To see how, let’s start by writing out what this would look like. We’ll start with the feature transform framework we’ve already introduced, but now let’s replace the individual transforms with functions that we can learn.</p>
+<p><span class="math display">\[
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w} ,\quad \phi(\mathbf{x}) = \begin{bmatrix}  g_1(x_1) \\ g_2(x_1) \\ g_3(x_1) \\ g_4(x_1) \\ 1 \end{bmatrix}
+\]</span></p>
+<p>The key insight we’ll use here is that we’ve already seen how to learn functions: this is exactly what our regression models are doing! So if we want to learn a feature transform, we can try using one of these functions that we know how to learn this case: <em>logistic regression</em>. <span class="math display">\[g_i(\mathbf{x}) = \sigma(\mathbf{x}^T \mathbf{w}_i)\]</span> With this form we get a new feature transform: <span class="math display">\[
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w}_0,\quad \phi(\mathbf{x}) = \begin{bmatrix}  \sigma(\mathbf{x}^T \mathbf{w}_1) \\ \sigma(\mathbf{x}^T \mathbf{w}_2) \\ \sigma(\mathbf{x}^T \mathbf{w}_3) \\ \sigma(\mathbf{x}^T \mathbf{w}_4) \\ 1 \end{bmatrix}
+\]</span></p>
+<p>Here we’ll call our original weight vector <span class="math inline">\(\mathbf{w}_0\)</span> to distinguish it from the others. If we choose different weights for these different transform functions, we can have different feature transforms!</p>
+<p>Let’s look at a very simple example: <span class="math display">\[\mathbf{x} = \begin{bmatrix} x_1\\ 1 \end{bmatrix}, \quad \mathbf{w}_0 = \begin{bmatrix} w_{01} \\ b_0 \end{bmatrix}\]</span> <span class="math display">\[
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w}_0,\quad \phi(\mathbf{x}) = \begin{bmatrix}  \sigma(\mathbf{x}^T \mathbf{w}_1) \\ \sigma(\mathbf{x}^T \mathbf{w}_2) \\ 1 \end{bmatrix} =
+\begin{bmatrix}  \sigma(x_1 w_{11} + b_1) \\ \sigma(x_1 w_{21} + b_2) \\ 1 \end{bmatrix}
+\]</span> In this case, we can write out our prediction function explicitly as: <span class="math display">\[f(\mathbf{x}) = w_{01} \cdot\sigma(x_1 w_{11} + b_1) + w_{02}\cdot \sigma(x_1 w_{21} + b_2) + b_0 \]</span></p>
+<p>Let’s see what happens if define our function this way and vary the parameters <span class="math inline">\(\mathbf{w}_0,\ \mathbf{w}_1,\ \mathbf{w}_2\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb28" data-startfrom="491" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 490;"><span id="cb28-491"><a href="#cb28-491" aria-hidden="true" tabindex="-1"></a>viewof form_nn <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>(</span>
+<span id="cb28-492"><a href="#cb28-492" aria-hidden="true" tabindex="-1"></a>  [</span>
+<span id="cb28-493"><a href="#cb28-493" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b_0"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.33</span>})<span class="op">,</span></span>
+<span id="cb28-494"><a href="#cb28-494" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_01"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">9.2376</span>})<span class="op">,</span></span>
+<span id="cb28-495"><a href="#cb28-495" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_02"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">8.3719</span>})<span class="op">,</span></span>
+<span id="cb28-496"><a href="#cb28-496" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_11"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">2.4219</span>})<span class="op">,</span></span>
+<span id="cb28-497"><a href="#cb28-497" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b_1"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">5.457</span>})<span class="op">,</span></span>
+<span id="cb28-498"><a href="#cb28-498" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_21"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">2.6795</span>})<span class="op">,</span></span>
+<span id="cb28-499"><a href="#cb28-499" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b_2"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">5.4557</span>})<span class="op">,</span></span>
+<span id="cb28-500"><a href="#cb28-500" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">checkbox</span>([<span class="st">"Show feature transforms"</span>]<span class="op">,</span> {})<span class="op">,</span></span>
+<span id="cb28-501"><a href="#cb28-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-502"><a href="#cb28-502" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb28-503"><a href="#cb28-503" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="cell-output cell-output-display">
+<script type="ojs-define">{"contents": [{"name": "quadratic_data2", "value": [[2.0464034872179244, 4.330923785952856], [1.8065186859276663, 2.598459443701542], [-0.9726152075938135, 1.1341369022908738], [-2.6901120783202015, 7.45745376101718], [1.0523093282416545, 0.5543520885273087], [1.1620098152717429, 1.6877177513331643], [-2.019092581398038, 3.0588765420341266], [2.9201972012069293, 8.25174378192171], [0.9275350780039036, 0.011539566032627069], [-1.1824454773631237, 1.319754980476867], [-1.237583291673434, 0.7102950352670738], [1.7171079550497943, 3.2098823044046054], [2.072405249099031, 4.189438973290413], [1.6496893921528448, 2.8785545082942536], [-0.0877027718241532, 0.5598869656484067], [0.10623408217829144, 0.12578331963683637], [2.420727436389555, 5.761282169957313], [1.1681324974826799, 1.4828892335820607], [-0.5779075754080747, 0.3785862521562895], [0.9607947973223219, 1.4210871374900105], [-1.3146505262094488, 1.6886936521390798], [-2.44748603609176, 5.189523866359727], [2.911757506700952, 8.121329414033406], [2.7461803619315495, 7.316647352187751], [1.638523935013792, 1.8721223435453287], [0.5451137015722427, 0.3076733702495677], [2.199015996847968, 4.5804522210941006], [-2.0137838727162114, 3.1067347357356088], [2.5165549989814693, 6.447224877173494], [1.7576708938796353, 4.079888228323096], [1.0211186357299322, 1.168151454736047], [1.3044916815979928, 1.682525202674091], [1.1333110745955945, 1.4962615770077412], [-2.7382478451658043, 6.547901354833142], [-2.5082996101633954, 7.031195974482491], [-2.210089339078554, 4.590264448908889], [-0.08157538530449937, 0.21837190580009666], [1.641846275683828, 2.6771676458585527], [2.5154013290173705, 6.517808370522032], [1.0865069416739788, 0.5930606423939528], [1.2258934629170106, 2.0884171474015405], [-0.21279326993242798, -0.8076866297993296], [1.7795245506150144, 2.8700356368962727], [-2.753269404261725, 7.896926924396088], [-0.04304950278946773, 0.39815356644735006], [-0.47520428503276246, -0.36572309107720047], [-1.3733358824242505, 2.0727946070470127], [0.5328235314064251, 0.38942250829233804], [-1.2516641517847111, 1.9883474582981573], [-1.8991121069277703, 4.5916219449564695], [2.2599209148568242, 5.2164640852086075], [-0.38923178410348136, 0.9330054063223434], [1.0840778551553205, 0.44342226594442824], [-0.2800610920669384, -0.17002453503280396], [1.5296547219739134, 2.279048295498078], [0.3619742161470265, 0.672079635719312], [1.9920832643348785, 3.7917742433593578], [-0.15440535378377884, -0.03622553471006097], [-2.0396201174902675, 4.0844413793478855], [-0.9814670059136241, 0.8431782074922805], [-1.6771097359884286, 2.40735051859392], [0.6497274548399261, 1.0027474693703091], [-2.748372153796959, 7.538688663284946], [-0.9187813798415676, 1.450872101934408], [2.358880650364002, 5.088370940002857], [-1.2406156304946125, 1.9046487550138256], [-0.7967087452197479, 1.3617744773924296], [2.5590805582607103, 6.8378050772056875], [-2.863416312553832, 7.1288004786374035], [1.3772746174304666, 1.2777453894810202], [-1.1978383439856073, 1.2691465546569172], [0.4272089114803874, 0.10103236102094905], [-1.1063867991615843, 1.5449432602723339], [1.7114032430301167, 3.114902075876734], [2.2264361435971844, 4.054527404437501], [0.6448546608971526, 1.5991048777447356], [-0.6391969289751334, 0.24152309701568625], [1.9700794499254242, 4.359467466273537], [1.7702006408259017, 3.807380223151937], [0.8436378609763926, 0.3339638234961364], [-0.7273608429845657, 0.6580828016652618], [-0.7419513750100237, 0.20664499266467573], [-0.5785063461846569, 0.5371465286973204], [-0.9834754011446085, 1.144355222860828], [-2.5178773605104947, 6.4293130860050365], [-0.001674978858022147, 0.07562979631360202], [-1.9822523944165695, 4.061487779624767], [-0.7200632971424228, 1.324866530563476], [-1.5603188657010194, 2.686129881693935], [0.1118848585705301, -0.563955124369327], [1.791990346108066, 2.6271855901540304], [0.40210906228931886, 0.05834128450561707], [-2.1872031306199524, 5.022614911681172], [1.1149235232625427, 1.22162142659459], [0.10385242238832149, 1.1615294885105314], [2.9832756930067745, 7.765988447910227], [-0.9267230670325208, -0.05619542398366595], [-0.028015016456444553, -0.2804215564450762], [1.2586627124862053, 1.8096851921345039], [1.0030503180666477, 1.0295199482874642]]}]}</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb29" data-startfrom="525" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 524;"><span id="cb29-525"><a href="#cb29-525" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">nnPlot</span>(data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2<span class="op">,</span> f<span class="op">=</span>se<span class="op">,</span> stroke<span class="op">=</span><span class="st">""</span><span class="op">,</span> options<span class="op">=</span>[]) {</span>
+<span id="cb29-526"><a href="#cb29-526" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> loss <span class="op">=</span> <span class="fu">mean_loss</span>(f<span class="op">,</span> data<span class="op">,</span> weights<span class="op">,</span> keys<span class="op">,</span> label<span class="op">,</span> l2)<span class="op">;</span></span>
+<span id="cb29-527"><a href="#cb29-527" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> isString <span class="op">=</span> value <span class="kw">=&gt;</span> <span class="kw">typeof</span> value <span class="op">===</span> <span class="st">'string'</span><span class="op">;</span></span>
+<span id="cb29-528"><a href="#cb29-528" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-529"><a href="#cb29-529" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys)<span class="op">;</span></span>
+<span id="cb29-530"><a href="#cb29-530" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> index_accessors <span class="op">=</span> <span class="fu">get_accessors</span>(keys<span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb29-531"><a href="#cb29-531" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> domains <span class="op">=</span> <span class="fu">get_domains</span>(data<span class="op">,</span> <span class="fu">get_accessors</span>([label]<span class="op">.</span><span class="fu">concat</span>(keys)))<span class="op">;</span></span>
+<span id="cb29-532"><a href="#cb29-532" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> get_label <span class="op">=</span> <span class="fu">isString</span>(label) <span class="op">?</span> (x <span class="kw">=&gt;</span> x[label]) <span class="op">:</span> label<span class="op">;</span></span>
+<span id="cb29-533"><a href="#cb29-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-534"><a href="#cb29-534" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> stroke_shade <span class="op">=</span> stroke<span class="op">;</span></span>
+<span id="cb29-535"><a href="#cb29-535" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (stroke <span class="op">==</span> <span class="st">""</span>) {</span>
+<span id="cb29-536"><a href="#cb29-536" aria-hidden="true" tabindex="-1"></a>    stroke_shade <span class="op">=</span> (x <span class="kw">=&gt;</span> <span class="fu">f</span>(<span class="fu">predict</span>(x<span class="op">,</span> weights<span class="op">,</span> keys)<span class="op">,</span> <span class="fu">get_label</span>(x)))</span>
+<span id="cb29-537"><a href="#cb29-537" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb29-538"><a href="#cb29-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-539"><a href="#cb29-539" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> a <span class="op">=</span> []</span>
+<span id="cb29-540"><a href="#cb29-540" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (options<span class="op">.</span><span class="fu">indexOf</span>(<span class="st">"Show feature transforms"</span>) <span class="op">&gt;=</span> <span class="dv">0</span>){</span>
+<span id="cb29-541"><a href="#cb29-541" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> [Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">sample</span>((x) <span class="kw">=&gt;</span>  keys[<span class="dv">1</span>][<span class="dv">1</span>](x)<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">1</span>])<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">'red'</span>})<span class="op">,</span></span>
+<span id="cb29-542"><a href="#cb29-542" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">sample</span>((x) <span class="kw">=&gt;</span> keys[<span class="dv">2</span>][<span class="dv">1</span>](x)<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">1</span>])<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">'blue'</span>})]</span>
+<span id="cb29-543"><a href="#cb29-543" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb29-544"><a href="#cb29-544" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-545"><a href="#cb29-545" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb29-546"><a href="#cb29-546" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">domain</span><span class="op">:</span> domains[<span class="dv">0</span>]}<span class="op">,</span></span>
+<span id="cb29-547"><a href="#cb29-547" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Loss: "</span> <span class="op">+</span> loss<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">3</span>)<span class="op">,</span></span>
+<span id="cb29-548"><a href="#cb29-548" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="dt">type</span><span class="op">:</span> <span class="st">"linear"</span><span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Loss"</span><span class="op">,</span> <span class="dt">scheme</span><span class="op">:</span> <span class="st">"BuRd"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">100</span>]}<span class="op">,</span></span>
+<span id="cb29-549"><a href="#cb29-549" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb29-550"><a href="#cb29-550" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">sample</span>((x) <span class="kw">=&gt;</span> <span class="fu">predict</span>([x]<span class="op">,</span> weights<span class="op">,</span> index_accessors)<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> domains[<span class="dv">1</span>][<span class="dv">1</span>])<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span> <span class="st">'black'</span>})<span class="op">,</span></span>
+<span id="cb29-551"><a href="#cb29-551" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> accessors[<span class="dv">0</span>]<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> get_label<span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> stroke_shade })</span>
+<span id="cb29-552"><a href="#cb29-552" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">.</span><span class="fu">concat</span>(a)</span>
+<span id="cb29-553"><a href="#cb29-553" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb29-554"><a href="#cb29-554" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb30" data-startfrom="560" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 559;"><span id="cb30-560"><a href="#cb30-560" aria-hidden="true" tabindex="-1"></a><span class="fu">nnPlot</span>(quadratic_data2<span class="op">,</span> [form_nn[<span class="dv">0</span>]<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> form_nn[<span class="dv">1</span>]<span class="op">,</span> form_nn[<span class="dv">2</span>]]<span class="op">,</span></span>
+<span id="cb30-561"><a href="#cb30-561" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-562"><a href="#cb30-562" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"0"</span><span class="op">,</span> [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> <span class="fu">sigmoid</span>(form_nn[<span class="dv">3</span>] <span class="op">*</span> x <span class="op">+</span> form_nn[<span class="dv">4</span>]<span class="op">,</span> <span class="dv">0</span>)]<span class="op">,</span> </span>
+<span id="cb30-563"><a href="#cb30-563" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> <span class="fu">sigmoid</span>(form_nn[<span class="dv">5</span>] <span class="op">*</span> x <span class="op">+</span> form_nn[<span class="dv">6</span>]<span class="op">,</span> <span class="dv">0</span>)]<span class="op">,</span> </span>
+<span id="cb30-564"><a href="#cb30-564" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span> <span class="st">"1"</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> se<span class="op">,</span> <span class="st">""</span><span class="op">,</span> form_nn[<span class="dv">7</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-6" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>If we let <span class="math display">\[\mathbf{W}_1 = \begin{bmatrix} \mathbf{w}_1^T \\ \mathbf{w}_2^T \\mathbf{w}_3^T \\ \vdots \end{bmatrix}\]</span> We can write this more compactly as: <span class="math display">\[f(\mathbf{x})= \sigma(\mathbf{x}^T \mathbf{W}_1^T)^T \mathbf{w_0}  \]</span> Or for a whole dataset: <span class="math display">\[\mathbf{X} = \begin{bmatrix} \mathbf{x}_1^T \\ \mathbf{x}_2^T \mathbf{x}_3^T \\ \vdots \end{bmatrix}\]</span> <span class="math display">\[f(\mathbf{X})= \sigma(\mathbf{X} \mathbf{W}_1^T)^T \mathbf{w_0}  \]</span></p>
+</section>
+<section id="neural-networks-1" class="level2">
+<h2 class="anchored" data-anchor-id="neural-networks-1">Neural networks</h2>
+<p>What we’ve just seen <em>is</em> a <strong>neural network</strong>!</p>
+<p>Terminology-wise we call a single feature transform like <span class="math inline">\(\sigma(x_1 w_{11} + b_1)\)</span> a <strong>neuron</strong>.</p>
+<p>We call the whole set of transformed features the <strong>hidden layer</strong>: <span class="math display">\[\begin{bmatrix}  \sigma(\mathbf{x}^T \mathbf{w}_1) \\ \sigma(\mathbf{x}^T \mathbf{w}_2) \\ \sigma(\mathbf{x}^T \mathbf{w}_3) \\ \sigma(\mathbf{x}^T \mathbf{w}_4) \\ 1 \end{bmatrix} \]</span></p>
+<p>We call <span class="math inline">\(\mathbf{X}\)</span> the <strong>input</strong> and <span class="math inline">\(f(\mathbf{X})\)</span> the <strong>output</strong>.</p>
+<p>We often describe neural networks using a node-link diagram:</p>
+<p><img src="nn.svg" class="img-fluid"></p>
+</section>
+<section id="linear-transforms" class="level2">
+<h2 class="anchored" data-anchor-id="linear-transforms">Linear transforms</h2>
+<p>Can we use <em>linear</em> regression as a feature transform?</p>
+<p>Let’s see what happens in our simple example: <span class="math display">\[\mathbf{x} = \begin{bmatrix} x_1\\ 1 \end{bmatrix}, \quad \mathbf{w}_0 = \begin{bmatrix} w_{01} \\ b_0 \end{bmatrix}\]</span> <span class="math display">\[
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w}_0,\quad \phi(\mathbf{x}) = \begin{bmatrix}  \mathbf{x}^T \mathbf{w}_1 \\ \mathbf{x}^T \mathbf{w}_2 \\ 1 \end{bmatrix} =
+\begin{bmatrix}  x_1 w_{11} + b_1 \\ x_1 w_{21} + b_2 \\ 1 \end{bmatrix}
+\]</span> In this case, we can write out our prediction function explicitly as: <span class="math display">\[f(\mathbf{x}) = w_{01} \cdot x_1 w_{11} + b_1 + w_{02}\cdot x_1 w_{21} + b_2 + b_0 \]</span> <span class="math display">\[= (w_{11}w_{01}) x_1 + (w_{21}w_{02}) x_1 + (b_0 + b_1 + b2)\]</span> We see that we ultimately just end up with another linear function of <span class="math inline">\(\mathbf{x}\)</span> and we’re no better off than in our orginal case.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb31" data-startfrom="577" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 576;"><span id="cb31-577"><a href="#cb31-577" aria-hidden="true" tabindex="-1"></a>viewof form_lnn <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">form</span>(</span>
+<span id="cb31-578"><a href="#cb31-578" aria-hidden="true" tabindex="-1"></a>  [</span>
+<span id="cb31-579"><a href="#cb31-579" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b_0"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.33</span>})<span class="op">,</span></span>
+<span id="cb31-580"><a href="#cb31-580" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_01"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">9.2376</span>})<span class="op">,</span></span>
+<span id="cb31-581"><a href="#cb31-581" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_02"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">8.3719</span>})<span class="op">,</span></span>
+<span id="cb31-582"><a href="#cb31-582" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_11"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">2.4219</span>})<span class="op">,</span></span>
+<span id="cb31-583"><a href="#cb31-583" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b_1"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">5.457</span>})<span class="op">,</span></span>
+<span id="cb31-584"><a href="#cb31-584" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"w_21"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">2.6795</span>})<span class="op">,</span></span>
+<span id="cb31-585"><a href="#cb31-585" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">range</span>([<span class="op">-</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.0001</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"b_2"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="op">-</span><span class="fl">5.4557</span>})<span class="op">,</span></span>
+<span id="cb31-586"><a href="#cb31-586" aria-hidden="true" tabindex="-1"></a>    Inputs<span class="op">.</span><span class="fu">checkbox</span>([<span class="st">"Show feature transforms"</span>]<span class="op">,</span> {})<span class="op">,</span></span>
+<span id="cb31-587"><a href="#cb31-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-588"><a href="#cb31-588" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb31-589"><a href="#cb31-589" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb32" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb32-0"><a href="#cb32-0" aria-hidden="true" tabindex="-1"></a><span class="fu">nnPlot</span>(quadratic_data2<span class="op">,</span> [form_lnn[<span class="dv">0</span>]<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> form_lnn[<span class="dv">1</span>]<span class="op">,</span> form_lnn[<span class="dv">2</span>]]<span class="op">,</span></span>
+<span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"0"</span><span class="op">,</span> [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> form_lnn[<span class="dv">3</span>] <span class="op">*</span> x <span class="op">+</span> form_lnn[<span class="dv">4</span>]]<span class="op">,</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"0"</span><span class="op">,</span> x <span class="kw">=&gt;</span> form_lnn[<span class="dv">5</span>] <span class="op">*</span> x <span class="op">+</span> form_lnn[<span class="dv">6</span>]]<span class="op">,</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>        ]<span class="op">,</span> <span class="st">"1"</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> se<span class="op">,</span> <span class="st">""</span><span class="op">,</span> form_lnn[<span class="dv">7</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-8" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>In general: <span class="math display">\[
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w}_0,\quad \phi(\mathbf{x}) = \begin{bmatrix}  \mathbf{x}^T \mathbf{w}_1 \\ \mathbf{x}^T \mathbf{w}_2\\ \mathbf{x}^T \mathbf{w}_3 \\ \mathbf{x}^T \mathbf{w}_4\\ 1 \end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+f(\mathbf{x})= w_{01} (\mathbf{x}^T \mathbf{w}_1) +  w_{02} (\mathbf{x}^T \mathbf{w}_2) +...
+\]</span> <span class="math display">\[= \mathbf{x}^T ( w_{01}\mathbf{w}_1) +  \mathbf{x}^T (w_{02} \mathbf{w}_2) +...
+\]</span> Which is again just a linear function. The motivates the need for using a non-linear function like <span class="math inline">\(\sigma(\cdot)\)</span> in our neurons. We’ll see more about this next week!</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"Plot = import(\"https://esm.sh/@observablehq/plot\") \nd3 = require(\"d3@7\")\ntopojson = require(\"topojson\")\nMathJax = require(\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js\").catch(() => window.MathJax)\ntf = require(\"https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js\").catch(() => window.tf)\n\nTHREE = {\n  const THREE = window.THREE = await require(\"three@0.130.0/build/three.min.js\");\n  await require(\"three@0.130.0/examples/js/controls/OrbitControls.js\").catch(() => {});\n  await require(\"three@0.130.0/examples/js/loaders/SVGLoader.js\").catch(() => {});\n  return THREE;\n}\n\nfunction sample(f, start, end, nsamples=100) {\n  let arr = [...Array(nsamples).keys()]\n  let dist = end - start\n  function arrmap(ind) {\n    const x = (ind * dist) / nsamples + start;\n    return [x, f(x)];\n  }\n  return arr.map(arrmap)\n}\n\nfunction sigmoid(x){\n  return 1 / (1 + Math.exp(-x));\n}\n\nfunction sum(x) {\n  let s = 0;\n  for (let i = 0; i < x.length; i++ ) {\n    s += x[i];\n  }\n  return s;\n}\n\nfunction mean(x) {\n  let s = 0;\n  for (let i = 0; i < x.length; i++ ) {\n    s += x[i];\n  }\n  return s / x.length;\n}\n\nfunction cross_ent(x, y) {\n  return y ? -Math.log(sigmoid(x)) : -Math.log(sigmoid(-x));\n}\n\nfunction se(x, y) {\n  return (x - y) * (x - y);\n}\n\nfunction shuffle(array) {\n  let currentIndex = array.length,  randomIndex;\n\n  // While there remain elements to shuffle.\n  while (currentIndex > 0) {\n\n    // Pick a remaining element.\n    randomIndex = Math.floor(Math.random() * currentIndex);\n    currentIndex--;\n\n    // And swap it with the current element.\n    [array[currentIndex], array[randomIndex]] = [\n      array[randomIndex], array[currentIndex]];\n  }\n\n  return array;\n}\n\nfunction acc(x, y) {\n  return Number(y == (x  > 0));\n}\n\nfunction grid_func(f, width, height, x1, y1, x2, y2) {\n  let values = new Array(width * height);\n  const xstride = (x2 - x1) / width;\n  const ystride = (y2 - y1) / height;\n\n  \n  let y = 0;\n  let x = 0;\n  let ind = 0;\n  for (let i = 0; i < height; i++ ) {\n    for (let j = 0; j < width; j++, ind++) {\n      x = x1 + j * xstride;\n      y = y1 + i * ystride;\n      values[ind] = f(x, y);\n    }\n  }\n  return {width: width, height: height, x1: x1, y1: y1, x2: x2, y2: y2, values: values};\n}\n\nfunction get_accessors(keys, byindex=false) {\n  let isString = value => typeof value === 'string';\n  \n  let index = 0;\n  let indexmap = {};\n  let accessors = [];\n  for (let i = 0; i < keys.length; i++){\n    let k = keys[i];\n    if (Array.isArray(k)) {\n      let access = isString(k[0]) ? (x => x[k[0]]) : k[0];\n      \n      if (byindex) {\n        if (isString(k[0]) && !(k[0] in indexmap)) {\n          indexmap[k[0]] = index;\n          index++;\n        }\n        let accessindex = indexmap[k[0]];\n        access = x => x[accessindex];\n        let process = k[1];\n        let final_access = x => process(access(x));\n        accessors.push(final_access);\n      }\n      else {\n        let process = k[1];\n        let final_access = x => process(access(x));\n        accessors.push(final_access);\n      }\n      \n    }\n    else {\n      let access = isString(k) ? (x => x[k]) : k;\n      if (byindex) { \n        if (isString(k) && !(k in indexmap)) {\n          indexmap[k] = index;\n          index++;\n        }\n        let accessindex = indexmap[k];\n        access = x => x[accessindex];\n      }\n      accessors.push(access); \n    }\n  }\n  return accessors;\n}\n\nfunction predict(obs, weights, keys=[\"0\", \"1\", \"2\", \"3\"], byindex=false) {\n  let isString = value => typeof value === 'string';\n  let accessors = get_accessors(keys, byindex);\n  \n  let output = weights[0];\n  let wi = 1;\n  for (let i = 0; (i < keys.length) && (wi < weights.length); i++, wi++){\n    output += weights[wi] * accessors[i](obs);\n  }\n  return output;\n}\n\nfunction mean_loss(f, data, weights, keys, label, l2=0) {\n  let reg = 0;\n  if (l2 > 0){\n    for (let i = 1; i < weights.length; i++) {\n      reg += weights[i] * weights[i];\n    }\n  }\n  \n  const isString = value => typeof value === 'string';\n  const get_label = isString(label) ? (x => x[label]) : label;\n  return mean(data.map(x => f(predict(x, weights, keys), get_label(x)))) + l2 * reg;\n}\n\nfunction get_domains(data, accessors, margin=0.1) {\n  let domains = [];\n  for (let i = 0; i < accessors.length; i++){\n    let xdomain = d3.extent(data, accessors[i]);\n    let xdsize = (xdomain[1] - xdomain[0]);\n    let xmin = xdomain[0] - xdsize * margin;\n    let xmax = xdomain[1] + xdsize * margin;\n    domains.push([xmin, xmax]);\n  }\n  return domains;\n}\n\nfunction logisticPlot2d(data, weights, keys, label, interval=0.05) {\n  const accuracy = mean_loss(acc, data, weights, keys, label);\n  \n  let isString = value => typeof value === 'string';\n  let accessors = get_accessors(keys);\n  let index_accessors = get_accessors(keys, true);\n  let domains = get_domains(data, accessors);\n  const get_label = isString(label) ? (x => x[label]) : label;\n  \n  return Plot.plot({\n    x: {tickSpacing: 80, label: \"x\"},\n    y: {tickSpacing: 80, label: \"y\"},\n    title: \"Accuracy: \" + accuracy.toFixed(3),\n    color: {type: \"linear\", legend: true, scheme: \"BuRd\", domain: [-0.5, 1.5]},\n    marks: [\n      Plot.contour({\n        fill: (x, y) => sigmoid(predict([x, y], weights, index_accessors)),\n        x1: domains[0][0], y1: domains[1][0], x2: domains[0][1], y2: domains[1][1], interval: interval,\n      }),\n      Plot.dot(data, {x: accessors[0], y: accessors[1], stroke: x=> (get_label(x) ? 1.35 : -0.35)})\n    ]\n  });\n}\n\nfunction logisticLossPlot2d(data, weights, keys, label) {\n  const loss = mean_loss(cross_ent, data, weights, keys, label);\n  \n  let isString = value => typeof value === 'string';\n  let accessors = get_accessors(keys);\n  let index_accessors = get_accessors(keys, true);\n  let domains = get_domains(data, accessors);\n  const get_label = isString(label) ? (x => x[label]) : label;\n  \n  return Plot.plot({\n    x: {tickSpacing: 80, label: \"x\"},\n    y: {tickSpacing: 80, label: \"y\"},\n    title: \"Loss: \" + loss.toFixed(3),\n    color: {type: \"linear\", legend: true, scheme: \"BuRd\", domain: [0, 5]},\n    marks: [\n      Plot.contour({\n        value: (x, y) => predict([x, y], weights, index_accessors),\n        fillOpacity: 0.2,\n        stroke: \"black\", x1: domains[0][0], y1: domains[1][0], x2: domains[0][1], y2: domains[1][1],\n        thresholds: [-1e6,  0, 0.00001]\n      }),\n      Plot.dot(data, {x: accessors[0], y: accessors[1], stroke: x=> cross_ent(predict(x, weights, keys), get_label(x)), \n                      strokeOpacity: 0.5 })\n    ]\n  });\n}\n\nfunction lossPlot2d(f, data, keys, label, l2=0, res=100, x1=-40, y1=-0.015, x2=40,  y2=0.015, vmax=50, nlines=25, ctype=\"sqrt\", scale=(x => x)) {\n  let grid = 0;\n  function lossFunc(w, b) {\n    return scale(mean_loss(f, data, [w, b], keys, label, l2));\n  }\n\n  grid = grid_func(lossFunc,\n                 res, res, x1, y1, x2, y2\n                );\n\n  function plot2d(weights) {\n    let w = weights;\n    if (!(Array.isArray(w[0]))){\n      w = [w];\n    }\n\n    var arrows = w.slice(0, w.length - 1).map(function(e, i) {\n      return e.concat(w[i+1]);\n    });\n\n    let interval= vmax / nlines; \n    let thresholds = [];\n    for (let i = 0; i < nlines; i++) {\n      thresholds.push(i * interval);\n    }\n    let loss = mean_loss(f, data, w[w.length - 1], keys, label, l2)\n    return Plot.plot({\n      title: \"Loss: \" + loss.toFixed(3),\n      color: {type: \"linear\", legend: true, label: \"Loss\", scheme: \"BuRd\", domain: [0, vmax], type: ctype},\n      marks: [\n        Plot.contour(grid.values, {width: grid.width, height: grid.height, x1: grid.x1, x2:grid.x2, y1: grid.y1, y2: grid.y2,\n          stroke: Plot.identity, thresholds: thresholds}),\n        Plot.dot(w),\n        Plot.arrow(arrows, {x1: \"0\", y1: \"1\", x2: \"2\", y2: \"3\", stroke: \"black\"})\n      ]\n    })\n  }\n  return plot2d;\n}\n\n\n\nfunction regressionPlot(data, weights, keys, label, l2, f=se, stroke=\"\") {\n  let loss = mean_loss(f, data, weights, keys, label, l2);\n  let isString = value => typeof value === 'string';\n  \n  let accessors = get_accessors(keys);\n  let index_accessors = get_accessors(keys, true);\n  let domains = get_domains(data, get_accessors([label].concat(keys)));\n  const get_label = isString(label) ? (x => x[label]) : label;\n\n  let stroke_shade = stroke;\n  if (stroke == \"\") {\n    stroke_shade = (x => f(predict(x, weights, keys), get_label(x)))\n  }\n  \n  return Plot.plot({\n    y: {domain: domains[0]},\n    title: \"Loss: \" + loss.toFixed(3),\n    color: {type: \"linear\", legend: true, label: \"Loss\", scheme: \"BuRd\", domain: [0, 100]},\n    marks: [\n      Plot.line(sample((x) => predict([x], weights, index_accessors), domains[1][0], domains[1][1]), {stroke: 'black'}),\n      Plot.dot(data, {x: accessors[0], y: get_label, stroke: stroke_shade })\n    ]\n  })\n}\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof form_mpg_4 = Inputs.form(\n  [\n    Inputs.range([-10, 10], {step: 0.01, label: \"b\", value: 1}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_1\", value: -0.0077}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_2\", value: 0}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_3\", value: 0}),\n    Inputs.range([-0.5, 0.5], {step: 0.0001, label: \"w_4\", value: 0}),\n  ]\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"regressionPlot(quadratic_data, form_mpg_4, [\"0\", [\"0\", x => (x) * (x)], [\"0\", x => Math.sin(x)], [\"0\", x => Math.exp(x)]], \"1\", 0, se)\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"viewof form_nn = Inputs.form(\n  [\n    Inputs.range([-10, 10], {step: 0.01, label: \"b_0\", value: 0.33}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_01\", value: 9.2376}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_02\", value: 8.3719}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_11\", value: -2.4219}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"b_1\", value: -5.457}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_21\", value: 2.6795}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"b_2\", value: -5.4557}),\n    Inputs.checkbox([\"Show feature transforms\"], {}),\n\n  ]\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"function nnPlot(data, weights, keys, label, l2, f=se, stroke=\"\", options=[]) {\n  let loss = mean_loss(f, data, weights, keys, label, l2);\n  let isString = value => typeof value === 'string';\n  \n  let accessors = get_accessors(keys);\n  let index_accessors = get_accessors(keys, true);\n  let domains = get_domains(data, get_accessors([label].concat(keys)));\n  const get_label = isString(label) ? (x => x[label]) : label;\n\n  let stroke_shade = stroke;\n  if (stroke == \"\") {\n    stroke_shade = (x => f(predict(x, weights, keys), get_label(x)))\n  }\n\n  let a = []\n  if (options.indexOf(\"Show feature transforms\") >= 0){\n    a = [Plot.line(sample((x) =>  keys[1][1](x), domains[1][0], domains[1][1]), {stroke: 'red'}),\n      Plot.line(sample((x) => keys[2][1](x), domains[1][0], domains[1][1]), {stroke: 'blue'})]\n  }\n  \n  return Plot.plot({\n    y: {domain: domains[0]},\n    title: \"Loss: \" + loss.toFixed(3),\n    color: {type: \"linear\", legend: true, label: \"Loss\", scheme: \"BuRd\", domain: [0, 100]},\n    marks: [\n      Plot.line(sample((x) => predict([x], weights, index_accessors), domains[1][0], domains[1][1]), {stroke: 'black'}),\n      Plot.dot(data, {x: accessors[0], y: get_label, stroke: stroke_shade })\n    ].concat(a)\n  })\n}\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"\nnnPlot(quadratic_data2, [form_nn[0], 0, form_nn[1], form_nn[2]],\n    \n        [\"0\", [\"0\", x => sigmoid(form_nn[3] * x + form_nn[4], 0)], \n        [\"0\", x => sigmoid(form_nn[5] * x + form_nn[6], 0)], \n        ], \"1\", 0, se, \"\", form_nn[7])\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"viewof form_lnn = Inputs.form(\n  [\n    Inputs.range([-10, 10], {step: 0.01, label: \"b_0\", value: 0.33}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_01\", value: 9.2376}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_02\", value: 8.3719}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_11\", value: -2.4219}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"b_1\", value: -5.457}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"w_21\", value: 2.6795}),\n    Inputs.range([-10, 10], {step: 0.0001, label: \"b_2\", value: -5.4557}),\n    Inputs.checkbox([\"Show feature transforms\"], {}),\n\n  ]\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"\nnnPlot(quadratic_data2, [form_lnn[0], 0, form_lnn[1], form_lnn[2]],\n    \n        [\"0\", [\"0\", x => form_lnn[3] * x + form_lnn[4]], \n        [\"0\", x => form_lnn[5] * x + form_lnn[6]], \n        ], \"1\", 0, se, \"\", form_lnn[7])\n"},{"methodName":"interpretQuiet","source":"shinyInput('form_mpg_4')"},{"methodName":"interpretQuiet","source":"shinyInput('form_nn')"},{"methodName":"interpretQuiet","source":"shinyInput('form_lnn')"}]}
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../lecture5-neural-networks-intro";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

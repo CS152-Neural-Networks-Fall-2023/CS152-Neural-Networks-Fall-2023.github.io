@@ -225,6 +225,7 @@ regressionPlot(data, [45.32, -0.0077], ["weight"], x => x.mpg, 0, se, "crimson")
 
 Unfortunately, in the real world the relationship between inputs and outputs is not always linear. For example, what if we tried to fit a linear model to the following dataset.
 
+
 ```{ojs}
 //| echo: false
 viewof form_quadratic = Inputs.form(
