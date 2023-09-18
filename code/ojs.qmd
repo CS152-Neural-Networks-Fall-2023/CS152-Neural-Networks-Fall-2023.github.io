@@ -291,4 +291,71 @@ function regressionPlot(data, weights, keys, label, l2, f=se, stroke="") {
     ]
   })
 }
+
+function errorPlot(data, weights, keys, label, f, options={}) {
+  const isString = value => typeof value === 'string';
+  const get_label = isString(label) ? (x => x[label]) : label;
+  let errors = data.map(x => [predict(x, weights, keys) - get_label(x), f(predict(x, weights, keys), get_label(x))]);
+
+  
+  let sigma = (options['sigma'] || 1);
+  let plots = [];
+  const xdomain = (options['xdomain'] || [-30, 30]);
+  const ydomain = (options['ydomain'] || [0, 0.1]);
+  
+
+  if (options['plotnormal']){
+    let pdf = x => Math.exp(-0.5 * x * x / sigma) * ydomain[1];
+    let normal = Plot.line(sample(pdf, xdomain[0], xdomain[1]), {stroke: 'crimson'});    
+    plots.push(normal);
+  }
+  if (options['plotlaplace']){
+    let pdf = x => Math.exp(-0.5 * Math.abs(x) / sigma) * ydomain[1];
+    let normal = Plot.line(sample(pdf, xdomain[0], xdomain[1]), {stroke: 'green'});    
+    plots.push(normal);
+  }
+  
+  return Plot.plot({
+    y: {grid: true, domain: ydomain},
+    x: {domain: xdomain},
+    color: {type: "linear", legend: true, label: "Loss", scheme: "BuRd", domain: [0, 100]},
+    marks: [
+      //Plot.rectY(errors, Plot.binX({y: "count", fill: x => mean(x.map(v => v[1]))}, {x: "0"})),
+      
+      Plot.rectY(errors, Plot.binX({y: "proportion"}, {x: "0", fill: 'steelblue', interval: 1})),
+      Plot.ruleY([0])
+    ].concat(plots)
+  })
+}
+
+function nnPlot(data, weights, keys, label, l2, f=se, stroke="", options=[]) {
+  let loss = mean_loss(f, data, weights, keys, label, l2);
+  let isString = value => typeof value === 'string';
+  
+  let accessors = get_accessors(keys);
+  let index_accessors = get_accessors(keys, true);
+  let domains = get_domains(data, get_accessors([label].concat(keys)));
+  const get_label = isString(label) ? (x => x[label]) : label;
+
+  let stroke_shade = stroke;
+  if (stroke == "") {
+    stroke_shade = (x => f(predict(x, weights, keys), get_label(x)))
+  }
+
+  let a = []
+  if (options.indexOf("Show feature transforms") >= 0){
+    a = [Plot.line(sample((x) =>  keys[1][1](x), domains[1][0], domains[1][1]), {stroke: 'red'}),
+      Plot.line(sample((x) => keys[2][1](x), domains[1][0], domains[1][1]), {stroke: 'blue'})]
+  }
+  
+  return Plot.plot({
+    y: {domain: domains[0]},
+    title: "Loss: " + loss.toFixed(3),
+    color: {type: "linear", legend: true, label: "Loss", scheme: "BuRd", domain: [0, 100]},
+    marks: [
+      Plot.line(sample((x) => predict([x], weights, index_accessors), domains[1][0], domains[1][1]), {stroke: 'black'}),
+      Plot.dot(data, {x: accessors[0], y: get_label, stroke: stroke_shade })
+    ].concat(a)
+  })
+}
 ```
