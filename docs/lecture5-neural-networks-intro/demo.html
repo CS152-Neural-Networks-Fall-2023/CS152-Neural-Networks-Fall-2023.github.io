@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>CS 152: Neural Networks - Course Calendar</title>
+<title>CS 152: Neural Networks – demo</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -84,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../calendar/calendar.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="../calendar/calendar.html" rel="" target="">
  <span class="menu-text">Calendar</span></a>
   </li>  
   <li class="nav-item">
@@ -116,283 +150,11 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Course Calendar</h1>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> demo <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-</header>
-
-<table class="table">
-<thead>
-<tr class="header">
-<th>Lecture</th>
-<th>Date</th>
-<th>Topics</th>
-<th>Textbook</th>
-<th>Materials</th>
-<th>Homework</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>8/28</td>
-<td>Course introduction, linear algebra and calculus review</td>
-<td><a href="https://probml.github.io/pml-book/book1.html">Book 1</a>: 7.1.1-7.2.4, 7.8.1, 7.8.2</td>
-<td><p><a href="../lecture1-background/notes.html">Notes</a></p>
-<p><a href="../lecture1-background/slides.html">Slides</a></p></td>
-<td><p>Homework 1 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 9/5 11:59pm</strong></p>
-<p><a href="../assignments/homework1-background/solutions.html">Solutions</a></p></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>8/30</td>
-<td>Linear regression</td>
-<td><a href="https://probml.github.io/pml-book/book1.html">Book 1</a>: 4.2.1, 4.2.2, 11.1-11.2.4</td>
-<td><p><a href="../lecture2-linear-regression/notes.html">Notes</a></p>
-<p><a href="../lecture2-linear-regression/slides.html">Slides</a></p></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>9/4</td>
-<td>No class (Labor day)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3</td>
-<td>9/6</td>
-<td>Logistic regression</td>
-<td><a href="https://probml.github.io/pml-book/book1.html">Book 1</a>: 10.1, 10.2.1, 10.2.3, 10.3.1-10.3.3</td>
-<td><p><a href="../lecture3-logistic-regression/notes.html">Notes</a></p>
-<p><a href="../lecture3-logistic-regression/slides.html">Slides</a></p></td>
-<td><p>Homework 2 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 9/12 11:59pm</strong></p>
-<p><a href="../assignments/homework2-linear-regression/solutions.html">Solutions</a></p></td>
-</tr>
-<tr class="odd">
-<td>4</td>
-<td>9/11</td>
-<td>Feature transforms</td>
-<td><a href="https://probml.github.io/pml-book/book1.html">Book 1</a>: 10.2.2</td>
-<td><p><a href="../lecture4-feature-transforms/notes.html">Notes</a></p>
-<p><a href="../lecture4-feature-transforms/slides.html">Slides</a></p></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>5</td>
-<td>9/13</td>
-<td>Linear and logistic regression discussion</td>
-<td></td>
-<td></td>
-<td>Homework 3 assigned <strong>(Skipped, no HW3)</strong></td>
-</tr>
-<tr class="odd">
-<td>6</td>
-<td>9/18</td>
-<td>Neural networks introduction</td>
-<td></td>
-<td><a href="../lecture5-neural-networks-intro/notes.html">Notes</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>7</td>
-<td>9/20</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 4 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 9/26 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>8</td>
-<td>9/25</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>9</td>
-<td>9/27</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 5 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 10/3 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>10</td>
-<td>10/2</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>11</td>
-<td>10/4</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 6 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 10/10 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>12</td>
-<td>10/9</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>13</td>
-<td>10/11</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 7 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 10/19 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>10/16</td>
-<td>No class (Fall break)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>14</td>
-<td>10/18</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 8 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 10/24 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>15</td>
-<td>10/23</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>16</td>
-<td>10/25</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 9 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 9/5 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>17</td>
-<td>10/30</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>18</td>
-<td>11/1</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 10 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 11/7 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>19</td>
-<td>11/6</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td>11/8</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>20</td>
-<td>11/13</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>21</td>
-<td>11/15</td>
-<td></td>
-<td></td>
-<td></td>
-<td>Homework 11 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 11/20 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>22</td>
-<td>11/20</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td>11/22</td>
-<td>No class (Thanksgiving break)</td>
-<td></td>
-<td></td>
-<td>Homework 12 assigned (<a href="https://github.com/orgs/CS152-Neural-Networks-Fall-2023/repositories">Github</a>) <strong>Due: 12/5 11:59pm</strong></td>
-</tr>
-<tr class="odd">
-<td>23</td>
-<td>11/27</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>24</td>
-<td>11/29</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>25</td>
-<td>12/5</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>26</td>
-<td>12/6</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 
 
 
