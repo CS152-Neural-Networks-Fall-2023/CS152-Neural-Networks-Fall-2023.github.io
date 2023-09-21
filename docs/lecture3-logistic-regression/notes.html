@@ -142,6 +142,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#maximum-likelihood-estimation-review" id="toc-maximum-likelihood-estimation-review" class="nav-link" data-scroll-target="#maximum-likelihood-estimation-review">Maximum likelihood estimation review</a></li>
   <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
   <li><a href="#maximum-likelihood-for-logistic-regression" id="toc-maximum-likelihood-for-logistic-regression" class="nav-link" data-scroll-target="#maximum-likelihood-for-logistic-regression">Maximum likelihood for logistic regression</a></li>
+  <li><a href="#optimizing-logistic-regression" id="toc-optimizing-logistic-regression" class="nav-link" data-scroll-target="#optimizing-logistic-regression">Optimizing logistic regression</a></li>
   <li><a href="#comparing-loss-functions" id="toc-comparing-loss-functions" class="nav-link" data-scroll-target="#comparing-loss-functions">Comparing loss functions</a></li>
   </ul></li>
   <li><a href="#multinomial-logistic-regression" id="toc-multinomial-logistic-regression" class="nav-link" data-scroll-target="#multinomial-logistic-regression">Multinomial logistic regression</a>
@@ -507,6 +508,46 @@ p(y_1,...,y_N \mid \mathbf{x}_1, ...,\mathbf{x}_N, \mathbf{w}) = \prod_{i=1}^N p
 \]</span></p>
 <p>It’s worth noting that in neural network literature, this loss is often called the <strong>binary cross-entropy loss</strong>.</p>
 </section>
+<section id="optimizing-logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="optimizing-logistic-regression">Optimizing logistic regression</h2>
+<p>As we saw with linear regression, we can find the optimal paramters <span class="math inline">\(\mathbf{w}^*\)</span> under this loss function using gradient descent:<br>
+<span class="math display">\[
+\mathbf{w}^{(i+1)} \leftarrow \mathbf{w}^{(i)} - \alpha \nabla_{\mathbf{w}} \mathbf{NLL}(\mathbf{w}^{(i)}, \mathbf{X}, \mathbf{y})
+\]</span></p>
+<p>To use this, we first need to derive the gradient of the negative log-likelihood with respect to <span class="math inline">\(\mathbf{w}\)</span>. We’ll start by writing out the simplest version of the NLL that we saw above:</p>
+<p><span class="math display">\[
+\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+\]</span></p>
+<p><span class="math display">\[
+\nabla_{\mathbf{w}}\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = \frac{d}{d\mathbf{w}}-\sum_{i=1}^N \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+\]</span></p>
+<p>As a first step, recall that the addition rule tells us that the derivative of a sum is a sum of derivatives:</p>
+<p><span class="math display">\[
+= -\sum_{i=1}^N \frac{d}{d\mathbf{w}} \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+\]</span></p>
+<p>Next we’ll apply the chain rule to the <span class="math inline">\(\log\)</span> function, remembering that <span class="math inline">\(\frac{d}{dx} \log x = \frac{1}{x}\)</span>:</p>
+<p><span class="math display">\[
+= -\sum_{i=1}^N \bigg(\frac{1}{ \sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big) }\bigg)\frac{d}{d\mathbf{w}} \sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+\]</span></p>
+<p>Then we can apply the chain rule to the sigmoid function, using the fact that <span class="math inline">\(\frac{d}{dx} \sigma(x)=\sigma(x)(1-\sigma(x))\)</span>:</p>
+<p><span class="math display">\[
+= -\sum_{i=1}^N \bigg(\frac{1}{ \sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big) } \bigg)
+\bigg(\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)\bigg) \bigg(1-\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)  \bigg)
+\frac{d}{d\mathbf{w}}\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+\]</span></p>
+<p>We now see that the first 2 terms cancel!</p>
+<p><span class="math display">\[
+= -\sum_{i=1}^N  \bigg(1-\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)  \bigg)
+\frac{d}{d\mathbf{w}}\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+\]</span></p>
+<p>Finally we’re left with the gradient of a linear function, which is just:</p>
+<p><span class="math display">\[\frac{d}{d\mathbf{w}}\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)=(2y_i-1)\mathbf{x}_i\]</span></p>
+<p>Note that the transpose is irrelevant as we’re no longer signifying a dot-product and <span class="math inline">\(\mathbf{x}_i\)</span> is just a vector. So finally we’re left with</p>
+<p><span class="math display">\[
+\nabla_{\mathbf{w}}\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N  \bigg(1-\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)  \bigg)
+\bigg((2y_i-1)\mathbf{x}_i \bigg)
+\]</span></p>
+</section>
 <section id="comparing-loss-functions" class="level2">
 <h2 class="anchored" data-anchor-id="comparing-loss-functions">Comparing loss functions</h2>
 <p>Let’s look at how this loss function compares to the mean squared error loss we derived for logistic regression. One way to do this is to visualize the loss for a single observation as a function of the output of <span class="math inline">\(\mathbf{x}^T\mathbf{w}\)</span>. Here we’ll look at the loss for different models trying to predict an output of <span class="math inline">\(y=0\)</span>:</p>
@@ -659,7 +700,7 @@ p(y_i=c \mid \mathbf{x}, \mathbf{W}) = \text{softmax}(\mathbf{x}^T\mathbf{W})_c=
 \]</span></p>
 <p>We can simplify this further to:</p>
 <p><span class="math display">\[
-\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})=\sum_{i=1}^N \bigg(\mathbf{x}_i^T\mathbf{w}_{y_i}- \log\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}\bigg)
+\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})=-\sum_{i=1}^N \bigg(\mathbf{x}_i^T\mathbf{w}_{y_i}- \log\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}\bigg)
 \]</span></p>
 </section>
 <section id="gradient-descent" class="level2">

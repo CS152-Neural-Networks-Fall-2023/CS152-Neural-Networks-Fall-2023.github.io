@@ -885,6 +885,61 @@ $$
 
 It's worth noting that in neural network literature, this loss is often called the **binary cross-entropy loss**.
 
+## Optimizing logistic regression
+
+As we saw with linear regression, we can find the optimal paramters $\mathbf{w}^*$ under this loss function using gradient descent:\
+$$
+\mathbf{w}^{(i+1)} \leftarrow \mathbf{w}^{(i)} - \alpha \nabla_{\mathbf{w}} \mathbf{NLL}(\mathbf{w}^{(i)}, \mathbf{X}, \mathbf{y})
+$$
+
+To use this, we first need to derive the gradient of the negative log-likelihood with respect to $\mathbf{w}$. We'll start by writing out the simplest version of the NLL that we saw above:
+
+$$
+\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+$$
+
+$$
+\nabla_{\mathbf{w}}\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = \frac{d}{d\mathbf{w}}-\sum_{i=1}^N \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+$$
+
+As a first step, recall that the addition rule tells us that the derivative of a sum is a sum of derivatives:
+
+$$
+ = -\sum_{i=1}^N \frac{d}{d\mathbf{w}} \log\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+$$
+
+Next we'll apply the chain rule to the $\log$ function, remembering that $\frac{d}{dx} \log x = \frac{1}{x}$:
+
+$$
+ = -\sum_{i=1}^N \bigg(\frac{1}{ \sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big) }\bigg)\frac{d}{d\mathbf{w}} \sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+$$
+
+Then we can apply the chain rule to the sigmoid function, using the fact that $\frac{d}{dx} \sigma(x)=\sigma(x)(1-\sigma(x))$:
+
+$$
+ = -\sum_{i=1}^N \bigg(\frac{1}{ \sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big) } \bigg)
+\bigg(\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)\bigg) \bigg(1-\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)  \bigg)
+\frac{d}{d\mathbf{w}}\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+$$
+
+We now see that the first 2 terms cancel!
+
+$$
+ = -\sum_{i=1}^N  \bigg(1-\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)  \bigg)
+\frac{d}{d\mathbf{w}}\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)
+$$
+
+Finally we're left with the gradient of a linear function, which is just:
+
+$$\frac{d}{d\mathbf{w}}\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)=(2y_i-1)\mathbf{x}_i$$
+
+Note that the transpose is irrelevant as we're no longer signifying a dot-product and $\mathbf{x}_i$ is just a vector. So finally we're left with
+
+$$
+\nabla_{\mathbf{w}}\mathbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N  \bigg(1-\sigma\big((2y_i-1)\mathbf{x}_i^T\mathbf{w}\big)  \bigg)
+\bigg((2y_i-1)\mathbf{x}_i \bigg)
+$$
+
 ## Comparing loss functions
 
 Let's look at how this loss function compares to the mean squared error loss we derived for logistic regression. One way to do this is to visualize the loss for a single observation as a function of the output of $\mathbf{x}^T\mathbf{w}$. Here we'll look at the loss for different models trying to predict an output of $y=0$:
@@ -1106,7 +1161,7 @@ $$
 We can simplify this further to:
 
 $$
-\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})=\sum_{i=1}^N \bigg(\mathbf{x}_i^T\mathbf{w}_{y_i}- \log\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}\bigg)
+\textbf{NLL}(\mathbf{W}, \mathbf{X}, \mathbf{y})=-\sum_{i=1}^N \bigg(\mathbf{x}_i^T\mathbf{w}_{y_i}- \log\sum_{j=1}^Ce^{\mathbf{x}_i^T\mathbf{w}_{j}}\bigg)
 $$
 
 ## Gradient descent
