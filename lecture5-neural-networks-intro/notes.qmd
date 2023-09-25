@@ -322,7 +322,7 @@ class Viz(LectureScene):
 
         for j, (yo) in enumerate(np.linspace(2, -2, 3)):
             output = Circle(radius=0.4, color=BLACK).move_to((0, yo, 0))
-            output_label = MathTex('\sigma(\phi(\mathbf{x})^T\mathbf{w}_%d)' %j, color=BLACK).next_to(output, UP).scale(0.8)
+            output_label = MathTex('\sigma(\mathbf{x}^T\mathbf{w}_%d)' %j, color=BLACK).next_to(output, UP).scale(0.8)
             self.add(output, output_label)
 
             line = Line(output.get_center(), foutput.get_center(), color=BLACK, path_arc=0)

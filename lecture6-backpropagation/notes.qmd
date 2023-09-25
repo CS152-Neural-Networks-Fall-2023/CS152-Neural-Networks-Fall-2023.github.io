@@ -1,0 +1,752 @@
+---
+title: "Lecture 6: Deep neural networks and backpropagation"
+format:
+    html:
+        toc: true
+        toc-depth: 3
+---
+
+{{< include ../code/ojs.qmd >}}
+
+```{python}
+#| echo: false
+import pandas as pd
+
+```
+
+```{python}
+#| echo: false
+import warnings
+warnings.filterwarnings("ignore")
+import os
+import contextlib
+with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+    from manim import *
+import autograd.numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class ThreeDLectureScene(ThreeDScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+    
+
+class VectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-7.5, 7.5, 1],
+            y_range=[-5, 5, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+
+class PositiveVectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-2.5, 12.5, 1],
+            y_range=[-1, 9, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+                #axes_labels.set_color(GREY)
+        self.add(self.ax)
+
+class ComparisonVectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax1 = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=6,
+            y_length=6,
+            axis_config={"color": GREY},
+        )
+        self.ax2 = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=6,
+            y_length=6,
+            axis_config={"color": GREY},
+        )
+        axgroup = Group(self.ax1, self.ax2)
+        axgroup.arrange_in_grid(buf=2)
+        
+        #axes_labels.set_color(GREY)
+        self.add(axgroup)
+```
+
+# Neural networks
+
+## Neural networks with matrices
+
+Let's return to our simple neural network example, where we have 2 inputs and 3 neurons (transforms): $$\mathbf{x} = \begin{bmatrix} x_1\\ x_2 \end{bmatrix}, \quad \mathbf{w}_0 = \begin{bmatrix} w_{01} \\ w_{02} \end{bmatrix}$$ $$
+f(\mathbf{x})=\phi(\mathbf{x})^T \mathbf{w}_0,\quad \phi(\mathbf{x}) = \begin{bmatrix}  \sigma(\mathbf{x}^T \mathbf{w}_1) \\ \sigma(\mathbf{x}^T \mathbf{w}_2) \\ \sigma(\mathbf{x}^T \mathbf{w}_3) \end{bmatrix} = 
+\begin{bmatrix}  \sigma(x_1 w_{11} + x_2 w_{12}) \\ \sigma(x_1 w_{21} + x_2 w_{22}) \\ \sigma(x_1 w_{31} + x_2 w_{32}) \end{bmatrix}
+$$
+
+Again, we can represent this pictorially again as a node-link diagram:
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def __init__(self, bias=True, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bias = False
+        self.title = 'Linear regression'
+        self.output = '\sigma(\phi(\mathbf{x})^T\mathbf{w}_0)'
+
+    def construct(self):
+        foutput = Circle(radius=0.4, color=BLACK).move_to((5, 0, 0))
+        foutput_label = MathTex(self.output, color=BLACK).next_to(foutput, UP).scale(0.8)
+        self.add(foutput, foutput_label)
+
+        for j, (yo) in enumerate(np.linspace(2, -2, 3)):
+            output = Circle(radius=0.4, color=BLACK).move_to((0, yo, 0))
+            output_label = MathTex('\sigma(\mathbf{x}^T\mathbf{w}_%d)' %j, color=BLACK).next_to(output, UP).scale(0.8)
+            self.add(output, output_label)
+
+            line = Line(output.get_center(), foutput.get_center(), color=BLACK, path_arc=0)
+            line.set_length(line.get_length() - 0.8)
+            point = 0.45 * (foutput.get_center() - output.get_center()) + output.get_center()
+            line_label = MathTex('w_{1%d}' % (j + 1), color=BLACK).scale(0.8).next_to(point, UP)
+            self.add(line, line_label)
+
+            ils = ['x_1', 'x_2']
+            for i, (y, l) in enumerate(zip(np.linspace(1, -1, 2), ils)):
+                circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((-5, y, 0))
+                label = MathTex(l, color=BLACK).move_to(circle.get_center())
+                line = Line(circle.get_center(), output.get_center(), color=BLACK, path_arc=0)
+                line.set_length(line.get_length() - 0.8)
+                point = (0.7 if i == 0 else 0.5) * (output.get_center() - circle.get_center()) + circle.get_center()
+                line_label = MathTex('w_{0%d}' % (i + 1), color=BLACK).scale(0.7).next_to(point, UP)
+                self.add(circle, label, line, line_label)
+
+        
+```
+
+Let's look at a more compact way to write this, using a weight *matrix* for the neural network layer. Let's look at the transform before we apply the sigmoid function:
+
+$$
+ \begin{bmatrix}  \mathbf{x}^T \mathbf{w}_1 \\ \mathbf{x}^T \mathbf{w}_2 \\ \mathbf{x}^T \mathbf{w}_3 \end{bmatrix} = 
+\begin{bmatrix}  x_1 w_{11} + x_2 w_{12} \\ x_1 w_{21} + x_2 w_{22} \\ x_1 w_{31} + x_2 w_{32} \end{bmatrix} = \begin{bmatrix} w_{11} & w_{12} \\w_{21} & w_{22} \\ w_{31} & w_{32} \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}
+$$
+
+If we define a matrix $\mathbf{W}$ for all of the weights as:
+
+$$
+\mathbf{W} = \begin{bmatrix} w_{11} & w_{12} \\w_{21} & w_{22} \\ w_{31} & w_{32} \end{bmatrix}
+$$
+
+we get:
+
+$$
+\begin{bmatrix}  \mathbf{x}^T \mathbf{w}_1 \\ \mathbf{x}^T \mathbf{w}_2 \\ \mathbf{x}^T \mathbf{w}_3 \end{bmatrix} = \mathbf{W}\mathbf{x} = (\mathbf{x}^T\mathbf{W}^T)^T
+$$\
+If we let $h$ be the number of neuron (or hidden layer units) then this is a $h \times d$ matrix. Therefore, we can write our transform as:
+
+$$
+\phi(\mathbf{x}) = \sigma(\mathbf{x}^T\mathbf{W}^T)^T, \quad f(\mathbf{x}) = \sigma(\mathbf{x}^T\mathbf{W}^T) \mathbf{w}_0
+$$
+
+Recall that if we have multiple observations, as in a dataset, we define them together as an $N \times d$ matrix $\mathbf{X}$ such that each *row* is an observation:
+
+$$
+\mathbf{X} = \begin{bmatrix} \mathbf{x}_1^T \\ \mathbf{x}_2^T \\ \mathbf{x}_3^T  \\ \vdots  \end{bmatrix}
+$$
+
+Therefore, we can transform all of these observations at once by multiplying this matrix by $\mathbf{W}^T$.
+
+$$
+\phi(\mathbf{X}) = \sigma(\mathbf{X}\mathbf{W}^T)^T = \begin{bmatrix} \sigma(\mathbf{x}_1^T\mathbf{w}_1) & \sigma(\mathbf{x}_1^T\mathbf{w}_2) & \dots  & \sigma(\mathbf{x}_1^T\mathbf{w}_h \\
+\sigma(\mathbf{x}_2^T\mathbf{w}_1) & \sigma(\mathbf{x}_2^T\mathbf{w}_2) & \dots  & \sigma(\mathbf{x}_2^T\mathbf{w}_h) \\
+\vdots & \vdots & \ddots  & \vdots \\
+\sigma(\mathbf{x}_N^T\mathbf{w}_1) & \sigma(\mathbf{x}_N^T\mathbf{w}_2) & \dots  & \sigma(\mathbf{x}_N^T\mathbf{w}_h)
+ \end{bmatrix} 
+$$
+
+We see that this is an $N \times h$ matrix where each row is a transformed observation! We can then write our full prediction function as
+
+$$
+\quad f(\mathbf{x}) = \sigma(\mathbf{X}\mathbf{W}^T) \mathbf{w}_0
+$$
+
+To summarize:
+
+-   $\mathbf{X}: \quad N \times d$ matrix of observations
+
+-   $\mathbf{W}: \quad h \times d$ matrix of network weights
+
+-   $\mathbf{w}_0: \quad h\ (\times 1)$ vector of linear regression weights
+
+If we check that our dimensions work for matrix multiplication we see that we get the $N\times 1$ vector of predictions we are looking for!
+
+$$
+(N \times d) (h \times d)^T (h \times 1) \rightarrow (N \times d) (d \times h) (h \times 1) \rightarrow (N \times h) (h \times 1)
+$$
+
+$$
+ \longrightarrow (N \times1)
+$$
+
+## Benefits of neural networks
+
+We've seen that the neural network transform is still fairly restrictive, with a limited number of neurons we can't fit any arbitrary function. In fact, if we choose our feature transforms wisely we can do better than than a neural network.
+
+For example, consider the simple 3-neuron network above. We can see that if we try to fit a circular dataset with it, it performs worse than an explicit transform with $x_1^2$ and $x_2^2$.
+
+-   [Circle dataset with neural network](https://playground.tensorflow.org/#activation=sigmoid&batchSize=10&dataset=circle&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=3&seed=0.46216&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&showTestData_hide=true&stepButton_hide=true&activation_hide=true&problem_hide=true&noise_hide=true&batchSize_hide=true&dataset_hide=true&regularization_hide=true&resetButton_hide=true&learningRate_hide=true&regularizationRate_hide=true&percTrainData_hide=true&numHiddenLayers_hide=true)
+
+-   [Circle dataset with](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=circle&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=&seed=0.10871&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=true&ySquared=true&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&showTestData_hide=true&stepButton_hide=true&activation_hide=true&problem_hide=true&noise_hide=true&resetButton_hide=true&regularization_hide=true&dataset_hide=true&batchSize_hide=true&learningRate_hide=true&percTrainData_hide=true&regularizationRate_hide=true&numHiddenLayers_hide=true) $x_1^2$ and $x_2^2$:
+
+Similarly, for a cross dataset, we can do better with the feature transform that includes $x_1x_2$ as a feature:
+
+-   [Cross dataset with neural network](https://playground.tensorflow.org/#activation=sigmoid&batchSize=10&dataset=xor&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=3&seed=0.46216&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&showTestData_hide=true&stepButton_hide=true&activation_hide=true&problem_hide=true&noise_hide=true&batchSize_hide=true&dataset_hide=true&regularization_hide=true&resetButton_hide=true&learningRate_hide=true&regularizationRate_hide=true&percTrainData_hide=true&numHiddenLayers_hide=true)
+
+-   [Cross dataset with](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=xor&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=&seed=0.26985&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=true&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&showTestData_hide=true&stepButton_hide=true&activation_hide=true&problem_hide=true&noise_hide=true&resetButton_hide=true&regularization_hide=true&dataset_hide=true&batchSize_hide=true&learningRate_hide=true&regularizationRate_hide=true&percTrainData_hide=true&numHiddenLayers_hide=true) $x_1x_2$
+
+However, if we choose the *wrong* feature transform for a given dataset, we do far worse.
+
+-   [Circle dataset with](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=circle&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=&seed=0.10871&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=true&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&showTestData_hide=true&stepButton_hide=true&activation_hide=true&problem_hide=true&noise_hide=true&resetButton_hide=true&regularization_hide=true&dataset_hide=true&batchSize_hide=true&learningRate_hide=true&percTrainData_hide=true&regularizationRate_hide=true&numHiddenLayers_hide=true) $x_1 x_2$
+
+-   [Cross dataset with](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=xor&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=&seed=0.06128&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=true&ySquared=true&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&showTestData_hide=true&stepButton_hide=true&activation_hide=true&problem_hide=true&noise_hide=true&resetButton_hide=true&regularization_hide=true&dataset_hide=true&batchSize_hide=true&learningRate_hide=true&regularizationRate_hide=true&percTrainData_hide=true&numHiddenLayers_hide=true) $x_1^2$ and $x_2^2$
+
+We see that the real power of the neural network here is the ability to adapt the transform to the given dataset, without needing to carefully choose the correct transform!
+
+## Deep Neural Networks
+
+What we've seen so far is a neural network with a *single* hidden layer, meaning that we create a feature transform for our data and then simply use that to make our prediction. We see that each individual feature transform is a bit limited, being just a logistic regression function.
+
+$$\phi(\mathbf{x})_i = \sigma(\mathbf{x}^T \mathbf{w}_i)$$\
+No matter what we set $\mathbf{w}_i$ this transform would not be able to replicate a transform like $\phi(\mathbf{x})_i = x_i^2$. However, we've already seen a way to make logistic regression more expressive: **neural networks**!
+
+The idea behind a *deep* or *multi-layer* neural network is that we can apply this idea of neural network feature transforms recursively:
+
+$$\phi(\mathbf{x})_i = \sigma(\sigma(\mathbf{x}^T\mathbf{W}^T) \mathbf{w}_i)$$
+
+Here we've transformed our input before computing our feature transform. In terms of a dataset we can write the full prediction function for this *2-layer* network as:
+
+$$
+f(\mathbf{X}) = \sigma(\sigma(\mathbf{X}\mathbf{W}_1^T)\mathbf{W}_2^T)\mathbf{w}_0
+$$
+
+We've now defined a set of weight parameters for each of our 2 *hidden layers* $\mathbf{W}_1$ and $\mathbf{W}_2$. It's a little easier to see what's happening here if we look a our diagram for this case:
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def __init__(self, bias=True, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bias = False
+        self.title = 'Linear regression'
+        self.output = '\sigma(\phi(\mathbf{x})^T\mathbf{w}_0)'
+
+    def construct(self):
+        foutput = Circle(radius=0.4, color=BLACK).move_to((5, 0, 0))
+        foutput_label = MathTex(self.output, color=BLACK).next_to(foutput, UP).scale(0.8)
+        self.add(foutput, foutput_label)
+
+        for j, (yo) in enumerate(np.linspace(2, -2, 3)):
+            output = Circle(radius=0.4, color=BLACK).move_to((-2, yo, 0))
+            output_label = MathTex('\sigma(\mathbf{x}^T\mathbf{W}_{1%d})' %j, color=BLACK).next_to(output, UP).scale(0.6)
+            self.add(output, output_label)
+
+
+            ils = ['x_1', 'x_2']
+            for i, (y, l) in enumerate(zip(np.linspace(1, -1, 2), ils)):
+                circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((-5, y, 0))
+                label = MathTex(l, color=BLACK).move_to(circle.get_center())
+                line = Line(circle.get_center(), output.get_center(), color=BLACK, path_arc=0)
+                line.set_length(line.get_length() - 0.8)
+                point = (0.7 if i == 0 else 0.5) * (output.get_center() - circle.get_center()) + circle.get_center()
+                self.add(circle, label, line )
+
+
+        for j, (yo) in enumerate(np.linspace(2, -2, 3)):
+            output = Circle(radius=0.4, color=BLACK).move_to((2, yo, 0))
+            output_label = MathTex('\sigma(\ \cdot\ \mathbf{W}_{2%d})' %j, color=BLACK).next_to(output, UP).scale(0.6)
+            self.add(output, output_label)
+
+            line = Line(output.get_center(), foutput.get_center(), color=BLACK, path_arc=0)
+            line.set_length(line.get_length() - 0.8)
+            point = 0.45 * (foutput.get_center() - output.get_center()) + output.get_center()
+            self.add(line)
+
+            for j, (yo2) in enumerate(np.linspace(2, -2, 3)):
+                houtput = Circle(radius=0.4, color=BLACK).move_to((-2, yo2, 0))
+                line = Line(houtput.get_center(), output.get_center(), color=BLACK, path_arc=0)
+                line.set_length(line.get_length() - 0.8)
+                point = 0.45 * (output.get_center() - houtput.get_center()) + houtput.get_center()
+                self.add(line)
+
+        
+```
+
+We can see that stacking these transforms allows us to fit even more complicated functions [here](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=spiral&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=4,4,4,4&seed=0.88060&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false). Note that we are still not limited to doing this twice! We can fit many layers of transforms:
+
+![](nn(5).svg)
+
+Later on in the semester we'll talk in more depth about the effect of the number of layers and the number of neurons per layer!
+
+## Optimizing neural networks
+
+We can still define a **loss function** for a neural network in the same way we did with our simpler linear models. The only difference is that now we have more parameters to choose:
+
+$$
+\mathbf{Loss}(\mathbf{w}_0,\mathbf{W}_1,...)
+$$
+
+Let's look at the logistic regression negative log-likelihood loss for the simple neural network we saw above (for simplicity we'll just call the network weights $\mathbf{W}$). The probability of class 1 is estimated as:
+
+$$
+p(y=1\mid \mathbf{x}, \mathbf{w}_0,\mathbf{W})=\sigma(\phi(\mathbf{x})^T \mathbf{w}_0) = \sigma(\sigma(\mathbf{x}^T \mathbf{W}^T) \mathbf{w}_0),\quad \phi(\mathbf{x}) = \begin{bmatrix}  \sigma(\mathbf{x}^T \mathbf{W}_{1}) \\ \sigma(\mathbf{x}^T \mathbf{W}_{2}) \\ \sigma(\mathbf{x}^T \mathbf{W}_{3}) \end{bmatrix} 
+$$ $$ = \sigma\big(w_{01} \cdot\sigma(x_1 W_{11} + x_2 W_{12}) + w_{02} \cdot\sigma(x_1 W_{21} + x_2 W_{22})+ w_{03} \cdot\sigma(x_1 W_{31} + x_2 W_{32}) \big)$$
+
+Therefore the negative log-likelihood is:
+
+$$
+\mathbf{NLL}(\mathbf{w}_0,\mathbf{W}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \bigg[ y_i\log p(y=1\mid \mathbf{x}, \mathbf{w}_0,\mathbf{W}) + (1-y_i)\log p(y=0\mid \mathbf{x}, \mathbf{w}_0,\mathbf{W}) \bigg]
+$$
+
+$$
+= -\sum_{i=1}^N \log \sigma\big((2y_i-1) \phi(\mathbf{x}_i)^T \mathbf{w}\big)
+$$
+
+We see that we can write out a full expression for this loss in term of all the inputs and weights. We can even define the gradient of this loss with respect to all the weights:
+
+$$
+\nabla_{\mathbf{w}_0} \mathbf{NLL}(\mathbf{w}_0,\mathbf{W}, \mathbf{X}, \mathbf{y}) = \begin{bmatrix} \frac{\partial \mathbf{NLL}}{\partial w_{01}} \\ \frac{\partial \mathbf{NLL}}{\partial w_{02}} \\ \frac{\partial \mathbf{NLL}}{\partial w_{03}} \\ \vdots\end{bmatrix}, \quad \nabla_{\mathbf{W}}\mathbf{NLL}(\mathbf{w}_0,\mathbf{W}, \mathbf{X}, \mathbf{y}) = 
+\begin{bmatrix} \frac{\partial \mathbf{NLL}}{\partial W_{11}} &  \frac{\partial \mathbf{NLL}}{\partial W_{12}} & \dots & \frac{\partial \mathbf{NLL}}{\partial W_{1d}}  \\ 
+\frac{\partial \mathbf{NLL}}{\partial W_{21}} &  \frac{\partial \mathbf{NLL}}{\partial W_{22}} & \dots & \frac{\partial \mathbf{NLL}}{\partial W_{2d}} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial \mathbf{NLL}}{\partial W_{h1}} &  \frac{\partial \mathbf{NLL}}{\partial W_{h2}} & \dots & \frac{\partial \mathbf{NLL}}{\partial W_{hd}} 
+\end{bmatrix}
+$$
+
+Note that as $\mathbf{W}$ is a matrix, the gradient with respect to $\mathbf{W}$ is also a matrix! Our gradient descent algorithm can proceed in the same way it did for our linear models, but here we now need to update both sets of parameters:
+
+$$
+\mathbf{w}_0^{(k+1)} \longleftarrow \mathbf{w}_0^{(k)} -\alpha \nabla_{\mathbf{w}_0} \mathbf{NLL}(\mathbf{w}_0,\mathbf{W}, \mathbf{X}, \mathbf{y}), \quad \mathbf{W}^{(k+1)} \longleftarrow \mathbf{W}^{(k)} -\alpha \nabla_{\mathbf{W}} \mathbf{NLL}(\mathbf{w}_0,\mathbf{W}, \mathbf{X}, \mathbf{y})
+$$
+
+The important question now becomes: *how do we compute these gradients?*
+
+# Automatic Differentiation
+
+In this section we'll derive *algorithms* for computing the derivative of *any* function.
+
+## Motivation
+
+We saw above that the NLL for logistic regression with a neural network is:
+
+$$
+\mathbf{NLL}(\mathbf{w}_0,\mathbf{W}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \log \sigma\big((2y_i-1) \phi(\mathbf{x}_i)^T \mathbf{w}\big)
+$$
+
+If we write this out in terms of the individual values we get:
+
+$$
+= -\sum_{i=1}^N \log \sigma\big((2y_i-1)\sigma\big(w_{01} \cdot\sigma(x_1 W_{11} + x_2 W_{12}) + w_{02} \cdot\sigma(x_1 W_{21} + x_2 W_{22})+ w_{03} \cdot\sigma(x_1 W_{31} + x_2 W_{32}) \big)\big)
+$$
+
+We could use the same approach as usual to find the derivative of this loss with respect to each individual weight parameter, but it would be very tedious and this is only a *single-layer network*! Things would only get more complicated with more layers. Furthermore if we changed some aspect of the network, like the activation function, we'd have to do it all over again.
+
+Ideally we'd like a programmatic way to compute derivatives. Knowing that we compute derivatives using a fixed set of known rules, this should be possible!
+
+## The chain rule revisited
+
+While we often think about the chain rule in terms of functions:
+
+$$
+\frac{d}{dx}f(g(x)) = f'(g(x))g'(x)
+$$
+
+It's often easier to view it imperatively, in terms of individual values. For example we might say:
+
+$$
+b = g(x)
+$$
+
+$$
+a = f(b)
+$$
+
+In this case we can write the chain rule as:
+
+$$
+\frac{da}{dx} = \frac{da}{db}\frac{db}{dx}
+$$
+
+This corresponds with how we might think about this in code. For example we might have the code:
+
+```{python}
+#| eval: false
+b = x ** 2
+a = log(b)
+```
+
+In this case we have:
+
+$$
+a = \log(b), \quad b = x^2
+$$
+
+We can compute the derivative of $a$ with respect to $x$ using the chain rule as:
+
+$$
+\frac{da}{db} = \frac{1}{b}, \quad \frac{db}{dx} = 2x
+$$
+
+$$
+\frac{da}{dx} = \bigg(\frac{1}{b}\bigg)(2x) = \frac{2x}{x^2} = \frac{2}{x} 
+$$
+
+## Composing many operations
+
+For more complex functions, we might be composing many more operations, but we can break down derivative computations in the same way. For example, if we want the derivative with respect to $x$ of some simple loss:
+
+$$
+L=-\log \sigma\big(w x^2\big)
+$$
+
+We can break this down into each individual operation that we apply:
+
+$$
+a = x^2
+$$
+
+$$
+b=wa
+$$
+
+$$
+c=\sigma(b)
+$$
+
+$$
+g= \log c
+$$
+
+$$
+L=-g
+$$\
+The chain rule tells us that:
+
+$$
+\frac{dL}{dx} = \frac{dL}{dg}\frac{dg}{dc}\frac{dc}{db}\frac{db}{da}\frac{da}{dx}
+$$\
+Since each step is a single operation with a known derivative, we can easily compute every term above! Thus, we begin to see a recipe for computing derivatives programatically. Every time we perform some operation, we will also compute the derivative with respect to the input (we can't just compute the derivatives because each derivative needs the preceding value, e.g. $\frac{dg}{dc}=\frac{1}{c}$, so we need to first compute $c$).
+
+We can visually look at the chain of computation that we're performing as a diagram that shows each step and the result.
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        points = np.linspace(-6, 6, 6)
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        ops = ['', 'x^2', 'wa', '\sigma(b)', '\log c', '-g']
+
+        prev = None
+        for i in range(6):
+            node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[i], 0, 0))
+            self.add(MathTex(names[i], color=BLACK).next_to(node, UP))
+            self.add(node)
+
+            if i > 0:
+                self.add(MathTex(r'\frac{d%s}{d%s}' % (names[i], names[i-1]), color=BLACK).next_to(node, DOWN).scale(0.6))
+
+            
+            if not prev is None:
+                self.add(Arrow(prev, node, color=BLACK, path_arc=0))
+                self.add(MathTex(ops[i], color=BLACK).scale(0.5).next_to(Arrow(prev, node, color=BLACK, path_arc=0), UP))
+            prev = node
+```
+
+## Forward and reverse mode automatic differentiation
+
+We are not actually interested in all of the intermediate derivatives ( $\frac{db}{da}, \frac{dc}{db}$ etc.), so it doesn't make much sense to compute all of them and then multiply them together. Instead, we'd rather just incrementally compute the value we're interested in $\frac{dL}{dx}$, as we go.
+
+There are 2 ways we could consider doing this. One way is to always keep track of the derivative of the current value with respect to $x$. So in the diagram above, each time we perform a new operation we will also compute the derivative of the operation and then update our knowledge of the derivative with respect to $x$. For example for the operation going from $b$ to $c$:
+
+$$
+c \leftarrow \sigma(b), \quad \frac{dc}{dx} \leftarrow \frac{dc}{db}\cdot\frac{db}{dx}
+$$
+
+We call this approach **forward-mode automatic differentiation**.
+
+The alternative approach is to work backwards, first compute $L$ and $\frac{dL}{dg}$ and then go backwards through the chain updating the derivative of the final output with respect to each input for the $b$ to $c$ operation this looks like:
+
+$$
+c \leftarrow \sigma(b), \quad \frac{dL}{db} \leftarrow \frac{dc}{db}\cdot\frac{dL}{dc}
+$$
+
+This means we need to do our computation in 2 passes. First we need to go through the chain of operations to compute $L$, then we need to go backwards through the chain to compute $\frac{dL}{dx}$. Note that computing each intermediate derivative requires the a corresponding intermediate value (e.g. $\frac{dc}{db}$ requires $b$ to compute). So we need to store all the intermediate values as we go. The approach is called **reverse-mode automatic differentiation** or more commonly: **backpropagation**. We can summarize both approaches below:
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        points = np.linspace(-6, 5, 6)
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        ops = ['', 'x^2', 'wa', '\sigma(b)', '\log c', '-g']
+
+        self.add(Text('Forward mode', color=GREEN).scale(0.8).to_corner(UL).shift(0.1 * UP))
+        self.add(Text('Reverse mode', color=RED).scale(0.8).to_corner(LEFT).shift(0.5 * DOWN))
+
+        prev = None
+        for i in range(6):
+            node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[i], 2, 0))
+            self.add(MathTex(names[i], color=BLACK).next_to(node, UP))
+            self.add(node)
+
+            if i > 0:
+                self.add(MathTex(r'\frac{d%s}{d%s}' % (names[i], names[i-1]), color=BLACK).next_to(node, DOWN).scale(0.6))
+
+            
+            if not prev is None:
+                self.add(Arrow(prev, node, color=BLACK, path_arc=0))
+               
+            if not prev is None:
+                farr =Arrow(prev, node, color=GREEN, path_arc=0).shift(0.5 * DOWN)
+                self.add(MathTex(r'\frac{d%s}{dx}' % (names[i-1]), color=GREEN).next_to(farr, DOWN).shift(0.2*UP).scale(0.6))
+                self.add(farr)
+            prev = node
+        self.add(MathTex(r'\frac{dL}{dx}', color=GREEN).move_to((6, 2, 0)).scale(0.75))
+
+        points = np.linspace(-5, 6, 6)
+        prev = None
+        for i in range(6):
+            node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[i], -2, 0))
+            self.add(MathTex(names[i], color=BLACK).next_to(node, UP))
+            self.add(node)
+
+            if i > 0:
+                self.add(MathTex(r'\frac{d%s}{d%s}' % (names[i], names[i-1]), color=BLACK).next_to(node, DOWN).scale(0.6))
+
+            
+            if not prev is None: 
+                self.add(Arrow(prev, node, color=BLACK, path_arc=0))
+                
+            if not prev is None:
+                farr =Arrow(node, prev, color=RED, path_arc=0).shift(0.5 * DOWN)
+                self.add(MathTex(r'\frac{dL}{d%s}' % (names[i]), color=RED).next_to(farr, DOWN).shift(0.2*UP).scale(0.6))
+                self.add(farr)
+            prev = node
+        self.add(MathTex(r'\frac{dL}{dx}', color=RED).move_to((-6, -2, 0)).scale(0.75))
+```
+
+## Automatic differentiation with multiple inputs
+
+You might wonder why we'd ever use reverse-mode when it seems to require much more complication in keeping track of all the intermediate values. To see why it is useful, lets's consider the common case where we would like to take derivatives with respect to multiple inputs at the same time. For example we might have an expression like:
+
+$$
+-\log \sigma (w_1 x_1+w_2x_2 +w_3x_3)
+$$
+
+In this case we want to find the gradient:
+
+$$
+\frac{dL}{d\mathbf{x}} = \begin{bmatrix}\frac{dL}{dx_1} \\ \frac{dL}{dx_2} \\ \frac{dL}{dx_3} \end{bmatrix}
+$$
+
+We see that in forward mode, we now need to keep a vector of gradients at many steps!
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        points = np.linspace(-6, 5, 6)
+        names = ['x_2', 'a_2', 'b', 'c', 'g', 'L']
+
+        node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[0], 2.5, 0))
+        self.add(MathTex('x_1', color=BLACK).next_to(node, UP))
+        self.add(node)
+
+        next = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[1], 2.5, 0))
+        self.add(MathTex('a_1', color=BLACK).next_to(next, UP))
+        self.add(next)
+
+        self.add(Arrow(node, next, color=BLACK, path_arc=0))
+        self.add(Arrow(next, Circle().move_to((points[2], 0, 0)), color=BLACK, path_arc=0))
+        farr = Arrow(next, Circle().move_to((points[2], 0, 0)), color=GREEN, path_arc=0).shift(0.3 * UR)
+        self.add(Arrow(node, next, color=GREEN, path_arc=0).shift(0.5 * DOWN))
+        self.add(MathTex(r'\frac{db}{da_1}', color=GREEN).next_to(farr, UR).shift(0.6 * DL).scale(0.6))
+        self.add(farr)
+
+
+        node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[0], -2.5, 0))
+        self.add(MathTex('x_3', color=BLACK).next_to(node, DOWN))
+        self.add(node)
+
+        next = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[1], -2.5, 0))
+        self.add(MathTex('a_3', color=BLACK).next_to(next, DOWN ))
+        self.add(next)
+
+        self.add(Arrow(node, next, color=BLACK, path_arc=0))
+        self.add(Arrow(next, Circle().move_to((points[2], 0, 0)), color=BLACK, path_arc=0))
+        farr = Arrow(next, Circle().move_to((points[2], 0, 0)), color=GREEN, path_arc=0).shift(0.3 * DR)
+        self.add(Arrow(node, next, color=GREEN, path_arc=0).shift(0.5 * DOWN))
+        self.add(MathTex(r'\frac{db}{da_3}', color=GREEN).next_to(farr, DR).shift(0.6 * UL).scale(0.6))
+        self.add(farr)
+
+        prev = None
+        for i in range(6):
+            node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[i], 0, 0))
+            self.add(MathTex(names[i], color=BLACK).next_to(node, UP))
+            self.add(node)
+
+            if i > 0:
+                self.add(MathTex(r'\frac{d%s}{d%s}' % (names[i], names[i-1]), color=BLACK).next_to(node, DOWN).scale(0.6))
+
+            
+            if not prev is None:
+                self.add(Arrow(prev, node, color=BLACK, path_arc=0))
+
+            if not prev is None:
+                farr =Arrow(prev, node, color=GREEN, path_arc=0).shift(0.5 * DOWN)
+                if i > 2:
+                    self.add(MathTex(r'\begin{bmatrix}\frac{d%s}{dx_1}\\ \frac{d%s}{dx_2} \\ \frac{d%s}{dx_3} \end{bmatrix}' % (names[i-1], names[i-1], names[i-1]), color=GREEN).next_to(farr, DOWN).shift(0.2*UP).scale(0.6))
+                self.add(farr)
+
+                
+            prev = node
+        self.add(MathTex(r'\frac{dL}{d\mathbf{x}}', color=GREEN).move_to((6, 0, 0)).scale(0.75))
+```
+
+In reverse mode, however we only need to keep single values!
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        points = np.linspace(-5, 6, 6)
+        names = ['x_2', 'a_2', 'b', 'c', 'g', 'L']
+
+        node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[0], 2.5, 0))
+        self.add(MathTex('x_1', color=BLACK).next_to(node, UP))
+        self.add(node)
+
+        next = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[1], 2.5, 0))
+        self.add(MathTex('a_1', color=BLACK).next_to(next, UP))
+        self.add(next)
+
+        self.add(Arrow(node, next, color=BLACK, path_arc=0))
+        self.add(Arrow(next, Circle().move_to((points[2], 0, 0)), color=BLACK, path_arc=0))
+        farr = Arrow( Circle().move_to((points[2], 0, 0)), next, color=RED, path_arc=0).shift(0.3 * UR)
+        self.add(Arrow(next, node, color=RED, path_arc=0).shift(0.5 * DOWN))
+        self.add(MathTex(r'\frac{db}{da_1}', color=RED).next_to(farr, UR).shift(0.6 * DL).scale(0.6))
+        self.add(farr)
+
+
+        node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[0], -2.5, 0))
+        self.add(MathTex('x_3', color=BLACK).next_to(node, DOWN))
+        self.add(node)
+
+        next = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[1], -2.5, 0))
+        self.add(MathTex('a_3', color=BLACK).next_to(next, DOWN ))
+        self.add(next)
+
+        self.add(Arrow(next, node, color=BLACK, path_arc=0))
+        self.add(Arrow(next, Circle().move_to((points[2], 0, 0)), color=BLACK, path_arc=0))
+        farr = Arrow(Circle().move_to((points[2], 0, 0)), next, color=RED, path_arc=0).shift(0.3 * DR)
+        self.add(Arrow(node, next, color=RED, path_arc=0).shift(0.5 * DOWN))
+        self.add(MathTex(r'\frac{db}{da_3}', color=RED).next_to(farr, DR).shift(0.6 * UL).scale(0.6))
+        self.add(farr)
+
+        prev = None
+        for i in range(6):
+            node = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((points[i], 0, 0))
+            self.add(MathTex(names[i], color=BLACK).next_to(node, UP))
+            self.add(node)
+
+            if i > 0:
+                self.add(MathTex(r'\frac{d%s}{d%s}' % (names[i], names[i-1]), color=BLACK).next_to(node, DOWN).scale(0.6))
+
+            
+            if not prev is None:
+                self.add(Arrow(prev, node, color=BLACK, path_arc=0))
+
+            if not prev is None:
+                farr =Arrow(node, prev, color=RED, path_arc=0).shift(0.5 * DOWN)
+                if i > 2:
+                    self.add(MathTex(r'\frac{dL}{d%s}' % (names[i-1]), color=RED).next_to(farr, DOWN).shift(0.2*UP).scale(0.6))
+                self.add(farr)
+
+                
+            prev = node
+        self.add(MathTex(r'\frac{dL}{dx_2}', color=RED).move_to((-6, 0, 0)).scale(0.75))
+        self.add(MathTex(r'\frac{dL}{dx_1}', color=RED).move_to((-6, 2.5, 0)).scale(0.75))
+        self.add(MathTex(r'\frac{dL}{dx_3}', color=RED).move_to((-6, -2.5, 0)).scale(0.75))
+```
