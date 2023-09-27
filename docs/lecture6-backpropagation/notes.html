@@ -167,6 +167,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#composing-many-operations" id="toc-composing-many-operations" class="nav-link" data-scroll-target="#composing-many-operations">Composing many operations</a></li>
   <li><a href="#forward-and-reverse-mode-automatic-differentiation" id="toc-forward-and-reverse-mode-automatic-differentiation" class="nav-link" data-scroll-target="#forward-and-reverse-mode-automatic-differentiation">Forward and reverse mode automatic differentiation</a></li>
   <li><a href="#automatic-differentiation-with-multiple-inputs" id="toc-automatic-differentiation-with-multiple-inputs" class="nav-link" data-scroll-target="#automatic-differentiation-with-multiple-inputs">Automatic differentiation with multiple inputs</a></li>
+  <li><a href="#reusing-values" id="toc-reusing-values" class="nav-link" data-scroll-target="#reusing-values">Reusing values</a></li>
+  <li><a href="#partial-and-total-derivatives" id="toc-partial-and-total-derivatives" class="nav-link" data-scroll-target="#partial-and-total-derivatives">Partial and total derivatives</a></li>
+  <li><a href="#implementing-automatic-differentiation" id="toc-implementing-automatic-differentiation" class="nav-link" data-scroll-target="#implementing-automatic-differentiation">Implementing automatic differentiation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -944,6 +947,7 @@ Since each step is a single operation with a known derivative, we can easily com
 <p><img src="notes_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+<p>We call this structure the <strong>computational graph</strong>.</p>
 </section>
 <section id="forward-and-reverse-mode-automatic-differentiation" class="level2">
 <h2 class="anchored" data-anchor-id="forward-and-reverse-mode-automatic-differentiation">Forward and reverse mode automatic differentiation</h2>
@@ -974,18 +978,154 @@ c \leftarrow \sigma(b), \quad \frac{dL}{db} \leftarrow \frac{dc}{db}\cdot\frac{d
 <p><span class="math display">\[
 \frac{dL}{d\mathbf{x}} = \begin{bmatrix}\frac{dL}{dx_1} \\ \frac{dL}{dx_2} \\ \frac{dL}{dx_3} \end{bmatrix}
 \]</span></p>
-<p>We see that in forward mode, we now need to keep a vector of gradients at many steps!</p>
+<p>We see that in forward mode, we now need to keep a vector of gradients at many steps if we want to compute the derivative with respect to every input!</p>
 <div class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <p><img src="notes_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>In reverse mode, however we only need to keep single values!</p>
+<p>In reverse mode, however we only ever need to keep the derivative of the <em>loss</em> with respect to the current value. If we assume that the loss is always a single value, this is much more efficient!</p>
 <div class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display">
 <p><img src="notes_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+</section>
+<section id="reusing-values" class="level2">
+<h2 class="anchored" data-anchor-id="reusing-values">Reusing values</h2>
+<p>One thing we need to consider is the fact that values can be used in multiple different operations. For example, consider the code below.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> loss(x):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="dv">5</span> <span class="op">*</span> a</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> log(a)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> b <span class="op">*</span> c</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> <span class="op">-</span>g</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> L</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This corresponds to the following sequence of operations:</p>
+<p><span class="math display">\[
+a = x^2
+\]</span></p>
+<p><span class="math display">\[
+b=5a
+\]</span></p>
+<p><span class="math display">\[
+c=\log a
+\]</span></p>
+<p><span class="math display">\[
+g = bc
+\]</span></p>
+<p><span class="math display">\[
+L=-b
+\]</span></p>
+<p>We see that both <span class="math inline">\(b\)</span> <em>and</em> <span class="math inline">\(c\)</span> depend on <span class="math inline">\(a\)</span>. Leading to the following computational graph:</p>
+<div class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>In forward mode this means that we compute 2 different values for <span class="math inline">\(\frac{dg}{dx}\)</span>, one from <span class="math inline">\(b\)</span> <span class="math inline">\((\frac{dg}{db}\cdot\frac{db}{dx})\)</span> and one from <span class="math inline">\(c\)</span> <span class="math inline">\((\frac{dg}{dc}\cdot\frac{dc}{dx})\)</span>.</p>
+<div class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>In reverse mode this means that we compute 2 different values for <span class="math inline">\(\frac{dL}{da}\)</span>, one from <span class="math inline">\(b\)</span> <span class="math inline">\((\frac{dL}{db}\cdot\frac{db}{da})\)</span> and one from <span class="math inline">\(c\)</span> <span class="math inline">\((\frac{dL}{dc}\cdot\frac{dc}{da})\)</span>.</p>
+<div class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The resolution in both cases is simple! Just add the two terms. So in forward mode:</p>
+<p><span class="math display">\[\frac{dg}{dx} = \frac{dg}{db}\cdot \frac{db}{dx} +\frac{dg}{dc}\cdot \frac{dc}{dx}\]</span></p>
+<p>In reverse mode:</p>
+<p><span class="math display">\[\frac{dL}{da} = \frac{dL}{db}\cdot \frac{db}{da} + \frac{dL}{dc}\cdot \frac{dc}{da} \]</span></p>
+<p>The forward case for this example is just an application of the product rule:</p>
+<p><span class="math display">\[
+g =bc
+\]</span></p>
+<p><span class="math display">\[
+\frac{dg}{dx} =\frac{dg}{db}\cdot \frac{db}{dx} +\frac{dg}{dc}\cdot \frac{dc}{dx} = c\cdot \frac{db}{dx} +b \cdot \frac{dc}{dx}
+\]</span></p>
+<p>For reverse mode we need to expand an rearrange a bit:</p>
+<p><span class="math display">\[
+\frac{dL}{da} =\frac{dL}{dg}\cdot \frac{dg}{da}
+\]</span></p>
+<p><span class="math display">\[
+\frac{dg}{da} =\frac{dg}{db}\cdot \frac{db}{da} +\frac{dg}{dc}\cdot \frac{dc}{da}
+\]</span></p>
+<p><span class="math display">\[
+\frac{dL}{da} =\frac{dL}{dg}\bigg( \frac{dg}{db}\cdot \frac{db}{da} +\frac{dg}{dc}\cdot \frac{dc}{da} \bigg)
+\]</span></p>
+<p><span class="math display">\[
+=\frac{dL}{dg} \frac{dg}{db} \frac{db}{da} + \frac{dL}{dg}\frac{dg}{dc} \frac{dc}{da}
+\]</span></p>
+<p><span class="math display">\[
+=\frac{dL}{db}\cdot \frac{db}{da} + \frac{dL}{dc}\cdot \frac{dc}{da}
+\]</span></p>
+<p>This also works for addition:</p>
+<p><span class="math display">\[
+g =b + c
+\]</span></p>
+<p><span class="math display">\[
+\frac{dg}{dx} =\frac{dg}{db}\cdot \frac{db}{dx} +\frac{dg}{dc}\cdot \frac{dc}{dx}
+\]</span></p>
+<p><span class="math display">\[
+\frac{dg}{db}=1,\ \frac{dg}{dc}=1
+\]</span></p>
+<p><span class="math display">\[
+\frac{dg}{dx} =\frac{db}{dx} + \frac{dc}{dx}
+\]</span></p>
+<p>And in general any binary operation! (Division, powers etc.).</p>
+</section>
+<section id="partial-and-total-derivatives" class="level2">
+<h2 class="anchored" data-anchor-id="partial-and-total-derivatives">Partial and total derivatives</h2>
+<p>So far we’ve been a bit sloppy in our discussion of derivatives. To see why, let’s consider one more case:</p>
+<p><span class="math display">\[
+a = x^2
+\]</span></p>
+<p><span class="math display">\[
+b=5a
+\]</span></p>
+<p><span class="math display">\[
+c = a b
+\]</span></p>
+<p><span class="math display">\[
+L=-c
+\]</span></p>
+<div class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Saying that <span class="math inline">\(\frac{dc}{da}=b\)</span> isn’t quite correct, because <span class="math inline">\(b\)</span> <em>also</em> depends on <span class="math inline">\(a\)</span>, really <span class="math inline">\(\frac{dc}{da} =\frac{dc}{da}+\frac{dc}{db}\frac{db}{da}\)</span>. We already account for this in our automatic differentiation though, so we want a way to talk about the derivative of an operation with respect to it’s inputs <em>ignoring how the inputs may depend on each other</em>.</p>
+<p>This is where the notion of a <strong>partial derivative</strong> comes in, the <em>partial</em> <em>derivative</em> of function with respect to an input is the derivative ignoring any dependencies between inputs. We’ve already seen how we denote this:</p>
+<p><span class="math display">\[
+\frac{\partial c}{\partial a} = b =5a
+\]</span></p>
+<p>The <strong>total derivative</strong> is the derivative where we do account for this. In our example:</p>
+<p><span class="math display">\[
+\frac{dc}{da} =\frac{\partial c}{\partial a}+\frac{\partial c}{\partial b}\frac{\partial b}{\partial a} = 5a + 5a = 10a
+\]</span><br>
+In our earlier examples, we typically had partial derivatives equal to total derivatives, so the distinction wasn’t really important. This example shows why it is.</p>
+<p>Let’s see our earlier example, but this time we’ll make the distinction between partial and total derivatives explicit</p>
+<div class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display">
+<p><img src="notes_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This is also why we specify gradients in terms of partial derivatives! If we’re taking the gradient of a function with respect to multiple inputs, we don’t know where these inputs come from. They might depend on each other! By specifying gradients at partial derivatives, we make it clear that we’re not accounting for that.</p>
+</section>
+<section id="implementing-automatic-differentiation" class="level2">
+<h2 class="anchored" data-anchor-id="implementing-automatic-differentiation">Implementing automatic differentiation</h2>
+<p>We see that our computational graph is essentially a tree-like data-structure call a <em>directed acyclic graph,</em> essentially a tree where each node can have more than one parent. Therefore we can implement it much like a tree!</p>
+<p>In particular we can create a class that represents a node in our computational graph (corresponding to the result of some operation). This class will store the value of that operation as well as it’s parents in the computational graph.</p>
 
 
 </section>

@@ -507,6 +507,8 @@ class Viz(LectureScene):
             prev = node
 ```
 
+We call this structure the **computational graph**.
+
 ## Forward and reverse mode automatic differentiation
 
 We are not actually interested in all of the intermediate derivatives ( $\frac{db}{da}, \frac{dc}{db}$ etc.), so it doesn't make much sense to compute all of them and then multiply them together. Instead, we'd rather just incrementally compute the value we're interested in $\frac{dL}{dx}$, as we go.
@@ -603,7 +605,7 @@ $$
 \frac{dL}{d\mathbf{x}} = \begin{bmatrix}\frac{dL}{dx_1} \\ \frac{dL}{dx_2} \\ \frac{dL}{dx_3} \end{bmatrix}
 $$
 
-We see that in forward mode, we now need to keep a vector of gradients at many steps!
+We see that in forward mode, we now need to keep a vector of gradients at many steps if we want to compute the derivative with respect to every input!
 
 ```{python}
 #| echo : false
@@ -676,7 +678,7 @@ class Viz(LectureScene):
         self.add(MathTex(r'\frac{dL}{d\mathbf{x}}', color=GREEN).move_to((6, 0, 0)).scale(0.75))
 ```
 
-In reverse mode, however we only need to keep single values!
+In reverse mode, however we only ever need to keep the derivative of the *loss* with respect to the current value. If we assume that the loss is always a single value, this is much more efficient!
 
 ```{python}
 #| echo : false
@@ -750,3 +752,411 @@ class Viz(LectureScene):
         self.add(MathTex(r'\frac{dL}{dx_1}', color=RED).move_to((-6, 2.5, 0)).scale(0.75))
         self.add(MathTex(r'\frac{dL}{dx_3}', color=RED).move_to((-6, -2.5, 0)).scale(0.75))
 ```
+
+## Reusing values
+
+One thing we need to consider is the fact that values can be used in multiple different operations. For example, consider the code below.
+
+```{python}
+def loss(x):
+    a = x ** 2
+    b = 5 * a
+    c = log(a)
+    g = b * c
+    L = -g
+    return L
+```
+
+This corresponds to the following sequence of operations:
+
+$$
+a = x^2
+$$
+
+$$
+b=5a
+$$
+
+$$
+c=\log a
+$$
+
+$$
+g = bc
+$$
+
+$$
+L=-b
+$$
+
+We see that both $b$ *and* $c$ depend on $a$. Leading to the following computational graph:
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        scene = self
+        class node:
+            def __init__(self, name, x, y=0, parents=[]):
+                self.name = name
+                self.circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((x, y, 0))
+                scene.add(MathTex(name, color=BLACK).next_to(self.circle, UP))
+                scene.add(self.circle)
+                label = []
+                for p in parents:
+                    scene.add(Arrow(p.circle, self.circle, color=BLACK, path_arc=0))
+                    label.append(r'\frac{d%s}{d%s}' % (self.name, p.name))
+                scene.add(MathTex(','.join(label), color=BLACK).scale(0.6).next_to(self.circle, DOWN))
+                
+        xr = list(np.linspace(-6, 6, 5))
+        xpoints = [xr[0], xr[1], xr[2], xr[2], xr[3], xr[4]]
+        ypoints = [0, 0, 2, -2, 0, 0]
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        x = node('x', xr[0])
+        a = node('a', xr[1], parents=[x])
+        b = node('b', xr[2], 2, parents=[a])
+        c = node('c', xr[2], -2, parents=[a])
+        g = node('g', xr[3], parents=[b, c])
+        L = node('L', xr[4], parents=[g])
+        
+        
+```
+
+In forward mode this means that we compute 2 different values for $\frac{dg}{dx}$, one from $b$ $(\frac{dg}{db}\cdot\frac{db}{dx})$ and one from $c$ $(\frac{dg}{dc}\cdot\frac{dc}{dx})$.
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        scene = self
+        class node:
+            def __init__(self, name, x, y=0, parents=[]):
+                self.name = name
+                self.circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((x, y, 0))
+                scene.add(MathTex(name, color=BLACK).next_to(self.circle, UP))
+                scene.add(self.circle)
+                label = []
+                for p in parents:
+                    scene.add(Arrow(p.circle, self.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=BLACK, path_arc=0))
+                    vec = self.circle.get_center() - p.circle.get_center()
+                    
+                    vecp = np.array((vec[1], -vec[0], 0))
+                    farr = Arrow(p.circle, self.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=GREEN, path_arc=0).shift(0.15 * vecp)
+                    scene.add(farr)
+                    scene.add(MathTex(r'\frac{d%s}{dx}' % (self.name), color=GREEN).next_to(farr, DOWN).shift(0.5 * UP).scale(0.6))
+                    label.append(r'\frac{d%s}{d%s}' % (self.name, p.name))
+                scene.add(MathTex(','.join(label), color=BLACK).scale(0.6).next_to(self.circle, DOWN))
+                
+        xr = list(np.linspace(-6, 6, 5))
+        xpoints = [xr[0], xr[1], xr[2], xr[2], xr[3], xr[4]]
+        ypoints = [0, 0, 2, -2, 0, 0]
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        x = node('x', xr[0])
+        a = node('a', xr[1], parents=[x])
+        b = node('b', xr[2], 2, parents=[a])
+        c = node('c', xr[2], -2, parents=[a])
+        g = node('g', xr[3], parents=[b, c])
+        L = node('L', xr[4], parents=[g])
+        
+```
+
+In reverse mode this means that we compute 2 different values for $\frac{dL}{da}$, one from $b$ $(\frac{dL}{db}\cdot\frac{db}{da})$ and one from $c$ $(\frac{dL}{dc}\cdot\frac{dc}{da})$.
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        scene = self
+        class node:
+            def __init__(self, name, x, y=0, parents=[]):
+                self.name = name
+                self.circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((x, y, 0))
+                scene.add(MathTex(name, color=BLACK).next_to(self.circle, UP))
+                scene.add(self.circle)
+                label = []
+                for p in parents:
+                    scene.add(Arrow(p.circle, self.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=BLACK, path_arc=0))
+                    vec = self.circle.get_center() - p.circle.get_center()
+                    
+                    vecp = np.array((vec[1], -vec[0], 0))
+                    farr = Arrow(self.circle, p.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=RED, path_arc=0).shift(0.15 * vecp)
+                    scene.add(farr)
+                    scene.add(MathTex(r'\frac{dL}{d%s}' % (p.name), color=RED).next_to(farr, DOWN).shift(0.5 * UP).scale(0.6))
+                    label.append(r'\frac{d%s}{d%s}' % (self.name, p.name))
+                scene.add(MathTex(','.join(label), color=BLACK).scale(0.6).next_to(self.circle, DOWN))
+                
+        xr = list(np.linspace(-6, 6, 5))
+        xpoints = [xr[0], xr[1], xr[2], xr[2], xr[3], xr[4]]
+        ypoints = [0, 0, 2, -2, 0, 0]
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        x = node('x', xr[0])
+        a = node('a', xr[1], parents=[x])
+        b = node('b', xr[2], 2, parents=[a])
+        c = node('c', xr[2], -2, parents=[a])
+        g = node('g', xr[3], parents=[b, c])
+        L = node('L', xr[4], parents=[g])
+        
+```
+
+The resolution in both cases is simple! Just add the two terms. So in forward mode:
+
+$$\frac{dg}{dx} = \frac{dg}{db}\cdot \frac{db}{dx} +\frac{dg}{dc}\cdot \frac{dc}{dx}$$
+
+In reverse mode:
+
+$$\frac{dL}{da} = \frac{dL}{db}\cdot \frac{db}{da} + \frac{dL}{dc}\cdot \frac{dc}{da} $$
+
+The forward case for this example is just an application of the product rule:
+
+$$
+g =bc
+$$
+
+$$
+\frac{dg}{dx} =\frac{dg}{db}\cdot \frac{db}{dx} +\frac{dg}{dc}\cdot \frac{dc}{dx} = c\cdot \frac{db}{dx} +b \cdot \frac{dc}{dx}
+$$
+
+For reverse mode we need to expand an rearrange a bit:
+
+$$
+\frac{dL}{da} =\frac{dL}{dg}\cdot \frac{dg}{da}
+$$
+
+$$
+\frac{dg}{da} =\frac{dg}{db}\cdot \frac{db}{da} +\frac{dg}{dc}\cdot \frac{dc}{da}
+$$
+
+$$
+\frac{dL}{da} =\frac{dL}{dg}\bigg( \frac{dg}{db}\cdot \frac{db}{da} +\frac{dg}{dc}\cdot \frac{dc}{da} \bigg)
+$$
+
+$$
+=\frac{dL}{dg} \frac{dg}{db} \frac{db}{da} + \frac{dL}{dg}\frac{dg}{dc} \frac{dc}{da} 
+$$
+
+$$
+ =\frac{dL}{db}\cdot \frac{db}{da} + \frac{dL}{dc}\cdot \frac{dc}{da} 
+$$
+
+This also works for addition:
+
+$$
+g =b + c
+$$
+
+$$
+\frac{dg}{dx} =\frac{dg}{db}\cdot \frac{db}{dx} +\frac{dg}{dc}\cdot \frac{dc}{dx}
+$$
+
+$$
+\frac{dg}{db}=1,\ \frac{dg}{dc}=1
+$$
+
+$$
+\frac{dg}{dx} =\frac{db}{dx} + \frac{dc}{dx}
+$$
+
+And in general any binary operation! (Division, powers etc.).
+
+## Partial and total derivatives
+
+So far we've been a bit sloppy in our discussion of derivatives. To see why, let's consider one more case:
+
+$$
+a = x^2
+$$
+
+$$
+b=5a
+$$
+
+$$
+c = a b
+$$
+
+$$
+L=-c
+$$
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        scene = self
+        class node:
+            def __init__(self, name, x, y=0, parents=[]):
+                self.name = name
+                self.circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((x, y, 0))
+                scene.add(MathTex(name, color=BLACK).next_to(self.circle, UP))
+                scene.add(self.circle)
+                label = []
+                for p in parents:
+                    scene.add(Arrow(p.circle, self.circle, color=BLACK, path_arc=0))
+                    label.append(r'\frac{d%s}{d%s}' % (self.name, p.name))
+
+                if len(parents) < 2:                                      
+                    scene.add(MathTex(','.join(label), color=BLACK).scale(0.6).next_to(self.circle, DOWN))
+                else:
+                    scene.add(MathTex(','.join(label), color=RED).scale(0.6).next_to(self.circle, DOWN))
+                                                      
+        xr = list(np.linspace(-6, 6, 5))
+        xpoints = [xr[0], xr[1], xr[2], xr[3], xr[4]]
+        ypoints = [0, 1, 0, 0, 0]
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        x = node('x', xr[0])
+        a = node('a', xr[1], parents=[x])
+        b = node('b', xr[2], 2, parents=[a])
+        c = node('c', xr[3], 0, parents=[a, b])
+        L = node('L', xr[4], parents=[c])
+        
+```
+
+Saying that $\frac{dc}{da}=b$ isn't quite correct, because $b$ *also* depends on $a$, really $\frac{dc}{da} =\frac{dc}{da}+\frac{dc}{db}\frac{db}{da}$. We already account for this in our automatic differentiation though, so we want a way to talk about the derivative of an operation with respect to it's inputs *ignoring how the inputs may depend on each other*.
+
+This is where the notion of a **partial derivative** comes in, the *partial* *derivative* of function with respect to an input is the derivative ignoring any dependencies between inputs. We've already seen how we denote this:
+
+$$
+\frac{\partial c}{\partial a} = b =5a
+$$
+
+The **total derivative** is the derivative where we do account for this. In our example:
+
+$$
+\frac{dc}{da} =\frac{\partial c}{\partial a}+\frac{\partial c}{\partial b}\frac{\partial b}{\partial a} = 5a + 5a = 10a
+$$\
+In our earlier examples, we typically had partial derivatives equal to total derivatives, so the distinction wasn't really important. This example shows why it is.
+
+Let's see our earlier example, but this time we'll make the distinction between partial and total derivatives explicit
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        scene = self
+        class node:
+            def __init__(self, name, x, y=0, parents=[]):
+                self.name = name
+                self.circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((x, y, 0))
+                scene.add(MathTex(name, color=BLACK).next_to(self.circle, UP))
+                scene.add(self.circle)
+                label = []
+                for p in parents:
+                    scene.add(Arrow(p.circle, self.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=BLACK, path_arc=0))
+                    vec = self.circle.get_center() - p.circle.get_center()
+                    
+                    vecp = np.array((vec[1], -vec[0], 0))
+                    farr = Arrow(p.circle, self.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=GREEN, path_arc=0).shift(0.15 * vecp)
+                    scene.add(farr)
+                    scene.add(MathTex(r'\frac{d%s}{dx}' % (self.name), color=GREEN).next_to(farr, DOWN).shift(0.5 * UP).scale(0.6))
+                    label.append(r'\frac{\partial %s}{\partial d%s}' % (self.name, p.name))
+                scene.add(MathTex(','.join(label), color=BLACK).scale(0.6).next_to(self.circle, DOWN))
+                
+        xr = list(np.linspace(-6, 6, 5))
+        xpoints = [xr[0], xr[1], xr[2], xr[2], xr[3], xr[4]]
+        ypoints = [0, 0, 2, -2, 0, 0]
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        x = node('x', xr[0])
+        a = node('a', xr[1], parents=[x])
+        b = node('b', xr[2], 2, parents=[a])
+        c = node('c', xr[2], -2, parents=[a])
+        g = node('g', xr[3], parents=[b, c])
+        L = node('L', xr[4], parents=[g])
+        
+```
+
+```{python}
+#| echo : false
+%%manim -sqh -v CRITICAL --progress_bar none Viz
+
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+
+class Viz(LectureScene):
+    def construct(self):
+        scene = self
+        class node:
+            def __init__(self, name, x, y=0, parents=[]):
+                self.name = name
+                self.circle = Circle(radius=0.4, color=BLACK, fill_color=WHITE).move_to((x, y, 0))
+                scene.add(MathTex(name, color=BLACK).next_to(self.circle, UP))
+                scene.add(self.circle)
+                label = []
+                for p in parents:
+                    scene.add(Arrow(p.circle, self.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=BLACK, path_arc=0))
+                    vec = self.circle.get_center() - p.circle.get_center()
+                    
+                    vecp = np.array((vec[1], -vec[0], 0))
+                    farr = Arrow(self.circle, p.circle, max_stroke_width_to_length_ratio=2.5, max_tip_length_to_length_ratio=.2, color=RED, path_arc=0).shift(0.15 * vecp)
+                    scene.add(farr)
+                    scene.add(MathTex(r'\frac{dL}{d%s}' % (p.name), color=RED).next_to(farr, DOWN).shift(0.5 * UP).scale(0.6))
+                    label.append(r'\frac{\partial %s}{\partial %s}' % (self.name, p.name))
+                scene.add(MathTex(','.join(label), color=BLACK).scale(0.6).next_to(self.circle, DOWN))
+                
+        xr = list(np.linspace(-6, 6, 5))
+        xpoints = [xr[0], xr[1], xr[2], xr[2], xr[3], xr[4]]
+        ypoints = [0, 0, 2, -2, 0, 0]
+        names = ['x', 'a', 'b', 'c', 'g', 'L']
+        x = node('x', xr[0])
+        a = node('a', xr[1], parents=[x])
+        b = node('b', xr[2], 2, parents=[a])
+        c = node('c', xr[2], -2, parents=[a])
+        g = node('g', xr[3], parents=[b, c])
+        L = node('L', xr[4], parents=[g])
+```
+
+This is also why we specify gradients in terms of partial derivatives! If we're taking the gradient of a function with respect to multiple inputs, we don't know where these inputs come from. They might depend on each other! By specifying gradients at partial derivatives, we make it clear that we're not accounting for that.
+
+## Implementing automatic differentiation
+
+We see that our computational graph is essentially a tree-like data-structure call a *directed acyclic graph,* essentially a tree where each node can have more than one parent. Therefore we can implement it much like a tree!
+
+In particular we can create a class that represents a node in our computational graph (corresponding to the result of some operation). This class will store the value of that operation as well as it's parents in the computational graph.
