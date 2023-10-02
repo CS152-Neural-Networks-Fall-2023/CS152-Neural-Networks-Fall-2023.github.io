@@ -94,6 +94,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -169,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#automatic-differentiation-with-multiple-inputs" id="toc-automatic-differentiation-with-multiple-inputs" class="nav-link" data-scroll-target="#automatic-differentiation-with-multiple-inputs">Automatic differentiation with multiple inputs</a></li>
   <li><a href="#reusing-values" id="toc-reusing-values" class="nav-link" data-scroll-target="#reusing-values">Reusing values</a></li>
   <li><a href="#partial-and-total-derivatives" id="toc-partial-and-total-derivatives" class="nav-link" data-scroll-target="#partial-and-total-derivatives">Partial and total derivatives</a></li>
-  <li><a href="#implementing-automatic-differentiation" id="toc-implementing-automatic-differentiation" class="nav-link" data-scroll-target="#implementing-automatic-differentiation">Implementing automatic differentiation</a></li>
+  <li><a href="#implementing-reverse-mode-automatic-differentiation" id="toc-implementing-reverse-mode-automatic-differentiation" class="nav-link" data-scroll-target="#implementing-reverse-mode-automatic-differentiation">Implementing reverse-mode automatic differentiation</a></li>
   <li><a href="#computational-graphs-of-vectors" id="toc-computational-graphs-of-vectors" class="nav-link" data-scroll-target="#computational-graphs-of-vectors">Computational graphs of vectors</a></li>
   <li><a href="#automatic-differentiation-for-linear-regression" id="toc-automatic-differentiation-for-linear-regression" class="nav-link" data-scroll-target="#automatic-differentiation-for-linear-regression">Automatic differentiation for linear regression</a></li>
   <li><a href="#vector-valued-functions" id="toc-vector-valued-functions" class="nav-link" data-scroll-target="#vector-valued-functions">Vector-valued functions</a></li>
@@ -737,6 +740,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<div class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Manim Community <span style="color: #008000; text-decoration-color: #008000">v0.17.3</span>
+
+</pre>
+</div>
+</div>
 <section id="neural-networks" class="level1">
 <h1>Neural networks</h1>
 <section id="neural-networks-with-matrices" class="level2">
@@ -1130,8 +1140,8 @@ In our earlier examples, we typically had partial derivatives equal to total der
 </div>
 <p>This is also why we specify gradients in terms of partial derivatives! If we’re taking the gradient of a function with respect to multiple inputs, we don’t know where these inputs come from. They might depend on each other! By specifying gradients at partial derivatives, we make it clear that we’re not accounting for that.</p>
 </section>
-<section id="implementing-automatic-differentiation" class="level2">
-<h2 class="anchored" data-anchor-id="implementing-automatic-differentiation">Implementing automatic differentiation</h2>
+<section id="implementing-reverse-mode-automatic-differentiation" class="level2">
+<h2 class="anchored" data-anchor-id="implementing-reverse-mode-automatic-differentiation">Implementing reverse-mode automatic differentiation</h2>
 <p>We’ll start by developing an automatic differentiation class that uses <em>reverse-mode automatic differentiation</em>, as this is what will be most useful for neural networks.</p>
 <p>Recall that for reverse-mode AD to work, everytime we perform an operation on one or more numbers we need to store the result of that operation as well as the <em>parent values</em> (the inputs to the operation). We also need to be able to compute the derivative of that operation. Since for every operation we need to store several pieces of data and several functions, it makes sense to define a <em>class</em> to represent the result of an operation.</p>
 <p>For example, if we want to make a class that represents the operation <code>c=a+b</code> our class needs several properties:</p>
@@ -1223,7 +1233,7 @@ In our earlier examples, we typically had partial derivatives equal to total der
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> _mul(AutogradValue):</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Multiply operator (a * b)</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> func(<span class="va">self</span>, a, b):</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">+</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">*</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s consider what the computational graph will look like for the following code:</p>
 <div class="cell" data-execution_count="24">
@@ -1241,26 +1251,55 @@ In our earlier examples, we typically had partial derivatives equal to total der
 </div>
 <p>In the backward pass, each node needs to update the <code>grad</code> property of its parents.</p>
 <p><img src="images/paste-2.png" class="img-fluid"></p>
+<p>So first <span class="math inline">\(L\)</span> needs to update the <code>grad</code> property for <span class="math inline">\(c\)</span>, which represents <span class="math inline">\(\frac{dL}{dc}\)</span>. Then <span class="math inline">\(c\)</span> is able to update the <code>grad</code> property of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> (<span class="math inline">\(\frac{dL}{da}\)</span> and <span class="math inline">\(\frac{dL}{db}\)</span>).</p>
+<p><strong>Note that the order we perform these updates matters!</strong> <span class="math inline">\(\frac{dL}{da}\)</span> will not be correct until both <span class="math inline">\(b\)</span> <em>and</em> <span class="math inline">\(c\)</span> have updated <span class="math inline">\(a\)</span>, thus <span class="math inline">\(a\)</span> cannot perform the update to <span class="math inline">\(\frac{dL}{dx}\)</span> until both <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span> have updated <span class="math inline">\(a\)</span>.</p>
+<p>For each operation, we see that we also need to be able to compute the appropriate local derivatives of the value with respect to each input. For instance <span class="math inline">\(a\)</span> needs to be able to compute <span class="math inline">\(\frac{da}{dx}\)</span> , <span class="math inline">\(c\)</span> needs to be able to compute <span class="math inline">\(\frac{dc}{da}\)</span> and <span class="math inline">\(\frac{dc}{db}\)</span>. We will definite another method <code>grads</code> that can compute these values for a given operation and override it for each subclass. Since <code>grads</code> might need to compute multiple derivatives (as for multiplication or addition) we’ll have it return a <code>tuple</code>.</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AutogradValue:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> grads(<span class="va">self</span>, <span class="op">*</span>args):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">'''</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">        Compute the derivative of the operation with respect to each input.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">        In the base case the derivative of the identity function is just 1. (da/da = 1).</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">            input (float): The input to the operation</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">            grads (tuple): The derivative of the operation with respect to each input</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">                            Here there is only a single input, so we return a length-1 tuple.</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">        '''</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="dv">1</span>,)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> _square(AutogradValue):</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Square operator (a ** 2)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> grads(<span class="va">self</span>, a):</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="dv">2</span> <span class="op">*</span> a,)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> _mul(AutogradValue):</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Multiply operator (a * b)</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> grads(<span class="va">self</span>, a, b):</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (b, a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With this in hand we can write a function that performs the backward update for a given operation. We’ll call this method <code>backward_pass</code>.</p>
 </section>
 <section id="computational-graphs-of-vectors" class="level2">
 <h2 class="anchored" data-anchor-id="computational-graphs-of-vectors">Computational graphs of vectors</h2>
 <p>As we’ve seen, in the context of neural networks we typically perform operations on large collections of values such as vectors. For example, we might perform an element-wise square on a large vector:</p>
-<div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.ones((<span class="dv">500</span>,))</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.ones((<span class="dv">500</span>,))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In this case we are performing 500 individual square operations, so our computational graph would look like:</p>
 <p><img src="images/paste-3.png" class="img-fluid" width="300"></p>
 <p>Remember for our automatic differentiation implementation we would need an object for each of these values.</p>
-<div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.array([AutogradValue(<span class="dv">1</span>), AutogradValue(<span class="dv">1</span>), ...])</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.array([AutogradValue(<span class="dv">1</span>), AutogradValue(<span class="dv">1</span>), ...])</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Each of these object introduces some overhead as each object needs to be constructed individually and needs to store not just the value and gradients, but also the parents. Furthermore our backward pass needs to determine the order of nodes to visit. For a large neural network, having a node for every single value would be computationally very complex.</p>
 <p>Since we’re performing the same operation on each entry of the vector, there’s really no need to have a separate node for each entry. Therefore we might instead prefer each node in our computational graph to represent a <strong>vector</strong> or <strong>matrix</strong> and for our operations to correspond to vector or matrix operations:</p>
-<div class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> AutogradValue(np.ones((<span class="dv">500</span>,)))</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> AutogradValue(np.ones((<span class="dv">500</span>,)))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In this case the computational graph for this operation would be:</p>
 <p><img src="images/paste-4.png" class="img-fluid" width="500"></p>
@@ -1270,15 +1309,15 @@ In our earlier examples, we typically had partial derivatives equal to total der
 \begin{bmatrix} 2x_1 \\ 2x_2 \\ \vdots \\ 2x_{500} \end{bmatrix} = 2\mathbf{x}
 \]</span></p>
 <p>So in fact, for this case, we don’t actually need to change our <code>AutogradValue</code> implementation for square at all!</p>
-<div class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> _square(AutogradValue):</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Square operator (a ** 2)</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> func(<span class="va">self</span>, a):</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Returns a vector of the element-wise derivatives!</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> grads(<span class="va">self</span>, a):</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (a <span class="op">**</span> <span class="dv">2</span>,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> _square(AutogradValue):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Square operator (a ** 2)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> func(<span class="va">self</span>, a):</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Returns a vector of the element-wise derivatives!</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> grads(<span class="va">self</span>, a):</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (a <span class="op">**</span> <span class="dv">2</span>,)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="automatic-differentiation-for-linear-regression" class="level2">
@@ -1288,9 +1327,9 @@ In our earlier examples, we typically had partial derivatives equal to total der
 L = \frac{1}{N}\sum_{i=1}^N (y_i - \mathbf{x}_i^T\mathbf{w})^2 = \frac{1}{N}\sum_{i=1}^N (\mathbf{y} - \mathbf{X}\mathbf{w})_i^2
 \]</span></p>
 <p>Here the right-hand side of the expression corresponds to how we might write this formula using numpy:</p>
-<div class="cell" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>se <span class="op">=</span> (y <span class="op">-</span> np.dot(X, w)) <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> np.<span class="bu">sum</span>(se) <span class="op">/</span> X.shape[<span class="dv">0</span>] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>se <span class="op">=</span> (y <span class="op">-</span> np.dot(X, w)) <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> np.<span class="bu">sum</span>(se) <span class="op">/</span> X.shape[<span class="dv">0</span>] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We are interested in the gradient with respect to <span class="math inline">\(\mathbf{w}\)</span>, or <span class="math inline">\(\frac{dL}{d\mathbf{w}}\)</span> for optimizing our model. Let’s start by looking at the simplest sequence of operations:</p>
 <p><span class="math display">\[
@@ -1309,9 +1348,9 @@ g = \sum_{i=1}^N c_i
 L = \frac{1}{N}g
 \]</span></p>
 <p>We can setup our computational graph and reverse mode algorithm exactly as we did before, only in this case some of the operations will be on vectors! (<span class="math inline">\(g\)</span> and <span class="math inline">\(L\)</span> are still scalars, but <span class="math inline">\(\mathbf{w}\)</span>, <span class="math inline">\(\mathbf{a}\)</span>, <span class="math inline">\(\mathbf{b}\)</span> and <span class="math inline">\(\mathbf{c}\)</span> are vectors)</p>
-<div class="cell" data-execution_count="31">
+<div class="cell" data-execution_count="32">
 <div class="cell-output cell-output-display">
-<p><img src="notes_files/figure-html/cell-32-output-1.png" class="img-fluid"></p>
+<p><img src="notes_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>Let’s walk through the computation of <span class="math inline">\(\frac{dL}{d\mathbf{w}}\)</span>.</p>
@@ -1392,9 +1431,9 @@ a_i =\sum_{j=1}^d X_{ij}w_j, \quad \frac{\partial a_i}{\partial w_j}=X_{ij}
 <section id="vector-jacobian-products" class="level2">
 <h2 class="anchored" data-anchor-id="vector-jacobian-products">Vector-Jacobian products</h2>
 <p>Let’s return to our linear regression example:</p>
-<div class="cell" data-execution_count="32">
+<div class="cell" data-execution_count="33">
 <div class="cell-output cell-output-display">
-<p><img src="notes_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
+<p><img src="notes_files/figure-html/cell-34-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>We see that <span class="math inline">\(\frac{d\mathbf{a}}{d\mathbf{w}}\)</span> is actually a Jacobian that we now know how to compute, so the remaining question is how to combine it with <span class="math inline">\(\frac{dL}{d\mathbf{a}}\)</span> in order to get the gradient we’re looking for <span class="math inline">\(\frac{dL}{d\mathbf{w}}\)</span>? The answer turns out to be simple: use the vector-matrix product:</p>
@@ -1459,11 +1498,11 @@ a_i =\sum_{j=1}^d X_{ij}w_j, \quad \frac{\partial a_i}{\partial w_j}=X_{ij}
 \]</span></p>
 <p>This suggests that we can compute the VJP by <em>flattening</em> the Jacobian from an <span class="math inline">\(N\times N \times d\)</span> structure into a <span class="math inline">\(N \times Nd\)</span> matrix. Therefore performing the vector-matrix product will give us a length <span class="math inline">\(Nd\)</span> vector with the appropriate values for us to reshape into our <span class="math inline">\(N \times d\)</span> Jacobian <span class="math inline">\(\frac{dL}{d\mathbf{X}}\)</span>.</p>
 <p>In code this could look like:</p>
-<div class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dL_da, da_dx  <span class="co"># The computed gradients/jacobians</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>da_dx <span class="op">=</span> da_dx.reshape((da_dx.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>dL_dx <span class="op">=</span> np.dot(dL_da, da_dx)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>dL_dx <span class="op">=</span> dL_dx.reshape(x.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dL_da, da_dx  <span class="co"># The computed gradients/jacobians</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>da_dx <span class="op">=</span> da_dx.reshape((da_dx.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>dL_dx <span class="op">=</span> np.dot(dL_da, da_dx)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>dL_dx <span class="op">=</span> dL_dx.reshape(x.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s return to our example:</p>
 <p><span class="math display">\[\mathbf{a}=\mathbf{X}\mathbf{w}\]</span></p>
@@ -1480,10 +1519,10 @@ a_i = \sum_{k=1}^d X_{ik}w_k
 \frac{\partial L}{\partial X_{ik}}=\frac{\partial L}{\partial a_i}\frac{\partial a_i}{\partial X_{ik}} = \frac{\partial L}{\partial a_i}w_k
 \]</span></p>
 <p>In code we could write this as:</p>
-<div class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>w_mat <span class="op">=</span> w.reshape((<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)) <span class="co"># reshape w to 1 x d</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>dL_da_mat <span class="op">=</span> dL_da.reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="co"># reshape dL_da to N x 1</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>dL_dx <span class="op">=</span> w_mat <span class="op">*</span> dL_da_mat <span class="co"># dL_dx becomes N x d, entry ik = dL_da_i * w_k</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>w_mat <span class="op">=</span> w.reshape((<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)) <span class="co"># reshape w to 1 x d</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dL_da_mat <span class="op">=</span> dL_da.reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="co"># reshape dL_da to N x 1</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>dL_dx <span class="op">=</span> w_mat <span class="op">*</span> dL_da_mat <span class="co"># dL_dx becomes N x d, entry ik = dL_da_i * w_k</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="forward-mode-ad-with-vectors" class="level2">
@@ -1504,9 +1543,9 @@ g = \sum_{i=1}^N c_i
 <p><span class="math display">\[
 L = \frac{1}{N}g
 \]</span></p>
-<div class="cell" data-execution_count="35">
+<div class="cell" data-execution_count="36">
 <div class="cell-output cell-output-display">
-<p><img src="notes_files/figure-html/cell-36-output-1.png" class="img-fluid"></p>
+<p><img src="notes_files/figure-html/cell-37-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>As we’ve seen <span class="math inline">\(\frac{d\mathbf{a}}{d\mathbf{w}}\)</span> is an <span class="math inline">\(N\times d\)</span> Jacobian matrix. After computing this, the next step will be to compute:</p>
