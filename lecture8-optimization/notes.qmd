@@ -1,0 +1,127 @@
+---
+title: "Lecture 8: Optimization"
+format:
+    html:
+        toc: true
+        toc-depth: 3
+---
+
+```{ojs}
+//| echo : false
+pyodide = {
+  const pyodide =
+    await require("https://cdn.jsdelivr.net/pyodide/v0.21.2/full/pyodide.js");
+  return pyodide.loadPyodide();
+}
+
+py = {
+  let py = async (strings, ...expressions) => {
+    let globals = {};
+    const code = strings.reduce((result, string, index) => {
+      if (expressions[index]) {
+        const name = `x${index}`;
+        globals[name] = expressions[index];
+        return result + string + name;
+      }
+      return result + string;
+    }, '');
+    await pyodide.loadPackagesFromImports(code);
+    pyodide.globals.update(pyodide.toPy(globals))
+    const result = await pyodide.pyodide_py.eval_code_async(
+      code,
+      pyodide.globals
+    );
+    if (result?.toJs) return result.toJs();
+    return result;
+  };
+  
+  pyodide.globals.update(pyodide.toPy({Plot: Plot}))
+  
+py`
+from types import SimpleNamespace
+from pyodide import to_js
+from js import Object
+import pandas
+
+def call_js(f):
+  if not callable(f):
+    return f
+
+  def call(*args):
+    args = [(a.to_dict('records') if isinstance(a, pandas.DataFrame) else a) for a in args]
+    args = [to_js(a, dict_converter=Object.fromEntries) for a in args]
+    return f(*args)
+  return call
+
+Plot = SimpleNamespace(**{k: call_js(v) for (k, v) in Plot.items()})
+`
+  
+  return py;
+}
+
+setup = py`
+import autograd.numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from autograd import grad, jacobian, hessian, elementwise_grad
+x = np.linspace(-5, 5, 100)
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def tangent(f, x):
+    y = f(x)
+    slope = grad(f)(x)
+
+    def tf(a):
+        return (a - x) * slope + y
+
+    return tf
+
+def tangent2(f, x):
+    y = f(x)
+    slope = grad(f)(x)
+    curve = 0.5 * grad(grad(f))(x)
+
+    def tf(a):
+        return curve * (a - x) ** 2 + (a - x) * slope + y
+    return tf
+
+
+dsigmoid = elementwise_grad(sigmoid)
+d2sigmoid = elementwise_grad(dsigmoid)
+`
+
+```
+
+```{ojs}
+//| echo : false
+viewof point = Inputs.range([-5, 5], {step: 0.01})
+```
+
+```{ojs}
+//| echo : false
+py`
+${setup} # Enforce dependency on previous python cell
+
+point = float(${point}) # Value from slider component
+tpoint = tangent(sigmoid, point)
+tpoint2 = tangent2(sigmoid, point)
+lines = pd.DataFrame(dict(x=x, sigmoid=sigmoid(x), tpoint=tpoint(x), tpoint2=tpoint2(x)))
+points = pd.DataFrame(dict(x=[point], sigmoid=[sigmoid(point)]))
+
+# Use Observable Plot in Python!
+Plot.plot({
+  'y': {
+    'domain': [-0.25, 1.25],
+    'grid': True
+  },
+  'marks': [
+    Plot.lineY(lines, {'x': "x", 'y': "sigmoid"}),
+    Plot.lineY(lines, {'x': "x", 'y': "tpoint", 'stroke': "red"}),
+    Plot.lineY(lines, {'x': "x", 'y': "tpoint2", 'stroke': "green"}),
+    Plot.dot(points,  {'x': "x", 'y': "sigmoid", 'fill': "blue", 'stroke': "blue"}),
+  ]
+})
+`
+```
