@@ -359,3 +359,155 @@ function nnPlot(data, weights, keys, label, l2, f=se, stroke="", options=[]) {
   })
 }
 ```
+
+```{ojs}
+pyodide = {
+  const pyodide =
+    await require("https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js");
+  return pyodide.loadPyodide();
+}
+tfbase = require('@tensorflow/tfjs@4.11.0')
+
+py = {
+  let py = async (strings, ...expressions) => {
+    let globals = {};
+    const code = strings.reduce((result, string, index) => {
+      if (expressions[index]) {
+        const name = `x${index}`;
+        globals[name] = expressions[index];
+        return result + string + name;
+      }
+      return result + string;
+    }, '');
+    await pyodide.loadPackagesFromImports(code);
+    pyodide.globals.update(pyodide.toPy(globals))
+    const result = await pyodide.pyodide_py.eval_code_async(
+      code,
+      pyodide.globals
+    );
+    if (result?.t2Js) return result.t2Js();
+    if (result?.toJs) return result.toJs();
+    return result;
+  };
+  
+  pyodide.globals.update(pyodide.toPy({Plotbase: Plot, tfbase: tfbase}))
+  
+py`
+from pyodide.ffi import create_once_callable
+from types import SimpleNamespace
+from pyodide import to_js
+from js import Object
+import pandas
+
+tfbase = SimpleNamespace(**tfbase)
+
+def convert(a):
+  if isinstance(a, Tensor):
+    a = a.value
+  return to_js(a, dict_converter=Object.fromEntries)
+
+class Tensor:
+  def __init__(self, *args, value=None, **kwargs):
+    if not (value is None):
+      self.value = value
+    else:
+      args = [convert(a) for a in args]
+      kwargs = {k: convert(a) for (k, a) in kwargs.items()}
+      self.value = tfbase.tensor(*args, **kwargs)
+
+  def __getattr__(self, name):
+    attr = getattr(self.value, name)
+    if callable(attr):
+      def run(*args, **kwargs):
+        args = [convert(a) for a in args]
+        kwargs = {k: convert(a) for (k, a) in kwargs.items()}
+        output = attr(*args, **kwargs)
+        return Tensor(value=output)
+      return run
+    return attr
+
+  def __add__(a, b):
+    return Tensor(value=tfbase.add(convert(a), convert(b)))
+  def __radd__(a, b):
+    return Tensor(value=tfbase.add(convert(b), convert(a)))
+  def __sub__(a, b):
+    return Tensor(value=tfbase.sub(convert(a), convert(b)))
+  def __rsub__(a, b):
+    return Tensor(value=tfbase.sub(convert(b), convert(a)))
+  def __mul__(a, b):
+    return Tensor(value=tfbase.mul(convert(a), convert(b)))
+  def __rmul__(a, b):
+    return Tensor(value=tfbase.mul(convert(b), convert(a)))
+  def __truediv__(a, b):
+    return Tensor(value=tfbase.div(convert(a), convert(b)))
+  def __rtruediv__(a, b):
+    return Tensor(value=tfbase.div(convert(b), convert(a)))
+  def __floordiv__(a, b):
+    return Tensor(value=tfbase.floorDiv(convert(a), convert(b)))
+  def __rfloordiv__(a, b):
+    return Tensor(value=tfbase.floorDiv(convert(b), convert(a)))
+  def __pow__(a, b):
+    return Tensor(value=tfbase.pow(convert(a), convert(b)))
+  def __rpow__(a, b):
+    return Tensor(value=tfbase.pow(convert(b), convert(a)))
+  def __neg__(a):
+    return Tensor(value=tfbase.neg(convert(a)))
+  def __eq__(a, b):
+    return Tensor(value=tfbase.equal(convert(a), convert(b)))
+  def __neq__(a, b):
+    return Tensor(value=tfbase.notEqual(convert(a), convert(b)))
+  def __lt__(a, b):
+    return Tensor(value=tfbase.less(convert(a), convert(b)))
+  def __gt__(a, b):
+    return Tensor(value=tfbase.greater(convert(a), convert(b)))
+  def __leq__(a, b):
+    return Tensor(value=tfbase.lessEqual(convert(a), convert(b)))
+  def __geq__(a, b):
+    return Tensor(value=tfbase.greaterEqual(convert(a), convert(b)))
+
+  def t2Js(self):
+    return to_js(self.value.arraySync())
+
+class wrapper:
+  def __init__(self, f):
+    self.f = f
+
+  def __call__(self, x, *args, **kwargs):
+    return convert(self.f(Tensor(value=x), *args, **kwargs))
+
+class grad:
+  def __init__(self, f):
+    self.f = f
+    self.wrapper = wrapper(f)
+
+  def __call__(self, x, *args, **kwargs):
+    output = tfbase.grad(create_once_callable(self.wrapper))(x.value, *args, **kwargs)
+    return Tensor(value=output)
+
+tf = Tensor(value=tfbase)
+Plotbase = SimpleNamespace(**Plotbase)
+
+def plotconvert(a):
+  a = a.to_dict('records') if isinstance(a, pandas.DataFrame) else a
+  a = a.t2Js() if isinstance(a, Tensor) else a
+  return to_js(a, dict_converter=Object.fromEntries)
+
+class PlotWrapper:
+  def __init__(self):
+    pass
+    
+  def __getattr__(self, name):
+    attr = getattr(Plotbase, name)
+    if callable(attr):
+      def run(*args, **kwargs):
+        args = [plotconvert(a) for a in args]
+        kwargs = {k: plotconvert(a) for (k, a) in kwargs.items()}
+        return attr(*args, **kwargs)
+      return run
+    return attr
+
+Plot = PlotWrapper()
+`  
+  return py;
+}
+```
