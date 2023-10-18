@@ -1,0 +1,29 @@
+---
+title: "Lecture 8: Optimization"
+format:
+    html:
+        toc: true
+        toc-depth: 3
+---
+
+# Goals:
+
+-   L2 and L1 Are not applied to bias term
+
+-   Learn about dropout
+
+-   Learn about problems with optimization
+
+-   Problems with optimization
+
+    -   Symmetry breaking
+
+        -   Can't just initialize with 0 - Show with tensorflow playground
+
+        -   Show
+
+    -   Convexity
+
+        -   Argument about convexity
+
+    -

@@ -361,6 +361,7 @@ function nnPlot(data, weights, keys, label, l2, f=se, stroke="", options=[]) {
 ```
 
 ```{ojs}
+//| echo: false
 pyodide = {
   const pyodide =
     await require("https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js");

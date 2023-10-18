@@ -1,127 +1,163 @@
 ---
-title: "Lecture 8: Optimization"
+title: "Lecture 8: Regularization"
 format:
     html:
         toc: true
         toc-depth: 3
 ---
 
-```{ojs}
-//| echo : false
-pyodide = {
-  const pyodide =
-    await require("https://cdn.jsdelivr.net/pyodide/v0.21.2/full/pyodide.js");
-  return pyodide.loadPyodide();
-}
-
-py = {
-  let py = async (strings, ...expressions) => {
-    let globals = {};
-    const code = strings.reduce((result, string, index) => {
-      if (expressions[index]) {
-        const name = `x${index}`;
-        globals[name] = expressions[index];
-        return result + string + name;
-      }
-      return result + string;
-    }, '');
-    await pyodide.loadPackagesFromImports(code);
-    pyodide.globals.update(pyodide.toPy(globals))
-    const result = await pyodide.pyodide_py.eval_code_async(
-      code,
-      pyodide.globals
-    );
-    if (result?.toJs) return result.toJs();
-    return result;
-  };
-  
-  pyodide.globals.update(pyodide.toPy({Plot: Plot}))
-  
-py`
-from types import SimpleNamespace
-from pyodide import to_js
-from js import Object
-import pandas
-
-def call_js(f):
-  if not callable(f):
-    return f
-
-  def call(*args):
-    args = [(a.to_dict('records') if isinstance(a, pandas.DataFrame) else a) for a in args]
-    args = [to_js(a, dict_converter=Object.fromEntries) for a in args]
-    return f(*args)
-  return call
-
-Plot = SimpleNamespace(**{k: call_js(v) for (k, v) in Plot.items()})
-`
-  
-  return py;
-}
-
-setup = py`
+```{python}
+#| echo: false
+import warnings
+warnings.filterwarnings("ignore")
+import os
+import contextlib
+with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+    from manim import *
 import autograd.numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from autograd import grad, jacobian, hessian, elementwise_grad
-x = np.linspace(-5, 5, 100)
-
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-
-def tangent(f, x):
-    y = f(x)
-    slope = grad(f)(x)
-
-    def tf(a):
-        return (a - x) * slope + y
-
-    return tf
-
-def tangent2(f, x):
-    y = f(x)
-    slope = grad(f)(x)
-    curve = 0.5 * grad(grad(f))(x)
-
-    def tf(a):
-        return curve * (a - x) ** 2 + (a - x) * slope + y
-    return tf
 
 
-dsigmoid = elementwise_grad(sigmoid)
-d2sigmoid = elementwise_grad(dsigmoid)
-`
+class LectureScene(Scene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
 
+class ThreeDLectureScene(ThreeDScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.camera.background_color = "#ffffff"
+        self.template = TexTemplate()
+        self.template.add_to_preamble(r"\usepackage{amsmath}")
+    
+
+class VectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-7.5, 7.5, 1],
+            y_range=[-5, 5, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+
+class PositiveVectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-2.5, 12.5, 1],
+            y_range=[-1, 9, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+                #axes_labels.set_color(GREY)
+        self.add(self.ax)
+
+class ComparisonVectorScene(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax1 = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=6,
+            y_length=6,
+            axis_config={"color": GREY},
+        )
+        self.ax2 = Axes(
+            x_range=[-5, 5, 1],
+            y_range=[-5, 5, 1],
+            x_length=6,
+            y_length=6,
+            axis_config={"color": GREY},
+        )
+        axgroup = Group(self.ax1, self.ax2)
+        axgroup.arrange_in_grid(buf=2)
+        
+        #axes_labels.set_color(GREY)
+        self.add(axgroup)
 ```
 
-```{ojs}
-//| echo : false
-viewof point = Inputs.range([-5, 5], {step: 0.01})
+# Loss-based regularization
+
+Thus far we have thought about combating overfitting by either restricting our prediction function or reducing the number of gradient descent steps we use to optimize the loss. In principal though, neither of these choices *should* be a problem. After all, while a simple function cannot approximate a complex function, a complex function should easily be able to approximate a simple one.
+
+This raises the question: if the answer we're looking for isn't actually the one that minimizes our loss, are we actually minimizing the right loss?
+
+## L2 Regularization
+
+We've seen that overfitting occurs when we do not have enough data and when the data we do have is *noisy*. In these cases we would expect that our predictions should have some degree of uncertainty. Do the losses we've looked at so far account for this?
+
+Let's revisit the general negative log-likelihood framework that we've seen throughout this class:
+
+$$
+\textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \log p(y_i \mid \mathbf{x}_i, \mathbf{w})
+$$
+
+Recall that in the logistic regression case this looked like:
+
+$$
+\textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = -\sum_{i=1}^N \log \sigma( (2y_i-1)\phi(\mathbf{x}_i)^T\mathbf{w})
+$$
+
+And in the linear regression case, it looked like:
+
+$$
+\textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) = \sum_{i=1}^N (\phi(\mathbf{x}_i)^T\mathbf{w}-y_i)^2
+$$
+
+Clearly this loss says that our model should aim to maximize $p(y_i\mid \mathbf{x}_i, \mathbf{w})$ for every observation $i$ *even for observations affected by noise*. This can be bad! If we have a complex approximating function, like a deep neural network, it can make confident predictions on observations that should be uncertain.
+
+```{python}
+#| echo: false
+%%manim -sqh -v CRITICAL --progress_bar none BasicFunction
+
+class BasicFunction(LectureScene):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ax = Axes(
+            x_range=[-3, 10, 1],
+            y_range=[-1, 3, 1],
+            x_length=12,
+            y_length=8,
+            axis_config={"color": GREY},
+        )
+        
+    def construct(self):
+        
+        
+        #axes_labels.set_color(GREY)
+        self.add(self.ax)
+        fx = self.ax.plot(lambda x: -np.log(1. / (1 + np.exp(-x))), color=RED)
+        l2fx = self.ax.plot(lambda x: -np.log(1. / (1 + np.exp(-x))) + 0.01 * x ** 2, color=BLUE)
+        l1fx = self.ax.plot(lambda x: -np.log(1. / (1 + np.exp(-x))) + 0.05 * np.abs(x), color=GREEN)
+        eq = MathTex(r'f(\mathbf{x})=2(\frac{x_1}{5})^3 -5 (\frac{x_1}{6})^2 + 4', color=BLACK, tex_template=self.template).to_edge(UP + 2 * UP)
+        #eq.move_to(*self.ax.c2p([8, 7, 0]))
+        labels = self.ax.get_axis_labels(x_label="x_1", y_label="y = f(\mathbf{x})")
+        labels.set_color(GREY)
+        labels.set_tex_template(self.template)
+        self.add(fx, l1fx, l2fx, labels)
 ```
 
-```{ojs}
-//| echo : false
-py`
-${setup} # Enforce dependency on previous python cell
+Mathamatically, we see from our loss that confident predictions correspond to large values of $\phi(\mathbf{x}_i)^T\mathbf{w}$, if we can discourage this value from becoming too big, we can prevent our predictions from being too confident. We can accomplish this with a loss that encourages the entries of $\mathbf{w}$ to be close to $0$. A natural choice would be the squared error, which we can write in a few different ways:
 
-point = float(${point}) # Value from slider component
-tpoint = tangent(sigmoid, point)
-tpoint2 = tangent2(sigmoid, point)
-lines = pd.DataFrame(dict(x=x, sigmoid=sigmoid(x), tpoint=tpoint(x), tpoint2=tpoint2(x)))
-points = pd.DataFrame(dict(x=[point], sigmoid=[sigmoid(point)]))
+$$
+\sum_{i=1}^d(w_i-0)^2=\sum_{i=1}^dw_i^2=\mathbf{w}^T\mathbf{w} = \|\mathbf{w} \|^2_2
+$$
 
-# Use Observable Plot in Python!
-Plot.plot({
-  'y': {
-    'domain': [-0.25, 1.25],
-    'grid': True
-  },
-  'marks': [
-    Plot.lineY(lines, {'x': "x", 'y': "sigmoid"}),
-    Plot.lineY(lines, {'x': "x", 'y': "tpoint", 'stroke': "red"}),
-    Plot.lineY(lines, {'x': "x", 'y': "tpoint2", 'stroke': "green"}),
-    Plot.dot(points,  {'x': "x", 'y': "sigmoid", 'fill': "blue", 'stroke': "blue"}),
-  ]
-})
-`
-```
+We call this loss an $\ell^2$ (L2) regularizer, as it minimizes the $\ell^2$ norm of $\mathbf{w}$. If we combine this with our negative log-likelihood, we get a loss that balances making confident, correct predictions, while preventing overfitting due to overconfidence in noisy predictions.
+
+$$
+\textbf{Loss}(\mathbf{w}, \mathbf{X},\mathbf{y})= \textbf{NLL}(\mathbf{w}, \mathbf{X}, \mathbf{y}) + \lambda \|\mathbf{w}\|^2_2
+$$
+
+Here $\lambda$ is a value that we choose in order to trade-off these two goals. We can see what this looks like for a single observation in the case of logistic regression. Below we'll plot the function $-\log \sigma(w) + \lambda w^2$, the loss in the 1-dimensional case. We see that in the case where $\lambda=0$, we can make $w$ arbitrarily large and thus the function has no minimum! When $\lambda > 0$, we get a clearly defined minimum.
+
+## Bias terms
+
+One important detail of $\ell^2$ regularization is how we treat
