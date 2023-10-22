@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>CS 152: Neural Networks - Lecture 8: Optimization</title>
+<title>CS 152: Neural Networks - Lecture 9: Optimization</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -59,6 +59,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -115,7 +117,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#goals" id="toc-goals" class="nav-link active" data-scroll-target="#goals">Goals:</a></li>
+  <li><a href="#playground" id="toc-playground" class="nav-link active" data-scroll-target="#playground">Playground</a></li>
+  <li><a href="#initialization" id="toc-initialization" class="nav-link" data-scroll-target="#initialization">Initialization</a>
+  <ul class="collapse">
+  <li><a href="#symmetry-breaking" id="toc-symmetry-breaking" class="nav-link" data-scroll-target="#symmetry-breaking">Symmetry-breaking</a></li>
+  <li><a href="#visualizing-learning-rates" id="toc-visualizing-learning-rates" class="nav-link" data-scroll-target="#visualizing-learning-rates">Visualizing learning rates</a></li>
+  <li><a href="#scaled-initialization" id="toc-scaled-initialization" class="nav-link" data-scroll-target="#scaled-initialization">Scaled initialization</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -124,7 +132,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 8: Optimization</h1>
+<h1 class="title">Lecture 9: Optimization</h1>
 </div>
 
 
@@ -139,28 +147,149 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="goals" class="level1">
-<h1>Goals:</h1>
-<ul>
-<li><p>L2 and L1 Are not applied to bias term</p></li>
-<li><p>Learn about dropout</p></li>
-<li><p>Learn about problems with optimization</p></li>
-<li><p>Problems with optimization</p>
-<ul>
-<li><p>Symmetry breaking</p>
-<ul>
-<li><p>Can’t just initialize with 0 - Show with tensorflow playground</p></li>
-<li><p>Show</p></li>
-</ul></li>
-<li><p>Convexity</p>
-<ul>
-<li>Argument about convexity</li>
-</ul></li>
-<li></li>
-</ul></li>
-</ul>
+<section id="playground" class="level1">
+<h1>Playground</h1>
+<p>Try out the concepts from this lecture in the <a href="https://cs152-neural-networks-fall-2023.github.io/playground">Neural Network Playground!</a></p>
+</section>
+<section id="initialization" class="level1">
+<h1>Initialization</h1>
+<p>So far we’ve seen how train neural-networks with gradient descent. Recall that the gradient descent update for a weight <span class="math inline">\(\mathbf{w}\)</span> at step <span class="math inline">\(k\)</span> is: <span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})\]</span></p>
+<p>We subtract the gradient of the loss with respect to <span class="math inline">\(\mathbf{w}\)</span> from the current estimate of <span class="math inline">\(\mathbf{w}\)</span>. An important consideration for this algorithm is how to set the initial guess <span class="math inline">\(\mathbf{w}^{(0)}\)</span>. We call this process <strong>initialization</strong>.</p>
+<section id="symmetry-breaking" class="level2">
+<h2 class="anchored" data-anchor-id="symmetry-breaking">Symmetry-breaking</h2>
+<p>In neural networks, we typically initialize parameters <em>randomly</em>. One important reason for random initialization is to make sure that different parameters have different starting values. To see why this is needed, let’s consider the prediction function for a simple neural network that takes in 1-dimensional inputs:</p>
+<p><span class="math display">\[
+f(\mathbf{x}) = \sigma(\mathbf{x}^T\mathbf{W}_1)^T\mathbf{w}_0=\sigma(x_1 w_{11}) w_{01} +\sigma (x_1 w_{12})w_{02}
+\]</span></p>
+<p>In this case we have 4 parameters: <span class="math inline">\(w_{01}, w_{02}, w_{11}, w_{12}\)</span>. If we initialize all to the same value, say <span class="math inline">\(w_{**} = a\)</span>, let’s see what happens to the derivatives we compute:</p>
+<p><span class="math display">\[
+\frac{d}{dw_{01}} f(\mathbf{x}) = \sigma(x_1 w_{11}) = \sigma(x_1 a)
+\]</span></p>
+<p><span class="math display">\[
+\frac{d}{dw_{02}} f(\mathbf{x}) = \sigma(x_1 w_{12}) = \sigma(x_1 a)
+\]</span></p>
+<p>We see that <span class="math inline">\(\frac{d}{dw_{01}} = \frac{d}{dw_{02}}\)</span>! Our gradient descent update will set:</p>
+<p><span class="math display">\[
+w_{01}^{(1)} \longleftarrow w_{01}^{(0)} - \alpha \frac{d}{dw_{01}} = a - \alpha \sigma(x_1 a)
+\]</span></p>
+<p><span class="math display">\[
+w_{02}^{(1)} \longleftarrow w_{02}^{(0)} - \alpha \frac{d}{dw_{02}} = a - \alpha \sigma(x_1 a)
+\]</span></p>
+<p>So after each gradient descent update the two values will continue to be the same! The gradient decent algorithm has no way to distinguish between these two weights and so it is stuck finding solutions where <span class="math inline">\(w_{01} = w_{02}\)</span> and <span class="math inline">\(w_{11}=w_{12}\)</span>. We call this the symmetry problem, and it means we no longer get any benefit from having multiple neurons.</p>
+<p>We can see this in practice with a simple network:</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p><img src="images/paste-1.png" class="img-fluid"><br>
+When the network is initialized with symmetry, the two neurons will always have the same output and our solution is poor.</p>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:45%;">
+<p><img src="images/paste-2.png" class="img-fluid"></p>
+<p>When initialized randomly, the two neurons can create different transforms and a much better solution is found.</p>
+</div>
+</div>
+<p>If we plot the loss as a function of two <span class="math inline">\(w_{01}\)</span> and <span class="math inline">\(w_{02}\)</span> we can see what is happening graphically.</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p><img src="images/paste-3.png" class="img-fluid"></p>
+<p>Initializing the two parameters equal corresponds to sitting on a ridge of the loss surface, there are equally valid solutions on either side, but gradient descent gives us no way to chose between them.</p>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:45%;">
+<p><img src="images/paste-6.png" class="img-fluid"></p>
+<p>If we plot the (negative) gradient of the loss we see that the gradient of any point on the ridge always points along the ridge. Gradient descent corresponds to following these arrows to find a minimum.</p>
+</div>
+</div>
+</section>
+<section id="visualizing-learning-rates" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-learning-rates">Visualizing learning rates</h2>
+<p>As an aside, plotting the gradient as a vector field also gives us an convenient way to visualize the effects of different learning rates. Recall that the learning rate corresponds to how much we <em>scale</em> the gradient each time we take a step.</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img src="images/paste-11.png" class="img-fluid"></p>
+<p>A small learning rate means we will move slowly, so It may take a long time to find the minimum.</p>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:30%;">
+<p><img src="images/paste-10.png" class="img-fluid"></p>
+<p>A well-chosen learning rate lets us find a minimum quickly.</p>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:30%;">
+<p><img src="images/paste-13.png" class="img-fluid"></p>
+<p>A too-large learning rate means that steps may take us flying past the minimum!</p>
+</div>
+</div>
+</section>
+<section id="scaled-initialization" class="level2">
+<h2 class="anchored" data-anchor-id="scaled-initialization">Scaled initialization</h2>
+<p>Now that we’ve seen the benefits of initializing randomly, we need to consider what distribution to initialize from. An obvious choice might be a standard normal distribution, with mean <span class="math inline">\(0\)</span> and standard deviation <span class="math inline">\(1\)</span>.</p>
+<p><span class="math display">\[w_{i} \sim \mathcal{N}(0, 1) \quad \forall\ w_{i} \in \mathbf{w}\]</span>This has a subtle issue though. To see why let’s consider a linear function defined by randomly initialized weights:</p>
+<p><span class="math display">\[
+f(\mathbf{x}) = \sum_{i=1}^d x_i w_i
+\]</span></p>
+<p>Let’s consider the mean and variance of this output with respect to <span class="math inline">\(\mathbf{w}\)</span>:</p>
+<p><span class="math display">\[
+\mathbb{E} \big[f(\mathbf{x})\big] = \mathbb{E} \bigg[  \sum_{i=1}^d x_i w_i \bigg] =   \sum_{i=1}^d x_i \mathbb{E} \big[w_i \big] = 0, \quad w_i \sim \mathcal{N}(0, 1)
+\]</span></p>
+<p><span class="math display">\[
+\text{Var} \big[f(\mathbf{x})\big] = \text{Var}  \bigg[  \sum_{i=1}^d x_i w_i \bigg] =   \sum_{i=1}^d \text{Var} \big[ x_i w_i \big] = \sum_{i=1}^d x_i^2 \text{Var} [w_i] = \sum_{i=1}^d x_i^2
+\]</span></p>
+<p>We see a few things here, the mean is <span class="math inline">\(0\)</span> and the variance depends on <span class="math inline">\(x_i\)</span>, which is reasonable. However we see that the variance also depends on <span class="math inline">\(d\)</span>, the dimensionality of the input. In particular it’s <span class="math inline">\(\mathcal{O}(d)\)</span>. Why is this important? Because it means that if we increase the number of neurons at each layer in our network, the variance of the network’s predictions will also increase!</p>
+<p>If our network has many neurons in each layer (large networks can have 1000’s!) the variance of outputs can be extreme, leading to poor initializations that correspond to extremely steep prediction functions. Here we can compare a few intializations from a network with just 8 neurons per layer to a network with 2.</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p><img src="images/paste-14.png" class="img-fluid"></p>
+<p><img src="images/paste-15.png" class="img-fluid"></p>
+<p><img src="images/paste-16.png" class="img-fluid"></p>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:45%;">
+<p><img src="images/paste-17.png" class="img-fluid"></p>
+<p><img src="images/paste-18.png" class="img-fluid"></p>
+<p><img src="images/paste-19.png" class="img-fluid"></p>
+</div>
+</div>
+<p>In practice this can make gradient descent difficult as these initialization are often very far from the minimum and the gradients are typically large, meaning small learning rates are needed to prevent divergence.</p>
+<p>A better approach would keep the variance consistent no matter how many inputs there are. We can reduce the variance by dividing our initial weights by some scale factor <span class="math inline">\(s\)</span>.</p>
+<p><span class="math display">\[
+f(\mathbf{x}) = \sum_{i=1}^d x_i w_i\bigg(\frac{1}{s}\bigg)
+\]</span></p>
+<p>If we want the variance to be independent of <span class="math inline">\(d\)</span>, then we want:</p>
+<p><span class="math display">\[
+s = \sqrt{d}
+\]</span></p>
+<p>We can verify this by computing the variance:</p>
+<p><span class="math display">\[
+\text{Var}  \bigg[  \sum_{i=1}^d x_i w_i \bigg(\frac{1}{\sqrt{d}}\bigg) \bigg] =   \sum_{i=1}^d \text{Var} \bigg[ x_i w_i \bigg(\frac{1}{\sqrt{d}}\bigg) \bigg] = \sum_{i=1}^d x_i^2 \bigg(\frac{1}{\sqrt{d}}\bigg)^2 \text{Var} [w_i] = \frac{1}{d}\sum_{i=1}^d x_i^2
+\]</span></p>
+<p>This is equivalent to drawing our initial weights for each layer from a normal distribution with standard deviation equal to 1 over the square root of the number of inputs:</p>
+<p><span class="math display">\[w_{i} \sim \mathcal{N}\bigg(0, \frac{1}{\sqrt{d}}\bigg) \quad \forall\ w_{i} \in \mathbf{w},\ \mathbf{w}\in \mathbb{R}^{d}\]</span></p>
+<p>This is known as <strong>Kaiming normal initialization</strong> (sometimes also called <strong>He initialization</strong>, after the inventor Kaiming He).</p>
+<p>For neural network layers where the weights are a matrix <span class="math inline">\(\mathbf{W} \in \mathbb{R}^{d \times e}\)</span>, this works the same way:</p>
+<p><span class="math display">\[w_{ij} \sim \mathcal{N}\bigg(0, \frac{1}{\sqrt{d}}\bigg) \quad \forall\ w_{ij} \in \mathbf{W},\ \mathbf{w}\in \mathbb{R}^{d \times e}\]</span></p>
+<p>A popular alternative scales the distribution according to both the number of inputs and outputs of the layer:</p>
+<p><span class="math display">\[w_{ij} \sim \mathcal{N}\bigg(0, \sqrt{\frac{2}{d + e}}\bigg) \quad \forall\ w_{ij} \in \mathbf{W},\ \mathbf{w}\in \mathbb{R}^{d \times e}\]</span></p>
+<p>This is known as <strong>Xavier initialization</strong> (or <strong>Glorot initialization</strong> after the inventor Xavier Glorot).</p>
+<p>We can compare initializations from a standard normal with initializations from a Kaiming normal.</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p><strong>Standard normal</strong> <span class="math inline">\(w_{i} \sim \mathcal{N}\bigg(0, 1\bigg)\)</span></p>
+<p><img src="images/paste-14.png" class="img-fluid"></p>
+<p><img src="images/paste-15.png" class="img-fluid"></p>
+<p><img src="images/paste-16.png" class="img-fluid"></p>
+</div><div class="column" style="width:10%;">
+
+</div><div class="column" style="width:45%;">
+<p><strong>Kaiming normal</strong> <span class="math inline">\(w_{i} \sim \mathcal{N}\bigg(0, \frac{1}{\sqrt{d}}\bigg)\)</span></p>
+<p><img src="images/paste-24.png" class="img-fluid"></p>
+<p><img src="images/paste-25.png" class="img-fluid"></p>
+<p><img src="images/paste-26.png" class="img-fluid"></p>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
