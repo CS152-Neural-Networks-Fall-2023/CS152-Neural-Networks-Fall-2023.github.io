@@ -220,3 +220,11 @@ We can compare initializations from a standard normal with initializations from 
 ![](images/paste-26.png)
 :::
 :::
+
+# Stochastic Gradient Descent
+
+[Visualizer](./viz.qmd)
+
+|     |
+|-----|
+|     |
