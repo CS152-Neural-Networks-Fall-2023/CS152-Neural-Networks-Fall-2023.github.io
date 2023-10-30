@@ -124,7 +124,30 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#visualizing-learning-rates" id="toc-visualizing-learning-rates" class="nav-link" data-scroll-target="#visualizing-learning-rates">Visualizing learning rates</a></li>
   <li><a href="#scaled-initialization" id="toc-scaled-initialization" class="nav-link" data-scroll-target="#scaled-initialization">Scaled initialization</a></li>
   </ul></li>
-  <li><a href="#stochastic-gradient-descent" id="toc-stochastic-gradient-descent" class="nav-link" data-scroll-target="#stochastic-gradient-descent">Stochastic Gradient Descent</a></li>
+  <li><a href="#stochastic-gradient-descent" id="toc-stochastic-gradient-descent" class="nav-link" data-scroll-target="#stochastic-gradient-descent">Stochastic Gradient Descent</a>
+  <ul class="collapse">
+  <li><a href="#estimating-loss" id="toc-estimating-loss" class="nav-link" data-scroll-target="#estimating-loss">Estimating loss</a></li>
+  <li><a href="#estimating-gradients" id="toc-estimating-gradients" class="nav-link" data-scroll-target="#estimating-gradients">Estimating gradients</a></li>
+  <li><a href="#minibatch-sgd" id="toc-minibatch-sgd" class="nav-link" data-scroll-target="#minibatch-sgd">Minibatch SGD</a></li>
+  </ul></li>
+  <li><a href="#gradient-descent-extensions" id="toc-gradient-descent-extensions" class="nav-link" data-scroll-target="#gradient-descent-extensions">Gradient Descent Extensions</a>
+  <ul class="collapse">
+  <li><a href="#momentum" id="toc-momentum" class="nav-link" data-scroll-target="#momentum">Momentum</a></li>
+  <li><a href="#sgd-momentum" id="toc-sgd-momentum" class="nav-link" data-scroll-target="#sgd-momentum">SGD + Momentum</a></li>
+  <li><a href="#adaptive-gradients-rmsprop" id="toc-adaptive-gradients-rmsprop" class="nav-link" data-scroll-target="#adaptive-gradients-rmsprop">Adaptive gradients (RMSProp)</a></li>
+  <li><a href="#adam" id="toc-adam" class="nav-link" data-scroll-target="#adam">Adam</a></li>
+  </ul></li>
+  <li><a href="#gradient-descent-for-deep-networks" id="toc-gradient-descent-for-deep-networks" class="nav-link" data-scroll-target="#gradient-descent-for-deep-networks">Gradient Descent for Deep Networks</a>
+  <ul class="collapse">
+  <li><a href="#vanishing-and-exploding-gradients" id="toc-vanishing-and-exploding-gradients" class="nav-link" data-scroll-target="#vanishing-and-exploding-gradients">Vanishing and exploding gradients</a></li>
+  <li><a href="#gradient-clipping" id="toc-gradient-clipping" class="nav-link" data-scroll-target="#gradient-clipping">Gradient clipping</a></li>
+  </ul></li>
+  <li><a href="#normalization" id="toc-normalization" class="nav-link" data-scroll-target="#normalization">Normalization</a>
+  <ul class="collapse">
+  <li><a href="#batch-normalization" id="toc-batch-normalization" class="nav-link" data-scroll-target="#batch-normalization">Batch normalization</a></li>
+  <li><a href="#layer-normalization" id="toc-layer-normalization" class="nav-link" data-scroll-target="#layer-normalization">Layer normalization</a></li>
+  <li><a href="#scaled-normalization" id="toc-scaled-normalization" class="nav-link" data-scroll-target="#scaled-normalization">Scaled normalization</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -293,15 +316,124 @@ s = \sqrt{d}
 <section id="stochastic-gradient-descent" class="level1">
 <h1>Stochastic Gradient Descent</h1>
 <p><a href="../lecture9-optimization/viz.html">Visualizer</a></p>
-<table class="table">
-<tbody>
-<tr class="odd">
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="estimating-loss" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-loss">Estimating loss</h2>
+<p>Neural network MSE loss:</p>
+<p><span class="math display">\[\underset{\text{MSE}}{\textbf{Loss}} (\mathbf{w}, \mathbf{X}, \mathbf{y}) = \frac{1}{N}\sum_{i=1}^N (f(\mathbf{x}_i, \mathbf{w}) - y_i)^2\]</span></p>
+<p>Estimate by sampling:</p>
+<p><span class="math display">\[\underset{\text{MSE}}{\textbf{Loss}} (\mathbf{w}, \mathbf{X}, \mathbf{y}) \approx (f(\mathbf{x}_i, \mathbf{w}) - y_i)^2, \quad i \sim \text{Uniform}(1, N)\]</span></p>
+<p>Expectation of sampled loss is the true loss!</p>
+<p><span class="math display">\[\mathbb{E}_i[(f(\mathbf{x}_i, \mathbf{w}) - y_i)^2] = \sum_{i=1}^N p(i)(f(\mathbf{x}_i, \mathbf{w}) - y_i)^2 =\frac{1}{N} \sum_{i=1}^N (f(\mathbf{x}_i, \mathbf{w}) - y_i)^2\]</span></p>
+<p>In general any loss that can be written as a mean of individual losses can be estimated in this way:</p>
+<p><span class="math display">\[\textbf{Loss} (\mathbf{w}, \mathbf{X}, \mathbf{y}) = \frac{1}{N} \sum_{i=1}^N \textbf{Loss} (\mathbf{w}, \mathbf{x}_i, y_i)\]</span></p>
+<p><span class="math display">\[\textbf{Loss} (\mathbf{w}, \mathbf{X}, \mathbf{y}) = \mathbb{E}[\textbf{Loss} (\mathbf{w}, \mathbf{x}_i, y_i)], \quad i\sim \text{Uniform}(1,N)\]</span></p>
+</section>
+<section id="estimating-gradients" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-gradients">Estimating gradients</h2>
+<p>Gradient descent update:</p>
+<p><span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})\]</span></p>
+<p>Gradient can be composed into a sum of gradients and estimated the same way!</p>
+<p><span class="math display">\[\nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{X}, \mathbf{y}) = \nabla_{\mathbf{w}} \bigg( \frac{1}{N} \sum_{i=1}^N \textbf{Loss} (\mathbf{w}, \mathbf{x}_i, y_i)\bigg)\]</span></p>
+<p><span class="math display">\[=\frac{1}{N} \sum_{i=1}^N  \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_i, y_i) = \mathbb{E}[\nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_i, y_i)], \quad i\sim \text{Uniform}(1, N)\]</span></p>
+<p><em>Stochastic gradient descent update:</em></p>
+<p><span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{x}_i, y_i), \quad i\sim \text{Uniform}(1, N)\]</span></p>
+</section>
+<section id="minibatch-sgd" class="level2">
+<h2 class="anchored" data-anchor-id="minibatch-sgd">Minibatch SGD</h2>
+<p>Can estimate gradients with a <em>minibatch</em> of <span class="math inline">\(B\)</span> observations:</p>
+<p><span class="math display">\[\text{Batch:}\ \{(\mathbf{x}_{b_1}, y_{b_1}), (\mathbf{x}_{b_2}, y_{b_2}), ...,  (\mathbf{x}_{b_B}, y_{b_B})\}, \quad \{b_1, b_2, ...,b_B\} \sim \text{Uniform}(1, N)\]</span></p>
+<p><span class="math display">\[\nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{X}, \mathbf{y}) \approx \frac{1}{B} \sum_{i=1}^B \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_{b_i}, y_{b_i}), \quad \{b_1, b_2, ...,b_B\} \sim \text{Uniform}(1, N)\]</span></p>
+<p>This still gives the correct expectation</p>
+<p><span class="math display">\[\mathbb{E}\bigg[\frac{1}{B} \sum_{i=1}^B \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_{b_i}, y_{b_i})\bigg] = \bigg(\frac{1}{B}\bigg) \sum_{i=1}^B\mathbb{E}\bigg[ \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_{b_i}, y_{b_i})\bigg]\]</span> <span class="math display">\[ = \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{X}, \mathbf{y})\]</span></p>
+<p>The variance decreases with the size of the batch!</p>
+<p><span class="math display">\[\text{Var}\bigg[\frac{1}{B} \sum_{i=1}^B \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_{b_i}, y_{b_i})\bigg] =  \bigg(\frac{1}{B^2}\bigg) \sum_{i=1}^B\text{Var}\bigg[ \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_{b_i}, y_{b_i})\bigg]\]</span> <span class="math display">\[= \bigg(\frac{1}{B}\bigg)\text{Var}\bigg[ \nabla_{\mathbf{w}} \textbf{Loss} (\mathbf{w}, \mathbf{x}_{b_i}, y_{b_i})\bigg]\]</span></p>
+</section>
+</section>
+<section id="gradient-descent-extensions" class="level1">
+<h1>Gradient Descent Extensions</h1>
+<section id="momentum" class="level2">
+<h2 class="anchored" data-anchor-id="momentum">Momentum</h2>
+<p>Gradient descent with momentum updates the <em>average gradient</em> then uses the running average to take descent steps.</p>
+<p><span class="math display">\[ \mathbf{v}^{(k+1)} \longleftarrow \beta \mathbf{v}^{(k)} + (1-\beta) \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})\]</span></p>
+<p><span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha v^{(k+1)}\]</span></p>
+</section>
+<section id="sgd-momentum" class="level2">
+<h2 class="anchored" data-anchor-id="sgd-momentum">SGD + Momentum</h2>
+<p>We can apply momentum for stochastic gradient descent as well</p>
+<p><span class="math display">\[ \mathbf{v}^{(k+1)} \longleftarrow \beta \mathbf{v}^{(k)} + (1-\beta) \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{x}_i, y_i), \quad i\sim \text{Uniform}(1,N)\]</span></p>
+<p><span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha v^{(k+1)}\]</span></p>
+<p><span class="math display">\[\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y}) \approx \sum_{j=1}^k \beta^{k-j}(1-\beta) \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(j)}, \mathbf{x}_{i^{(j)}}, y_{i^{(j)}})\]</span></p>
+</section>
+<section id="adaptive-gradients-rmsprop" class="level2">
+<h2 class="anchored" data-anchor-id="adaptive-gradients-rmsprop">Adaptive gradients (RMSProp)</h2>
+<p><span class="math display">\[\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y}) = \begin{bmatrix} \frac{dL}{dw^{(k)}_1} \\ \frac{dL}{dw^{(k)}_2} \\ \vdots \end{bmatrix}\]</span></p>
+<p><span class="math display">\[\begin{bmatrix} 3.1\\ 2.2 \\ \vdots \end{bmatrix} \leftarrow
+\begin{bmatrix} 5.0 \\ 1.8 \\ \vdots \end{bmatrix}\leftarrow
+\begin{bmatrix} 1.5 \\ 4.4 \\ \vdots \end{bmatrix}...\]</span></p>
+<p><span class="math display">\[\begin{bmatrix} 10.1\\ 0.04 \\ \vdots \end{bmatrix} \leftarrow
+\begin{bmatrix} 8.6 \\ 0.02 \\ \vdots \end{bmatrix}\leftarrow
+\begin{bmatrix} 9.4 \\ 0.009 \\ \vdots \end{bmatrix}...\]</span></p>
+<p><span class="math display">\[ \mathbf{s}^{(k+1)} \longleftarrow \beta \mathbf{s}^{(k)} + (1-\beta) (\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y}))^2\]</span></p>
+<p><span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \frac{\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})}{\sqrt{\mathbf{s}^{(k+1)} + \epsilon}}\]</span> <span class="math display">\[\epsilon &lt;&lt; 1, \quad \text{e.g. } \epsilon = 1e^{-7}\]</span></p>
+<p><span class="math display">\[\frac{\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})}{\sqrt{\mathbf{s}^{(k+1)}}} =
+\begin{bmatrix} \frac{\frac{dL}{dw_1}}{\sqrt{\big(\frac{dL}{dw_1}}\big)^2} \\ \frac{\frac{dL}{dw_2}}{\sqrt{\big(\frac{dL}{dw_2}}\big)^2} \\ \vdots \end{bmatrix}  =
+\begin{bmatrix} \text{sign}\big(\frac{dL}{dw_1} \big) \\ \text{sign}\big(\frac{dL}{dw_2} \big) \\ \vdots \end{bmatrix} = \begin{bmatrix} +1 \\ -1 \\ \vdots \end{bmatrix} \]</span></p>
+</section>
+<section id="adam" class="level2">
+<h2 class="anchored" data-anchor-id="adam">Adam</h2>
+<p><span class="math display">\[ \mathbf{v}^{(k+1)} \longleftarrow \beta_1 \mathbf{v}^{(k)} + (1-\beta_1) \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})\]</span> <span class="math display">\[ \mathbf{s}^{(k+1)} \longleftarrow \beta_2 \mathbf{s}^{(k)} + (1-\beta_2) (\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y}))^2\]</span> <span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \frac{\mathbf{v}^{(k+1)}
+}{\sqrt{\mathbf{s}^{(k+1)} + \epsilon}}\]</span> <span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha \frac{\frac{\mathbf{v}^{(k+1)}}{(1-\beta_1^k)}
+}{\sqrt{\frac{\mathbf{s}^{(k+1)}}{(1-\beta_2^k)} + \epsilon}}\]</span> <span class="math display">\[\mathbf{v}^{(0)} = \mathbf{0}, \quad \mathbf{s}^{(0)} = \mathbf{0}\]</span> <span class="math display">\[\frac{\mathbf{v}^{(k+1)}}{(1-\beta_1^k)} = \frac{\beta_1 \mathbf{0} + (1-\beta_1)\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})}{(1-\beta_1^1)} = \nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})\]</span></p>
+</section>
+</section>
+<section id="gradient-descent-for-deep-networks" class="level1">
+<h1>Gradient Descent for Deep Networks</h1>
+<section id="vanishing-and-exploding-gradients" class="level2">
+<h2 class="anchored" data-anchor-id="vanishing-and-exploding-gradients">Vanishing and exploding gradients</h2>
+<p><img src="images/paste-27.png" class="img-fluid"></p>
+<p><img src="images/paste-28.png" class="img-fluid"></p>
+<p>Neural networks are a composition of functions:</p>
+<p><span class="math display">\[f(\mathbf{x}) = f_0(f_1(f_2(...f_L(\mathbf{x})...)))\]</span></p>
+<p><span class="math display">\[f(\mathbf{x}) = \text{relu}(\text{relu}(\text{relu}(...\mathbf{x}^T\mathbf{W}_L...)^T\mathbf{W}_2)^T\mathbf{W}_1)^T\mathbf{w}_0\]</span> <span class="math display">\[\text{relu}(x) = \max(x, 0)\]</span></p>
+<p><span class="math display">\[\nabla_{\mathbf{W}_L}f(\mathbf{x})  = \frac{d\mathbf{f}_0}{d\mathbf{f}_1}\frac{d\mathbf{f}_1}{d\mathbf{f}_2}...\frac{d\mathbf{f}_{L-1}}{d\mathbf{f}_L}\frac{d\mathbf{f}_L}{d\mathbf{W}_L}  = \mathbf{x}^T\prod_{l=1}^{L-1}\frac{d\mathbf{f}_{l}}{d\mathbf{f}_{l-1}} \]</span></p>
+<p>Simplified case: <span class="math display">\[\frac{df}{dx}  = \frac{d{f}_0}{d{f}_1}\frac{d{f}_1}{d{f}_2}...\frac{d{f}_{L-1}}{d{f}_L}\frac{d{f}_L}{d{w}_L}  = {x}^T\prod_{l=1}^{L-1}\frac{d{f}_{l}}{d{f}_{l-1}} \]</span></p>
+<p><span class="math display">\[w_L, x, \frac{df_0}{df_1},... \in \mathbb{R}, \quad \bigg|\frac{df_{l-1}}{df_l}\bigg| \approx M\]</span></p>
+<p><span class="math display">\[\bigg|\frac{df}{dw_L}\bigg| = |x| \prod_{l=1}^{L-1}\bigg| \frac{df_{l}}{df_{l-1}}\bigg| \approx |x|\big(\textcolor{red}{M^L}\big)\]</span> Exploding gradients: <span class="math display">\[\textbf{If: } M &gt; 1 \longrightarrow \frac{df}{dw_L} &gt;&gt; 1\]</span> Vanishing gradients: <span class="math display">\[\textbf{If: } M &lt; 1 \longrightarrow \frac{df}{dw_L} \approx 0\]</span></p>
+</section>
+<section id="gradient-clipping" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-clipping">Gradient clipping</h2>
+<p>Explicitly clip the gradient to prevent it form becoming too large.</p>
+<p><span class="math display">\[\textbf{clip}_{\text{value}}\big(\mathbf{x}, \epsilon\big) = \begin{bmatrix} \min(\max(x_1, -\epsilon), \epsilon) \\ \min(\max(x_2, - \epsilon), \epsilon) \\ \vdots \end{bmatrix}\]</span></p>
+<p><span class="math display">\[\textbf{clip}_{\text{norm}}\big(\mathbf{x}, \epsilon\big) = \begin{cases}
+\frac{\epsilon\mathbf{x} }{\| \mathbf{x} \|_2} \quad &amp; \textbf{if: } \|\mathbf{x}\|_2 &gt; \epsilon \\
+\mathbf{x} \  \quad\quad &amp; \textbf{if: } \|\mathbf{x}\|_2 \leq \epsilon
+\end{cases}\]</span></p>
+<p><span class="math display">\[ \mathbf{w}^{(k+1)} \longleftarrow \mathbf{w}^{(k)} - \alpha\ \textbf{clip}\big(\nabla_{\mathbf{w}} \textbf{Loss}(\mathbf{w}^{(k)}, \mathbf{X}, \mathbf{y})\big)\]</span></p>
+</section>
+</section>
+<section id="normalization" class="level1">
+<h1>Normalization</h1>
+<section id="batch-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="batch-normalization">Batch normalization</h2>
+<p>Normalize over the batch:</p>
+<p><span class="math display">\[\text{BatchNorm}(x) = \frac{ x - \mathbb{E}[x]}{\sqrt{\text{Var}[x] + \epsilon}}\]</span></p>
+<p>Training time: <span class="math display">\[\text{Batch: } \{x_1, x_2,...,x_B\}\]</span> <span class="math display">\[\mathbb{E}[x] \approx \bar{x} = \frac{1}{B}\sum_{i=1}^{B} x_i\quad \text{(sample mean)}\]</span> Biased estimator: <span class="math display">\[\text{Var}[x] \approx s^2 = \frac{1}{B}\sum_{i=1}^{B} \bigg(x_i - \bigg(\frac{1}{B}\sum_{i=1}^{B} x_i\bigg)\bigg)^2\quad \text{(sample var.)}\]</span> Unbiased estimator: <span class="math display">\[\text{Var}[x] \approx  s^2 = \frac{1}{B-1}\sum_{i=1}^{B} \bigg(x_i - \bigg(\frac{1}{B}\sum_{i=1}^{B} x_i\bigg)\bigg)^2\quad \text{(sample var.)}\]</span></p>
+<p><span class="math display">\[\underset{\text{train}}{\text{BatchNorm}}(x) = \frac{ x - \bar{x}}{\sqrt{s^2 + \epsilon}}\]</span></p>
+<p>Running estimate: <span class="math display">\[\bar{\mu}^{(k+1)} \longleftarrow \beta \bar{\mu}^{(k)} + (1-\beta) \bar{x}^{(k)}\]</span> <span class="math display">\[\bar{\sigma}^{2(k+1)} \longleftarrow \beta \bar{\sigma}^{2(k)} + (1-\beta) s^{2(k)}\]</span></p>
+<p><span class="math display">\[\underset{\text{test}}{\text{BatchNorm}}(x) = \frac{ x - \bar{\mu}}{\sqrt{\bar{\sigma}^2 + \epsilon}}\]</span></p>
+</section>
+<section id="layer-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="layer-normalization">Layer normalization</h2>
+<p>Normalize over the layer:</p>
+<p><span class="math display">\[\text{LayerNorm}(\mathbf{x}) = \frac{\mathbf{x} - \bar{x}}{\sqrt{s^2 + \epsilon}}, \quad \mathbf{x} = \begin{bmatrix} x_1 \\ \vdots \\ x_d\end{bmatrix}\]</span></p>
+<p>Training &amp; test time: <span class="math display">\[\bar{x} = \frac{1}{d}\sum_{i=1}^{d} x_i\quad \text{(output mean)}\]</span> Biased estimator: <span class="math display">\[s^2 = \frac{1}{d}\sum_{i=1}^{d} \bigg(x_i - \bigg(\frac{1}{d}\sum_{i=1}^{d} x_i\bigg)\bigg)^2\quad \text{(output var.)}\]</span> Unbiased estimator: <span class="math display">\[s^2 = \frac{1}{d-1}\sum_{i=1}^{d} \bigg(x_i - \bigg(\frac{1}{d}\sum_{i=1}^{d} x_i\bigg)\bigg)^2\quad \text{(output var.)}\]</span></p>
+</section>
+<section id="scaled-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="scaled-normalization">Scaled normalization</h2>
+<p><span class="math display">\[\text{BatchNorm}(x) = \frac{ x - \mathbb{E}[x]}{\sqrt{\text{Var}[x] + \epsilon}} \gamma + \kappa\]</span> <span class="math display">\[\text{LayerNorm}(\mathbf{x}) = \frac{\mathbf{x} - \bar{x}}{\sqrt{s^2 + \epsilon}} \gamma + \kappa\]</span></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
