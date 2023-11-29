@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/gabe/Documents/Courses/CS152-Neural-Networks-Fall-2023.github.io/lecture12-convolutions/media/videos/lecture12-convolutions/720p30/partial_movie_files/MovingAround/274514146_633920443_60278717.mp4'
+file 'file:/Users/gabe/Documents/Courses/CS152-Neural-Networks-Fall-2023.github.io/lecture12-convolutions/media/videos/lecture12-convolutions/720p30/partial_movie_files/MovingAround/2789044632_3450055237_60278717.mp4'
+file 'file:/Users/gabe/Documents/Courses/CS152-Neural-Networks-Fall-2023.github.io/lecture12-convolutions/media/videos/lecture12-convolutions/720p30/partial_movie_files/MovingAround/2789044632_1958254053_60278717.mp4'
+file 'file:/Users/gabe/Documents/Courses/CS152-Neural-Networks-Fall-2023.github.io/lecture12-convolutions/media/videos/lecture12-convolutions/720p30/partial_movie_files/MovingAround/2789044632_101290351_60278717.mp4'

@@ -117,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#proposal-due-wednesday-118-before-class" id="toc-proposal-due-wednesday-118-before-class" class="nav-link active" data-scroll-target="#proposal-due-wednesday-118-before-class">Proposal (<strong>Due Wednesday 11/8 before class</strong>)</a></li>
   <li><a href="#check-in-due-monday-1120-before-class" id="toc-check-in-due-monday-1120-before-class" class="nav-link" data-scroll-target="#check-in-due-monday-1120-before-class">Check-in (<strong>Due Monday 11/20 before class</strong>)</a></li>
-  <li><a href="#final-deliverable-due-126" id="toc-final-deliverable-due-126" class="nav-link" data-scroll-target="#final-deliverable-due-126">Final deliverable (<strong>Due 12/6</strong>)</a></li>
+  <li><a href="#final-deliverables-due-1212-1159pm" id="toc-final-deliverables-due-1212-1159pm" class="nav-link" data-scroll-target="#final-deliverables-due-1212-1159pm">Final deliverables (<strong>Due 12/12, 11:59pm</strong>)</a></li>
   <li><a href="#possible-projects" id="toc-possible-projects" class="nav-link" data-scroll-target="#possible-projects">Possible projects</a>
   <ul class="collapse">
   <li><a href="#neural-style-transfer" id="toc-neural-style-transfer" class="nav-link" data-scroll-target="#neural-style-transfer">Neural style transfer</a></li>
@@ -172,15 +172,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="check-in-due-monday-1120-before-class">Check-in (<strong>Due Monday 11/20 before class</strong>)</h2>
 <p>As a progress report you and your team will submit a short (1 page) summery of progress on Gradescope. This summary will include: - A high-level description of any updates you have made to the goals of your project. - A description of what methods you have tried and any preliminary results. - A timeline for finishing the remaining goals of your project. - A brief description of the contributions made by each team member.</p>
 </section>
-<section id="final-deliverable-due-126" class="level2">
-<h2 class="anchored" data-anchor-id="final-deliverable-due-126">Final deliverable (<strong>Due 12/6</strong>)</h2>
-<p>The final deliverable for this project will consist of four parts:</p>
-<ul>
-<li><strong>Technical report:</strong> Your team will make a single-page website describing your approach and results.</li>
-<li><strong>Implementation:</strong> Your team will create a github repository with your annotated implementation.</li>
-<li><strong>Analysis:</strong> Your team will write a short report analyzing the potential applications and ethical considerations of your technique.</li>
-<li><strong>Presentation:</strong> Your team will put together a short 5-10 minute presentation explaining the method that you learned about and summarizing your results.</li>
-</ul>
+<section id="final-deliverables-due-1212-1159pm" class="level2">
+<h2 class="anchored" data-anchor-id="final-deliverables-due-1212-1159pm">Final deliverables (<strong>Due 12/12, 11:59pm</strong>)</h2>
+<p>Please see the final project template <a href="./CS152_Project_Template.pdf">here</a>, which includes instructions and guidelines for what to submit. Submissions will be through gradescope.</p>
 </section>
 <section id="possible-projects" class="level2">
 <h2 class="anchored" data-anchor-id="possible-projects">Possible projects</h2>
@@ -192,43 +186,43 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="semi-supervised-learning-with-mixmatch" class="level3">
 <h3 class="anchored" data-anchor-id="semi-supervised-learning-with-mixmatch">Semi-supervised learning with MixMatch</h3>
-<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1905.02249.pdf">https://arxiv.org/pdf/1905.02249.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1905.02249.pdf" class="uri">https://arxiv.org/pdf/1905.02249.pdf</a></p>
 <p><strong>Summary:</strong> Semi-supervised learning is the problem of learning when we don’t have all the labels for our training data. MixMatch is a state-of-the-art approach for semi-supervised image classification. In this project you could: implement the Mix-Match algorithm, compare the different versions of it discussed in the paper and evaluate it on several different datasets. You could also test it on your own proposed semi-supervised learning task.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.SVHN.html#torchvision.datasets.SVHN">Street view house numbers</a>, <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.CIFAR10.html">CIFAR-10</a>, <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.STL10.html#torchvision.datasets.STL10">STL-10</a></p>
 </section>
 <section id="audio-generation-and-classification-with-wavenet" class="level3">
 <h3 class="anchored" data-anchor-id="audio-generation-and-classification-with-wavenet">Audio generation and classification with WaveNet</h3>
-<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1609.03499.pdf">https://arxiv.org/pdf/1609.03499.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1609.03499.pdf" class="uri">https://arxiv.org/pdf/1609.03499.pdf</a></p>
 <p><strong>Summary:</strong> WaveNet is at network that forms the basis for many text-to-speech systems (think Alexa or Siri) it also allows for classifying audio. For this project you could: implement WaveNet, train it to generate speech (or other audio like music!) and evaluate it compared to existing tools for generation. You could also try to use it to classify speech or music.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://www.tensorflow.org/datasets/catalog/spoken_digit">Spoken digits</a>, <a href="https://pytorch.org/audio/stable/generated/torchaudio.datasets.SPEECHCOMMANDS.html#torchaudio.datasets.SPEECHCOMMANDS">Speech commands</a>, <a href="https://www.tensorflow.org/datasets/catalog/crema_d">Crema-D</a>, <a href="https://www.tensorflow.org/datasets/catalog/gtzan">GTZAN</a></p>
 </section>
 <section id="u-nets-for-segmentation-depth-prediction-colorization-or-super-resolution" class="level3">
 <h3 class="anchored" data-anchor-id="u-nets-for-segmentation-depth-prediction-colorization-or-super-resolution">U-Nets for segmentation, depth-prediction, colorization or super-resolution</h3>
-<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1505.04597.pdf">https://arxiv.org/pdf/1505.04597.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1505.04597.pdf" class="uri">https://arxiv.org/pdf/1505.04597.pdf</a></p>
 <p><strong>Summary:</strong> U-Nets are a very flexible type of neural network used for many computer vision tasks. They were originally introduced for segmenting different parts of medical images, but can used for everything from colorizing images to upscaling images to predicting depth in am image. For this project you could: implement the U-Net architecture, train a U-Net on one or more of the above tasks and evaluate its performance.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://www.tensorflow.org/datasets/catalog/oxford_flowers102">Oxford flowers</a> <a href="https://www.tensorflow.org/datasets/catalog/imagenet_resized">ImageNet</a>, <a href="https://www.tensorflow.org/datasets/catalog/nyu_depth_v2">NYU Depth</a></p>
 </section>
 <section id="object-detection-with-yolo" class="level3">
 <h3 class="anchored" data-anchor-id="object-detection-with-yolo">Object detection with YOLO</h3>
-<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1506.02640v5.pdf">https://arxiv.org/pdf/1506.02640v5.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1506.02640v5.pdf" class="uri">https://arxiv.org/pdf/1506.02640v5.pdf</a></p>
 <p><strong>Summary:</strong> Object detection is the task of locating objects within an image. This is a step more difficult than just classifying images, but is very useful in practice. For this project you could: implement the YOLO object detection model, test different variations of the model and evaluate it on new data.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://www.tensorflow.org/datasets/catalog/voc">VOC</a>, <a href="https://www.tensorflow.org/datasets/catalog/wider_face">Wider face</a>, <a href="https://www.tensorflow.org/datasets/catalog/kitti">Kitti</a></p>
 </section>
 <section id="image-generation-with-generative-adversarial-networks" class="level3">
 <h3 class="anchored" data-anchor-id="image-generation-with-generative-adversarial-networks">Image generation with Generative Adversarial Networks</h3>
-<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1406.2661.pdf">https://arxiv.org/pdf/1406.2661.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/1406.2661.pdf" class="uri">https://arxiv.org/pdf/1406.2661.pdf</a></p>
 <p><strong>Summary:</strong> Generative adversarial networks (GANs for short) are an effective way to generate realistic looking images using neural networks. They have caused a considerable amount of excitement and concern for their performance in generating realistic images of humans. For this project you could: implement a generative adversarial network, explore reasonable ways to evaluate the performance of GANs and dive into the ethical implications.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST">MNIST</a>, <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.Omniglot.html#torchvision.datasets.Omniglot">Omniglot</a>, <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.CIFAR10.html">CIFAR-10</a>, <a href="https://github.com/NVlabs/ffhq-dataset">FFHQ</a></p>
 </section>
 <section id="image-classification-with-visual-transformers" class="level3">
 <h3 class="anchored" data-anchor-id="image-classification-with-visual-transformers">Image classification with visual transformers</h3>
-<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/2010.11929.pdf">https://arxiv.org/pdf/2010.11929.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://arxiv.org/pdf/2010.11929.pdf" class="uri">https://arxiv.org/pdf/2010.11929.pdf</a></p>
 <p><strong>Summary:</strong> Transformer-based neural networks have transformed the field of natural language processing in recent years, as evidenced by the performance of models such as ChatGPT. There is growing evidence that they are also extremely useful for classifying images. For this project you might: implement the visual transformer architecture, compare it to convolutional neural network based architecture for image classification and visualize features to understand the differences in the approaches. You might also consider applying it to your own dataset.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://www.tensorflow.org/datasets/catalog/oxford_flowers102">Oxford flowers</a>, <a href="https://pytorch.org/vision/stable/generated/torchvision.datasets.CIFAR10.html">CIFAR-10</a>, <a href="https://www.tensorflow.org/datasets/catalog/imagenet_resized">ImageNet</a></p>
 </section>
 <section id="text-generation-or-classification-with-gpt" class="level3">
 <h3 class="anchored" data-anchor-id="text-generation-or-classification-with-gpt">Text generation or classification with GPT</h3>
-<p><strong>Link:</strong> <a href="https://www.cs.ubc.ca/~amuham01/LING530/papers/radford2018improving.pdf">https://www.cs.ubc.ca/~amuham01/LING530/papers/radford2018improving.pdf</a></p>
+<p><strong>Link:</strong> <a href="https://www.cs.ubc.ca/~amuham01/LING530/papers/radford2018improving.pdf" class="uri">https://www.cs.ubc.ca/~amuham01/LING530/papers/radford2018improving.pdf</a></p>
 <p><strong>Summary:</strong> Large language models, such at GPT-3 and GPT-4 have gained a lot of attention recently, as their performance in generating plausible text is (debatably) approaching human levels. The GPT model is used by Chat-GPT and many other applications to model language. For this project you could implement and train your own version of the original (GPT-1) model, compare it against available tools such as Chat-GPT and explore how to distinguish generated text from real human writing.</p>
 <p><strong>Suggested datasets:</strong> <a href="https://www.tensorflow.org/datasets/catalog/amazon_us_reviews">Amazon reviews</a> <a href="https://www.tensorflow.org/datasets/catalog/imdb_reviews">IMDB reviews</a></p>
 </section>
@@ -236,11 +230,11 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="other-possible-projects">Other possible projects:</h3>
 <section id="machine-learning-with-differential-privacy" class="level4">
 <h4 class="anchored" data-anchor-id="machine-learning-with-differential-privacy">Machine learning with differential privacy</h4>
-<p><a href="https://arxiv.org/pdf/1607.00133.pdf">https://arxiv.org/pdf/1607.00133.pdf</a></p>
+<p><a href="https://arxiv.org/pdf/1607.00133.pdf" class="uri">https://arxiv.org/pdf/1607.00133.pdf</a></p>
 </section>
 <section id="graph-neural-networks" class="level4">
 <h4 class="anchored" data-anchor-id="graph-neural-networks">Graph neural networks</h4>
-<p><a href="https://arxiv.org/pdf/1810.00826.pdf">https://arxiv.org/pdf/1810.00826.pdf</a></p>
+<p><a href="https://arxiv.org/pdf/1810.00826.pdf" class="uri">https://arxiv.org/pdf/1810.00826.pdf</a></p>
 
 
 </section>
